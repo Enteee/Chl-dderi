@@ -28,7 +28,7 @@ jobs:
       - name: Prepare site
         run: |
           mkdir _site
-          cp index.html _site/
+          cp -r index.html manifest.webmanifest icons _site/
           touch _site/.nojekyll
       - uses: actions/upload-pages-artifact@v3
         with:
