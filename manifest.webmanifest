@@ -1,17 +1,23 @@
 {
-  "name": "Finale Single-Pitch Atlas",
+  "name": "Finale Atlas",
   "short_name": "Finale Atlas",
-  "description": "Map and filterable list of single-pitch climbing sectors around Finale Ligure.",
+  "description": "Karte und Liste der Sportklettergebiete rund um Finale Ligure und in Oltrefinale – mit Parkplätzen, Zustiegen, Regen-Info und Favoriten.",
+  "lang": "de",
+  "id": "./",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#eef1f0",
-  "theme_color": "#0d5c56",
+  "background_color": "#28157a",
+  "theme_color": "#28157a",
+  "categories": ["sports", "travel", "navigation"],
   "icons": [
-    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
-    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Favoriten", "short_name": "Favoriten", "url": "./#/fav", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] }
   ]
 }
