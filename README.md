@@ -1,19 +1,37 @@
 # Finale Atlas
 
+[![Jetzt ausprobieren](https://img.shields.io/badge/Jetzt%20ausprobieren-Finale%20Atlas-28157a?style=for-the-badge&logo=googlemaps&logoColor=white)](https://enteee.github.io/Chl-dderi/)
+[![Deploy to GitHub Pages](https://github.com/Enteee/Chl-dderi/actions/workflows/pages.yml/badge.svg?branch=main)](https://github.com/Enteee/Chl-dderi/actions/workflows/pages.yml)
+
+**▶ App öffnen: <https://enteee.github.io/Chl-dderi/>**
+
 Karte und Liste der Sportklettergebiete rund um Finale Ligure und in Oltrefinale (Val Pennavaire, Val Neva, Toirano) – als App für den Homescreen, auf Deutsch und Englisch, mit Parkplätzen, Zustiegswegen, Routenlängen, Regen-Info und Favoriten, die wirklich gespeichert bleiben.
 
 311 Gebiete, rund 6200 Routen, 43 Parkplätze. Oben in der App wechselst du zwischen den Regionen **Finale** und **Oltrefinale**; alle Filter gelten jeweils innerhalb der gewählten Region.
 
-Ausgebaut aus dem Projekt [enteee/Chl-dderi](https://github.com/enteee/Chl-dderi) («Finale Single-Pitch Atlas»).
+Hervorgegangen aus dem «Finale Single-Pitch Atlas», der ersten Version dieses Repositorys.
 
-## In 5 Minuten online (GitHub Pages)
+## Was die App kann
 
-1. Auf github.com ein neues, öffentliches Repository anlegen, z. B. `finale-atlas`.
-2. **Add file → Upload files** und alle Dateien aus diesem Ordner hochladen (sie liegen absichtlich alle auf einer Ebene, ohne Unterordner). **Commit changes**.
-3. **Settings → Pages → Build and deployment**: Source = *Deploy from a branch*, Branch = `main`, Ordner = `/ (root)` → **Save**.
-4. Nach ein bis zwei Minuten läuft die App unter `https://marcesss97.github.io/finale-atlas/` (dein GitHub-Name, dann der Name des Repositorys).
+- **Karte, Liste, Filter:** Gebiete nach Schwierigkeit, Ausrichtung, Zustieg, Routenzahl, Gestein, Bewertung, Bildern und Region filtern; auf dem Handy über Tabs am unteren Rand.
+- **Gebietsseite:** Routenliste mit Graden und – wo bekannt – Längen, Zustieg ab Parkplatz, Regen-Info, Sperrungen, Bilder und Topos mit Link zur Quelle.
+- **Favoriten** für Gebiete und einzelne Routen, mit Sicherungs-Code zum Übertragen.
+- **Deutsch und Englisch**, helles und dunkles Design.
+- **Installierbar und offline-fähig** (Web-App mit Service Worker).
 
-Falls du stattdessen einen Fork des Originals benutzt: Dort liegt ein Workflow unter `.github/workflows/pages.yml`, der nur `index.html`, `manifest.webmanifest` und `icons/` veröffentlicht. Lösche ihn und stelle Pages wie in Schritt 3 um, sonst fehlen `sw.js` und die neuen Icons.
+## Veröffentlichung (GitHub Pages)
+
+Jeder Push auf `main` startet den Workflow [`.github/workflows/pages.yml`](.github/workflows/pages.yml). Er kopiert alle Web-Dateien aus dem Hauptordner (`*.html`, `*.js`, `*.webmanifest`, `*.png`, `*.svg`, `*.ico`) und veröffentlicht sie unter <https://enteee.github.io/Chl-dderi/>. Das Status-Badge oben zeigt, ob der letzte Lauf geklappt hat. Manuell starten: **Actions → Deploy to GitHub Pages → Run workflow**.
+
+- Einmalig nötig: **Settings → Pages → Build and deployment → Source = *GitHub Actions***.
+- Die App-Dateien liegen absichtlich alle auf einer Ebene, ohne Unterordner. Neue Dateien dieser Typen werden automatisch mitveröffentlicht; README und Workflow-Dateien nicht.
+- Lokal testen: `python3 -m http.server` im Ordner starten und <http://localhost:8000/> öffnen. Der Service Worker läuft nur über `http(s)://`, nicht beim Öffnen der Datei direkt.
+
+### Eigene Kopie
+
+1. Repository forken (oder alle Dateien in ein neues, öffentliches Repository hochladen, inklusive `.github/workflows/pages.yml`).
+2. **Settings → Pages → Source = *GitHub Actions***.
+3. Einen Commit auf `main` pushen oder den Workflow manuell starten. Die App läuft dann unter `https://<github-name>.github.io/<repository>/`.
 
 ## Auf den Homescreen
 
@@ -30,7 +48,7 @@ Wichtig auf dem iPhone: Die Homescreen-App und Safari haben **getrennte** Speich
 
 ## Aktualisieren
 
-Dateien im Repository durch die neuen ersetzen (gleiche Namen). Die App holt sich die neue Version beim nächsten Start mit Netz selbst; Favoriten und Einstellungen bleiben erhalten.
+Dateien im Repository durch die neuen ersetzen (gleiche Namen) und auf `main` committen – der Workflow veröffentlicht sie automatisch. Bei Änderungen an der App `BUILD` in `sw.js` erhöhen, damit installierte Apps den alten Zwischenspeicher verwerfen. Die App holt sich die neue Version beim nächsten Start mit Netz selbst; Favoriten und Einstellungen bleiben erhalten.
 
 ## Dateien
 
@@ -40,6 +58,7 @@ Dateien im Repository durch die neuen ersetzen (gleiche Namen). Die App holt sic
 | `sw.js` | macht die App offline-fähig |
 | `manifest.webmanifest` | Name, Farben und Icons für die Installation |
 | `icon-*.png`, `apple-touch-icon.png`, `favicon*` | App-Icon in allen nötigen Grössen |
+| `.github/workflows/pages.yml` | veröffentlicht die App bei jedem Push auf `main` |
 
 ## Daten, Quellen und Grenzen
 
@@ -52,4 +71,4 @@ Dateien im Repository durch die neuen ersetzen (gleiche Namen). Die App holt sic
 
 Karten: OpenTopoMap, OpenStreetMap-Mitwirkende, Esri. Kartenbibliothek: Leaflet (BSD-2-Clause), Leaflet.markercluster (MIT). Einzelne Koordinaten stammen von theCrag (CC BY-NC-SA) und aus OpenStreetMap (ODbL) – die App ist deshalb für die private, nicht kommerzielle Nutzung gedacht.
 
-Das Original-Repository nennt keine Lizenz. Vor einer öffentlichen Weiterverbreitung also kurz bei enteee nachfragen – oder die Änderungen als Pull Request dorthin zurückgeben.
+Das Repository nennt (noch) keine Lizenz. Vor einer öffentlichen Weiterverbreitung also kurz bei enteee nachfragen – Verbesserungen gerne als Pull Request.

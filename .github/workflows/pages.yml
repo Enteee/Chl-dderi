@@ -27,9 +27,13 @@ jobs:
           enablement: true
       - name: Prepare site
         run: |
+          # The app is a flat folder: publish every web file at the repository root
+          # (index.html, sw.js, manifest, icons, favicons), nothing else.
           mkdir _site
-          cp -r index.html manifest.webmanifest icons _site/
+          shopt -s nullglob
+          cp ./*.html ./*.js ./*.webmanifest ./*.png ./*.svg ./*.ico _site/
           touch _site/.nojekyll
+          ls -la _site
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
