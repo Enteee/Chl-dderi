@@ -1,12 +1,15 @@
 # Kletteratlas
 
+[![Jetzt ausprobieren](https://img.shields.io/badge/Jetzt%20ausprobieren-Kletteratlas-28157a?style=for-the-badge&logo=googlemaps&logoColor=white)](https://enteee.github.io/Chl-dderi/)
+[![Deploy to GitHub Pages](https://github.com/Enteee/Chl-dderi/actions/workflows/pages.yml/badge.svg?branch=main)](https://github.com/Enteee/Chl-dderi/actions/workflows/pages.yml)
+
 Karte und Liste der Sportklettergebiete rund um Finale Ligure und in Oltrefinale (Val Pennavaire, Val Neva, Toirano) – als App für den Homescreen, auf Deutsch und Englisch, mit Parkplätzen, Zustiegswegen, Navigation zum Parkplatz, Routenlängen, Regen- und Trocknungs-Info, Logbuch und Favoriten, die wirklich gespeichert bleiben.
 
-**Zur App: <https://marcesss97.github.io/Kletteratlas/>**
+**Zur App: <https://enteee.github.io/Chl-dderi/>**
 
 311 Gebiete, rund 6200 Routen, 43 Parkplätze. Oben in der App wechselst du zwischen den Regionen **Finale** und **Oltrefinale**; alle Filter gelten jeweils innerhalb der gewählten Region.
 
-Ausgebaut aus dem Projekt [enteee/Chl-dderi](https://github.com/enteee/Chl-dderi) («Finale Single-Pitch Atlas»).
+Hervorgegangen aus dem «Finale Single-Pitch Atlas», der ersten Version dieses Repositorys.
 
 ## Auf den Homescreen
 
@@ -34,15 +37,27 @@ Bevor du das Icon vom Homescreen löschst, kopiere den Code: Auf dem iPhone vers
 
 ## Aktualisieren
 
-Im Repository **Add file → Upload files**, die neuen Dateien hochladen (gleiche Namen ersetzen die alten) und **Commit changes**. Die App holt sich die neue Version beim nächsten Start mit Netz selbst – spätestens beim zweiten Öffnen ist sie da. Favoriten, Logbuch und Einstellungen bleiben erhalten.
+Im Repository **Add file → Upload files**, die neuen Dateien hochladen (gleiche Namen ersetzen die alten) und **Commit changes** – oder wie gewohnt mit Git auf `main` pushen. Jeder Commit auf `main` wird automatisch veröffentlicht (siehe unten).
+
+**Vorher die aktuelle Fassung holen:** Ein Upload ersetzt die ganze Datei. Wer `index.html` lokal weiterbearbeitet, lädt zuerst die aktuelle Version von `main` herunter – sonst gehen Änderungen verloren, die inzwischen im Repository dazugekommen sind. Bei Änderungen an der App die Versionsnummer `BUILD` in `sw.js` erhöhen, damit installierte Apps den alten Zwischenspeicher verwerfen.
+
+Die App holt sich die neue Version beim nächsten Start mit Netz selbst – spätestens beim zweiten Öffnen ist sie da. Favoriten, Logbuch und Einstellungen bleiben erhalten.
 
 Der Name unter einem Icon, das schon auf dem Homescreen liegt, ändert sich auf dem iPhone nicht von selbst. Wer dort den neuen Namen «Kletteratlas» sehen will: Code kopieren (siehe oben), Icon löschen, Seite in Safari neu zum Home-Bildschirm hinzufügen, Code einfügen.
 
-## Selbst hosten (GitHub Pages)
+## Veröffentlichung (GitHub Pages)
 
-1. Dieses Repository forken oder ein neues, öffentliches Repository anlegen und alle Dateien hochladen. Sie liegen absichtlich alle auf einer Ebene, ohne Unterordner.
-2. **Settings → Pages → Build and deployment**: Source = *Deploy from a branch*, Branch = `main`, Ordner = `/ (root)` → **Save**.
-3. Nach ein bis zwei Minuten läuft die App unter `https://<GitHub-Name>.github.io/<Name des Repositorys>/`.
+Jeder Push auf `main` startet den Workflow [`.github/workflows/pages.yml`](.github/workflows/pages.yml). Er veröffentlicht alle Web-Dateien aus dem Hauptordner (`*.html`, `*.js`, `*.webmanifest`, `*.png`, `*.svg`, `*.ico`) unter <https://enteee.github.io/Chl-dderi/>. Das Status-Badge oben zeigt, ob der letzte Lauf geklappt hat; manuell starten über **Actions → Deploy to GitHub Pages → Run workflow**.
+
+- Einmalig nötig: **Settings → Pages → Build and deployment → Source = *GitHub Actions***.
+- Die App-Dateien liegen absichtlich alle auf einer Ebene, ohne Unterordner. Neue Dateien dieser Typen werden automatisch mitveröffentlicht.
+- Lokal testen: im Ordner `python3 -m http.server` starten und <http://localhost:8000/> öffnen. Der Service Worker läuft nur über `http(s)://`, nicht beim direkten Öffnen der Datei.
+
+### Eigene Kopie
+
+1. Dieses Repository forken (der Workflow kommt mit).
+2. **Settings → Pages → Source = *GitHub Actions***.
+3. Einen Commit auf `main` pushen oder den Workflow manuell starten. Die App läuft dann unter `https://<GitHub-Name>.github.io/<Name des Repositorys>/`.
 
 ## Dateien
 
@@ -52,6 +67,7 @@ Der Name unter einem Icon, das schon auf dem Homescreen liegt, ändert sich auf 
 | `sw.js` | macht die App offline-fähig |
 | `manifest.webmanifest` | Name, Farben und Icons für die Installation |
 | `icon-*.png`, `apple-touch-icon.png`, `favicon*` | App-Icon in allen nötigen Grössen |
+| `.github/workflows/pages.yml` | veröffentlicht die App bei jedem Push auf `main` |
 
 ## Daten, Quellen und Grenzen
 
@@ -70,4 +86,4 @@ Der Name unter einem Icon, das schon auf dem Homescreen liegt, ändert sich auf 
 
 Grad-Tabellen: Mountain Project (International Climbing Grade Comparison Chart) und Bergfreunde.de. Karten: OpenTopoMap, OpenStreetMap-Mitwirkende, Esri. Wetter: Open-Meteo.com (CC BY 4.0). Radar: RainViewer; Radar-DPC, Dipartimento della Protezione Civile (CC BY-SA 4.0). Kartenbibliothek: Leaflet (BSD-2-Clause), Leaflet.markercluster (MIT). Einzelne Koordinaten stammen von theCrag (CC BY-NC-SA) und aus OpenStreetMap (ODbL) – die App ist deshalb für die private, nicht kommerzielle Nutzung gedacht.
 
-Das Original-Repository nennt keine Lizenz. Vor einer öffentlichen Weiterverbreitung also kurz bei enteee nachfragen – oder die Änderungen als Pull Request dorthin zurückgeben.
+Das Repository nennt (noch) keine Lizenz. Vor einer öffentlichen Weiterverbreitung also kurz bei enteee nachfragen. Verbesserungen gerne direkt in dieses Repository oder als Pull Request.
