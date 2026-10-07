@@ -1,37 +1,12 @@
-# Finale Atlas
+# Kletteratlas
 
-[![Jetzt ausprobieren](https://img.shields.io/badge/Jetzt%20ausprobieren-Finale%20Atlas-28157a?style=for-the-badge&logo=googlemaps&logoColor=white)](https://enteee.github.io/Chl-dderi/)
-[![Deploy to GitHub Pages](https://github.com/Enteee/Chl-dderi/actions/workflows/pages.yml/badge.svg?branch=main)](https://github.com/Enteee/Chl-dderi/actions/workflows/pages.yml)
+Karte und Liste der Sportklettergebiete rund um Finale Ligure und in Oltrefinale (Val Pennavaire, Val Neva, Toirano) – als App für den Homescreen, auf Deutsch und Englisch, mit Parkplätzen, Zustiegswegen, Navigation zum Parkplatz, Routenlängen, Regen- und Trocknungs-Info, Logbuch und Favoriten, die wirklich gespeichert bleiben.
 
-**▶ App öffnen: <https://enteee.github.io/Chl-dderi/>**
-
-Karte und Liste der Sportklettergebiete rund um Finale Ligure und in Oltrefinale (Val Pennavaire, Val Neva, Toirano) – als App für den Homescreen, auf Deutsch und Englisch, mit Parkplätzen, Zustiegswegen, Routenlängen, Regen-Info und Favoriten, die wirklich gespeichert bleiben.
+**Zur App: <https://marcesss97.github.io/Kletteratlas/>**
 
 311 Gebiete, rund 6200 Routen, 43 Parkplätze. Oben in der App wechselst du zwischen den Regionen **Finale** und **Oltrefinale**; alle Filter gelten jeweils innerhalb der gewählten Region.
 
-Hervorgegangen aus dem «Finale Single-Pitch Atlas», der ersten Version dieses Repositorys.
-
-## Was die App kann
-
-- **Karte, Liste, Filter:** Gebiete nach Schwierigkeit, Ausrichtung, Zustieg, Routenzahl, Gestein, Bewertung, Bildern und Region filtern; auf dem Handy über Tabs am unteren Rand.
-- **Gebietsseite:** Routenliste mit Graden und – wo bekannt – Längen, Zustieg ab Parkplatz, Regen-Info, Sperrungen, Bilder und Topos mit Link zur Quelle.
-- **Favoriten** für Gebiete und einzelne Routen, mit Sicherungs-Code zum Übertragen.
-- **Deutsch und Englisch**, helles und dunkles Design.
-- **Installierbar und offline-fähig** (Web-App mit Service Worker).
-
-## Veröffentlichung (GitHub Pages)
-
-Jeder Push auf `main` startet den Workflow [`.github/workflows/pages.yml`](.github/workflows/pages.yml). Er kopiert alle Web-Dateien aus dem Hauptordner (`*.html`, `*.js`, `*.webmanifest`, `*.png`, `*.svg`, `*.ico`) und veröffentlicht sie unter <https://enteee.github.io/Chl-dderi/>. Das Status-Badge oben zeigt, ob der letzte Lauf geklappt hat. Manuell starten: **Actions → Deploy to GitHub Pages → Run workflow**.
-
-- Einmalig nötig: **Settings → Pages → Build and deployment → Source = *GitHub Actions***.
-- Die App-Dateien liegen absichtlich alle auf einer Ebene, ohne Unterordner. Neue Dateien dieser Typen werden automatisch mitveröffentlicht; README und Workflow-Dateien nicht.
-- Lokal testen: `python3 -m http.server` im Ordner starten und <http://localhost:8000/> öffnen. Der Service Worker läuft nur über `http(s)://`, nicht beim Öffnen der Datei direkt.
-
-### Eigene Kopie
-
-1. Repository forken (oder alle Dateien in ein neues, öffentliches Repository hochladen, inklusive `.github/workflows/pages.yml`).
-2. **Settings → Pages → Source = *GitHub Actions***.
-3. Einen Commit auf `main` pushen oder den Workflow manuell starten. Die App läuft dann unter `https://<github-name>.github.io/<repository>/`.
+Ausgebaut aus dem Projekt [enteee/Chl-dderi](https://github.com/enteee/Chl-dderi) («Finale Single-Pitch Atlas»).
 
 ## Auf den Homescreen
 
@@ -40,15 +15,33 @@ Jeder Push auf `main` startet den Workflow [`.github/workflows/pages.yml`](.gith
 
 Die App startet danach auch ohne Netz. Kartenkacheln, die du einmal angeschaut hast, bleiben offline verfügbar.
 
-## Favoriten
+## Was die App kann
 
-Favoriten werden dreifach auf dem Gerät gespeichert und nach jedem Speichern zurückgelesen. Unter *Favoriten* steht, ob das Speichern geklappt hat.
+- **Karte:** Ein Tipp auf ein Gebiet zeigt Zustieg und Parkplatz. *Gebiet öffnen* führt zur Gebietsseite, *Anfahrt* startet Google Maps mit der Route von deinem Standort zum Parkplatz. Auf der Gebietsseite gibt es dieselbe Navigation mit Google Maps und, auf Apple-Geräten, mit Apple Karten.
+- **Filter:** Grad, Sterne, Zustieg, Ausrichtung, Regen, Routenlänge und mehr. Grad und Sterne gelten für dieselbe Route – «mindestens 3 Routen von 6a bis 6c+ mit ★★★★ oder mehr» findet also Gebiete, in denen es solche Routen wirklich gibt. Die Sortierung *Passende Routen* stellt die ergiebigsten Gebiete nach oben.
+- **Trocknet schnell:** eine Schätzung aus Sonne und Ausrichtung (sonnige Südwände trocknen schnell, schattige Nordwände langsam). In der App ist sie als Schätzung gekennzeichnet; wo eine Quelle ausdrücklich von nassem Fels spricht, gilt die Quelle.
+- **Logbuch:** Bei jeder Route auf ⊕ tippen und Datum, Stil (Onsight, Flash, Rotpunkt, Toprope, Versuch) und eigene Sterne eintragen. Die Seite *Logbuch* zeigt Zahlen, die schwersten Routen und alle Einträge und exportiert sie als CSV-Datei. Über den Filter *Mein Logbuch* findest du Gebiete mit Routen, die noch offen sind.
+- **Wissenswertes** (unter *Mehr*): Grad-Umrechner (Französisch, UIAA, USA, Grossbritannien, Australien, Sachsen, Skandinavien), Rekorde aus den Daten, Fakten zu Finale mit Quelle und ein kleines Italienisch-Glossar.
 
-Wichtig auf dem iPhone: Die Homescreen-App und Safari haben **getrennte** Speicher. Favoriten, die du in Safari gesetzt hast, erscheinen nicht automatisch in der Homescreen-App. Dafür gibt es unter *Favoriten → Sichern und übertragen* einen Code: in der einen App *Code kopieren*, in der anderen einfügen und *Aus Code übernehmen*. Das funktioniert auch zwischen zwei Geräten.
+## Favoriten und Logbuch sichern
+
+Favoriten und Logbuch werden dreifach auf dem Gerät gespeichert und nach jedem Speichern zurückgelesen. Auf den Seiten *Favoriten* und *Logbuch* steht, ob das Speichern geklappt hat.
+
+Wichtig auf dem iPhone: Die Homescreen-App und Safari haben **getrennte** Speicher. Was du in Safari gespeichert hast, erscheint nicht automatisch in der Homescreen-App. Dafür gibt es unter *Favoriten* und unter *Logbuch* den Abschnitt *Sichern und übertragen* mit einem Code, der beides enthält: in der einen App *Code kopieren*, in der anderen einfügen und *Aus Code übernehmen*. Das funktioniert auch zwischen zwei Geräten.
+
+Bevor du das Icon vom Homescreen löschst, kopiere den Code: Auf dem iPhone verschwindet mit dem Icon in der Regel auch der Speicher dieser App. Es lohnt sich, den Code ab und zu in einer Notiz abzulegen.
 
 ## Aktualisieren
 
-Dateien im Repository durch die neuen ersetzen (gleiche Namen) und auf `main` committen – der Workflow veröffentlicht sie automatisch. Bei Änderungen an der App `BUILD` in `sw.js` erhöhen, damit installierte Apps den alten Zwischenspeicher verwerfen. Die App holt sich die neue Version beim nächsten Start mit Netz selbst; Favoriten und Einstellungen bleiben erhalten.
+Im Repository **Add file → Upload files**, die neuen Dateien hochladen (gleiche Namen ersetzen die alten) und **Commit changes**. Die App holt sich die neue Version beim nächsten Start mit Netz selbst – spätestens beim zweiten Öffnen ist sie da. Favoriten, Logbuch und Einstellungen bleiben erhalten.
+
+Der Name unter einem Icon, das schon auf dem Homescreen liegt, ändert sich auf dem iPhone nicht von selbst. Wer dort den neuen Namen «Kletteratlas» sehen will: Code kopieren (siehe oben), Icon löschen, Seite in Safari neu zum Home-Bildschirm hinzufügen, Code einfügen.
+
+## Selbst hosten (GitHub Pages)
+
+1. Dieses Repository forken oder ein neues, öffentliches Repository anlegen und alle Dateien hochladen. Sie liegen absichtlich alle auf einer Ebene, ohne Unterordner.
+2. **Settings → Pages → Build and deployment**: Source = *Deploy from a branch*, Branch = `main`, Ordner = `/ (root)` → **Save**.
+3. Nach ein bis zwei Minuten läuft die App unter `https://<GitHub-Name>.github.io/<Name des Repositorys>/`.
 
 ## Dateien
 
@@ -58,17 +51,20 @@ Dateien im Repository durch die neuen ersetzen (gleiche Namen) und auf `main` co
 | `sw.js` | macht die App offline-fähig |
 | `manifest.webmanifest` | Name, Farben und Icons für die Installation |
 | `icon-*.png`, `apple-touch-icon.png`, `favicon*` | App-Icon in allen nötigen Grössen |
-| `.github/workflows/pages.yml` | veröffentlicht die App bei jedem Push auf `main` |
 
 ## Daten, Quellen und Grenzen
 
 - Die Quellen jedes Gebiets stehen in der App auf der Gebietsseite, die Methode unter *Mehr → Über die Daten*.
 - Zustiegswege sind berechnet (BRouter auf OpenStreetMap-Daten) und nicht vor Ort geprüft. Parkplätze mit hellem, umrandetem P sind geschätzt.
 - Oltrefinale hat keine offizielle Wandliste. Die Daten stammen dort vom lokalen Verein Roc Pennavaire und aus Community-Quellen. Wo keine Quelle die Wand verortet, steht eine weisse Raute neben dem Parkplatz; 12 Gebiete haben gar keine Position und stehen nur in der Liste.
-- «Regensicher» steht nur dort, wo eine Quelle es ausdrücklich sagt. Bei einigen Gebieten meldet Climbook mögliche Sperrungen zum Schutz brütender Greifvögel, die niemand bestätigt hat – sie tragen den Hinweis «Vorsicht».
+- «Regensicher» steht nur dort, wo eine Quelle es ausdrücklich sagt. «Trocknet schnell» ist dagegen eine Schätzung aus Sonne und Ausrichtung; nur bei vier Gebieten gibt es dazu eine ausdrückliche Angabe einer Quelle. Nach langem Regen können Sinter und Löcher tagelang nass bleiben.
+- Sterne stammen aus den Bewertungen der Climbook-Community. Gebiete ohne Routenliste oder ohne Bewertungen fallen bei einem Sternefilter weg.
+- Die Grad-Umrechnung ist eine Näherung: Die Skalen messen nicht ganz dasselbe, und veröffentlichte Tabellen weichen um etwa eine Stufe voneinander ab.
+- Der Google-Maps-Knopf öffnet auf dem iPhone die Google-Maps-App. Ist sie nicht installiert, bietet die App nach kurzer Zeit den Link im Browser an.
+- Bei einigen Gebieten meldet Climbook mögliche Sperrungen zum Schutz brütender Greifvögel, die niemand bestätigt hat – sie tragen den Hinweis «Vorsicht».
 - Längen einzelner Routen gibt es nur dort, wo eine frei zugängliche Quelle sie nennt; sonst gilt die Spanne des Gebiets.
 - Die App ersetzt keinen Kletterführer. Sperrungen und Zustand der Haken immer vor Ort prüfen.
 
-Karten: OpenTopoMap, OpenStreetMap-Mitwirkende, Esri. Kartenbibliothek: Leaflet (BSD-2-Clause), Leaflet.markercluster (MIT). Einzelne Koordinaten stammen von theCrag (CC BY-NC-SA) und aus OpenStreetMap (ODbL) – die App ist deshalb für die private, nicht kommerzielle Nutzung gedacht.
+Grad-Tabellen: Mountain Project (International Climbing Grade Comparison Chart) und Bergfreunde.de. Karten: OpenTopoMap, OpenStreetMap-Mitwirkende, Esri. Kartenbibliothek: Leaflet (BSD-2-Clause), Leaflet.markercluster (MIT). Einzelne Koordinaten stammen von theCrag (CC BY-NC-SA) und aus OpenStreetMap (ODbL) – die App ist deshalb für die private, nicht kommerzielle Nutzung gedacht.
 
-Das Repository nennt (noch) keine Lizenz. Vor einer öffentlichen Weiterverbreitung also kurz bei enteee nachfragen – Verbesserungen gerne als Pull Request.
+Das Original-Repository nennt keine Lizenz. Vor einer öffentlichen Weiterverbreitung also kurz bei enteee nachfragen – oder die Änderungen als Pull Request dorthin zurückgeben.
