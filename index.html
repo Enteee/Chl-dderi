@@ -1609,7 +1609,7 @@ const I18N = {
 "ori.mixed":["All aspects","Alle Seiten"],"ori.mixed.t":["Faces every direction (cave or pinnacle)","Schaut in alle Richtungen (Höhle oder Turm)"],
 "rain.yes":["Rainproof","Regensicher"],"rain.no":["Not rainproof","Nicht regensicher"],
 "len.le":["≤ {0} m","≤ {0} m"],"len.gt":["Over {0} m","Über {0} m"],
-"count.gt":["{0}+","{0}+"],
+"count.gt":["{0}+","{0}+"],"count.ge":["≥ {0}","≥ {0}"],
 "pic.pic":["With pictures","Mit Bildern"],"pic.topo":["With topo or sketch","Mit Topo oder Skizze"],"pic.link":["With topo link","Mit Topo-Link"],
 "style.sport":["Sport ({0})","Sport ({0})"],"style.mixed":["Mixed ({0})","Gemischt ({0})"],
 "area.all":["All areas","Alle Zonen"],"muni.all":["All municipalities","Alle Gemeinden"],"muni.none":["Not determined","Nicht bestimmt"],
@@ -2432,7 +2432,7 @@ let F = F0(), sortKey = "area", sortDir = 1, selId = null, shown = [], S = [], v
 // so a stored state from an older version can never hide everything by accident.
 const FKEY = "finale-atlas-filters-v1";
 const F_OK = {fav:["any","crags","routes"],star:["any","3","4","5"],log:["any","todo","done"],pic:["any","pic","topo","link"],
-  walk:["any","5","10","20","30","30+","unknown"],count:["any","1-10","11-30","31-50","51+"],style:["any","sport","mixed"],
+  walk:["any","5","10","20","30","30+","unknown"],count:["any","10","20","30","50"],style:["any","sport","mixed"],
   rain:["any","yes","no"],dry:["any","fast","ok"],len:["any","20","30","40","40+"],wx:["any","dry","ok"]};
 const F_BOOL = ["hideClosure","hideCaution","hideNoFamily","onlyMapped"];
 function fAll(){ try{ return JSON.parse(localStorage.getItem(FKEY)||"null") || {}; }catch(e){ return {}; } }
@@ -2635,7 +2635,7 @@ function buildControls(){
   chipset($("wxChips"), [["any",t("any")],["dry",t("wx.f.dry")],["ok",t("wx.f.ok")]], v=>F.wx===v, v=>{F.wx=v; if(v!=="any") wxLoad();});
   chipset($("logChips"), [["any",t("any")],["todo",t("log.f.todo")],["done",t("log.f.done")]], v=>F.log===v, v=>{F.log=v;});
   chipset($("lenChips"), [["any",t("any")],["20",t("len.le",20)],["30",t("len.le",30)],["40",t("len.le",40)],["40+",t("len.gt",40)]], v=>F.len===v, v=>{F.len=v;});
-  chipset($("countChips"), [["any",t("any")],["1-10","1–10"],["11-30","11–30"],["31-50","31–50"],["51+",t("count.gt",50)]], v=>F.count===v, v=>{F.count=v;});
+  chipset($("countChips"), [["any",t("any")]].concat(["10","20","30","50"].map(v=>[v,t("count.ge",v)])), v=>F.count===v, v=>{F.count=v;});
   chipset($("starChips"), [["any",t("any")],["3","★★★ +"],["4","★★★★ +"],["5","★★★★★"]], v=>F.star===v, v=>{F.star=v;});
   chipset($("picChips"), [["any",t("any")],["pic",t("pic.pic")],["topo",t("pic.topo")],["link",t("pic.link")]], v=>F.pic===v, v=>{F.pic=v;});
   const nStyle = k=>S.filter(s=>s.styleKey===k).length;
@@ -2763,8 +2763,7 @@ function test(s){
   if(F.dry==="fast" && s.dry!=="fast") return false;
   if(F.dry==="ok" && s.dry!=="fast" && s.dry!=="mid") return false;
   if(F.len!=="any"){ const m=s.lenMax; if(m==null) return false; if(F.len==="40+"){ if(m<=40) return false; } else if(m>+F.len) return false; }
-  if(F.count!=="any"){ const n=s.nRoutes; if(n==null) return false;
-    const p = F.count==="51+"?[51,1e9]:F.count.split("-").map(Number); if(n<p[0]||n>p[1]) return false; }
+  if(F.count!=="any"){ const n=s.nRoutes; if(n==null || n<+F.count) return false; }          // «at least n routes in the crag»
   if(F.style!=="any" && s.styleKey!==F.style) return false;
   if(F.area && s.area!==F.area) return false;
   if(F.muni){ if(F.muni==="?"){ if(s.municipality) return false; } else if(s.municipality!==F.muni) return false; }
