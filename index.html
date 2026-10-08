@@ -2428,28 +2428,34 @@ const areaIdx = Object.fromEntries(D.areas.map((a,i)=>[a.name,i]));
 const F0 = ()=>({fav:"any",star:"any",log:"any",pic:"any",q:"",gmin:GLO,gmax:GHI,minIn:1,orient:new Set(),walk:"any",count:"any",style:"any",area:"",muni:"",conf:new Set(),
   hideClosure:false,hideCaution:false,hideNoFamily:false,onlyMapped:false,rain:"any",dry:"any",len:"any",wx:"any"});
 let F = F0(), sortKey = "area", sortDir = 1, selId = null, shown = [], S = [], view = "map", routeView = "match", routeSort = "list", targetRoute = null;
-// ---- filters and sort are kept per region on this device (not the search text). Values are checked on reading,
-// so a stored state from an older version can never hide everything by accident.
-const FKEY = "finale-atlas-filters-v1";
+// ---- filters and sort are one personal preference for the whole app, kept on this device (not the search text).
+// Only area and municipality belong to one region; they are dropped when they do not exist in the region shown.
+// Values are checked on reading, so a stored state from an older version can never hide everything by accident.
+const FKEY = "finale-atlas-filters-v2", FKEY_V1 = "finale-atlas-filters-v1";
 const F_OK = {fav:["any","crags","routes"],star:["any","3","4","5"],log:["any","todo","done"],pic:["any","pic","topo","link"],
   walk:["any","5","10","20","30","30+","unknown"],count:["any","10","20","30","50"],style:["any","sport","mixed"],
   rain:["any","yes","no"],dry:["any","fast","ok"],len:["any","20","30","40","40+"],wx:["any","dry","ok"]};
 const F_BOOL = ["hideClosure","hideCaution","hideNoFamily","onlyMapped"];
-function fAll(){ try{ return JSON.parse(localStorage.getItem(FKEY)||"null") || {}; }catch(e){ return {}; } }
+function fStored(){
+  try{
+    const v = JSON.parse(localStorage.getItem(FKEY)||"null"); if(v) return v;
+    const old = JSON.parse(localStorage.getItem(FKEY_V1)||"null");          // earlier: one set per region – take the region last shown
+    return old ? (old[prefs.region] || old[Object.keys(old)[0]] || null) : null;
+  }catch(e){ return null; }
+}
 let fSaveTimer = null;
 function saveFilters(){
   clearTimeout(fSaveTimer);
   fSaveTimer = setTimeout(()=>{
-    const all = fAll();
-    all[prefs.region] = {F:{fav:F.fav,star:F.star,log:F.log,pic:F.pic,walk:F.walk,count:F.count,style:F.style,rain:F.rain,dry:F.dry,len:F.len,wx:F.wx,
+    const v = {F:{fav:F.fav,star:F.star,log:F.log,pic:F.pic,walk:F.walk,count:F.count,style:F.style,rain:F.rain,dry:F.dry,len:F.len,wx:F.wx,
       gmin:GR[F.gmin],gmax:GR[F.gmax],minIn:F.minIn,orient:[...F.orient],conf:[...F.conf],area:F.area,muni:F.muni,
       hideClosure:F.hideClosure,hideCaution:F.hideCaution,hideNoFamily:F.hideNoFamily,onlyMapped:F.onlyMapped}, sort:sortKey, dir:sortDir};
-    try{ localStorage.setItem(FKEY, JSON.stringify(all)); }catch(e){}
+    try{ localStorage.setItem(FKEY, JSON.stringify(v)); localStorage.removeItem(FKEY_V1); }catch(e){}
   }, 300);
 }
-function loadFilters(){                          // for the current region; the search text stays as it is
+function loadFilters(){                          // at start; the search text stays as it is
   const q = F.q; F = F0(); F.q = q; sortKey = "area"; sortDir = 1;
-  const v = fAll()[prefs.region];
+  const v = fStored();
   if(v && v.F){ const x = v.F;
     Object.keys(F_OK).forEach(k=>{ if(F_OK[k].includes(x[k])) F[k] = x[k]; });
     F_BOOL.forEach(k=>{ if(typeof x[k]==="boolean") F[k] = x[k]; });
@@ -2705,7 +2711,8 @@ function activeFilters(){
 function setRegion(key, fit){
   prefs.region = key; savePrefs(); $("app").dataset.reg = key;
   S = S_ALL.filter(s=>s.reg===key);
-  loadFilters();
+  if(F.area && !S.some(s=>s.area===F.area)) F.area = "";                  // the other filters carry over unchanged
+  if(F.muni && F.muni!=="?" && !S.some(s=>s.municipality===F.muni)) F.muni = "";
   buildControls(); renderSubline(); apply();
   if(fit && map) fitShown(true);
 }
