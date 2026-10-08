@@ -1,7 +1,7 @@
 /* Kletteratlas – service worker. Lets the installed app start without a connection and keeps map tiles that were viewed.
    The cache "finale-atlas-user" belongs to the favourites store and is never touched here.
    The cache names keep the former working name "finale-atlas": renaming them would orphan what is already stored on people's devices. */
-const BUILD = "2026.10.07-a57ff55-wx";
+const BUILD = "2026.10.07-a57ff55-wx2";
 const SHELL = "finale-atlas-shell-" + BUILD;     // the app files; replaced with every build
 const TILES = "finale-atlas-tiles-v1";           // map tiles that were looked at (limited number)
 const FONTS = "finale-atlas-fonts-v1";
