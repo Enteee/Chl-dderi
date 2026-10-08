@@ -22,9 +22,9 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      # Pages must already be on (Settings → Pages → Source: GitHub Actions); the workflow token cannot switch it on.
+      # On a private repository this needs a paid GitHub plan, otherwise this step fails with "Get Pages site failed".
       - uses: actions/configure-pages@v5
-        with:
-          enablement: true
       - name: Prepare site
         run: |
           # The app is a flat folder: publish every web file at the repository root

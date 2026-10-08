@@ -50,6 +50,7 @@ Der Name unter einem Icon, das schon auf dem Homescreen liegt, ändert sich auf 
 Jeder Push auf `main` startet den Workflow [`.github/workflows/pages.yml`](.github/workflows/pages.yml). Er veröffentlicht alle Web-Dateien aus dem Hauptordner (`*.html`, `*.js`, `*.webmanifest`, `*.png`, `*.svg`, `*.ico`) unter <https://enteee.github.io/Chl-dderi/>. Das Status-Badge oben zeigt, ob der letzte Lauf geklappt hat; manuell starten über **Actions → Deploy to GitHub Pages → Run workflow**.
 
 - Einmalig nötig: **Settings → Pages → Build and deployment → Source = *GitHub Actions***.
+- GitHub Pages gibt es für **private** Repositories nur mit einem bezahlten GitHub-Plan (z. B. Pro). Mit dem Gratis-Plan schaltet GitHub Pages ab, sobald das Repository privat wird, und der Workflow scheitert mit «Get Pages site failed». Die veröffentlichte Seite selbst ist in jedem Fall öffentlich.
 - Die App-Dateien liegen absichtlich alle auf einer Ebene, ohne Unterordner. Neue Dateien dieser Typen werden automatisch mitveröffentlicht.
 - Lokal testen: im Ordner `python3 -m http.server` starten und <http://localhost:8000/> öffnen. Der Service Worker läuft nur über `http(s)://`, nicht beim direkten Öffnen der Datei.
 
