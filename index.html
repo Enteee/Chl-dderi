@@ -1813,7 +1813,7 @@ const I18N = {
 "m.refresh.h":["Downloads the app files again. Favourites, logbook, settings and filters are kept.","Lädt die App-Dateien neu herunter. Favoriten, Logbuch, Einstellungen und Filter bleiben erhalten."],
 "m.refresh.off":["Only with an internet connection.","Nur mit Internetverbindung."],"m.reload":["Reload","Neu laden"],
 "m.data":["About the data","Über die Daten"],"m.topos":["Topos and guidebooks","Topos und Kletterführer"],"m.coverage":["Coverage of the research","Abdeckung der Recherche"],"m.method":["Methodology","Methodik"],
-"m.about":["About","Über"],
+"m.about":["About","Über"],"m.contrib":["Made by","Gemacht von"],
 "m.about.t":["Kletteratlas is a research aid for the sport-climbing crags around Finale Ligure and in the valleys west of it (Oltrefinale): {0} crags, {1} routes and {2} car parks with approach lines. It builds on the atlas «Chlädderi» by enteee. Data: Finale Outdoor Region, Outdooractive, Roc Pennavaire, theCrag, Camptocamp, Gulliver.it, Climbook, thetopo, climbingaway.fr, OpenStreetMap and others – see Methodology.","Der Kletteratlas ist eine Recherchehilfe für die Sportklettergebiete rund um Finale Ligure und in den Tälern westlich davon (Oltrefinale): {0} Gebiete, {1} Routen und {2} Parkplätze mit Zustiegslinien. Er baut auf dem Atlas «Chlädderi» von enteee auf. Daten: Finale Outdoor Region, Outdooractive, Roc Pennavaire, theCrag, Camptocamp, Gulliver.it, Climbook, thetopo, climbingaway.fr, OpenStreetMap und weitere – siehe Methodik."],
 "m.version":["Data as of {0} · version {1}","Datenstand {0} · Version {1}"],
 "tag.anchor":["Marker by the car park","Marker beim Parkplatz"],
@@ -3957,6 +3957,7 @@ function renderMore(){
       : `<button type="button" data-info="coverage">${ic("routes")}${esc(t("m.coverage"))}</button>
     <button type="button" data-info="method">${ic("info")}${esc(t("m.method"))}</button>`}</div></section>
   <section><h3>${esc(t("m.about"))}</h3><p>${esc(t("m.about.t",fmtInt(S_ALL.length),fmtInt(S_ALL.reduce((n,x)=>n+x.routes.length,0)),Object.keys(PK).length))}</p>
+    <p>${esc(t("m.contrib"))} ${[["Enteee","enteee"],["marcesss97","marcesss97"]].map(c=>`<a href="https://github.com/${c[0]}" target="_blank" rel="noopener">${esc(c[1])}</a>`).join(LANG==="de"?" und ":" and ")} · <a href="https://github.com/Enteee/Chl-dderi" target="_blank" rel="noopener">GitHub</a></p>
     <p class="hint">${esc(t("m.version",fmtDate(D.updated||D.accessed),APP_VERSION))}</p><p class="disclaimer">${esc(t("disclaimer"))}</p></section>`;
 }
 $("morepane").addEventListener("click",e=>{
