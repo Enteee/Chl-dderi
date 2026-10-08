@@ -7,7 +7,7 @@ Karte und Liste der Sportklettergebiete rund um Finale Ligure und in Oltrefinale
 
 **Zur App: <https://enteee.github.io/Chl-dderi/>**
 
-311 Gebiete, rund 6200 Routen, 43 Parkplätze. Oben in der App wechselst du zwischen den Regionen **Finale** und **Oltrefinale**; alle Filter gelten jeweils innerhalb der gewählten Region.
+311 Gebiete, rund 6600 Routen, 43 Parkplätze. Oben in der App wechselst du zwischen den Regionen **Finale** und **Oltrefinale**; alle Filter gelten jeweils innerhalb der gewählten Region.
 
 Hervorgegangen aus dem «Finale Single-Pitch Atlas», der ersten Version dieses Repositorys.
 
@@ -21,7 +21,7 @@ Die App startet danach auch ohne Netz. Kartenkacheln, die du einmal angeschaut h
 ## Was die App kann
 
 - **Karte:** Doppelklick oder Doppeltipp zoomt an der Stelle hinein (Shift + Doppelklick hinaus). Ein Tipp auf ein Gebiet zeigt Zustieg und Parkplatz. *Gebiet öffnen* führt zur Gebietsseite, *Anfahrt* startet Google Maps mit der Route von deinem Standort zum Parkplatz. Auf der Gebietsseite gibt es dieselbe Navigation mit Google Maps und, auf Apple-Geräten, mit Apple Karten.
-- **Gebietsseite:** Kopf mit Gradverteilung, Kacheln mit dem Wichtigsten auf einen Blick und eine Leiste, die direkt zu Zustieg, Topos, Routen, Regen, Logbuch und Details springt. Die Routen sind nummeriert – die Nummer ist der Platz in der Routenliste der Quelle und bleibt beim Sortieren an der Route; der Grad ist nach Gradbereich eingefärbt.
+- **Gebietsseite:** Kopf mit Gradverteilung, Kacheln mit dem Wichtigsten auf einen Blick und eine Leiste, die direkt zu Zustieg, Topos, Routen, Regen, Logbuch und Details springt. Die Routen sind nummeriert und der Grad ist nach Gradbereich eingefärbt. Wo theCrag den Fels zeigt, ist die Nummer der Platz an der Wand von links nach rechts; sonst der Platz in der Routenliste der Quelle. Die Nummer bleibt beim Sortieren an der Route.
 - **Absicherung:** Wo eine Quelle es ausdrücklich sagt (offizielle Wandseite, Gulliver, Climbook), zeigt die Gebietsseite, ob eng/gut oder weit gebohrt ist und ob die Haken neu oder alt sind – mit Wortlaut und Quelle. Der Filter *Absicherung* findet eng gebohrte oder neu eingerichtete Gebiete oder blendet weit gebohrte und alte aus. Die meisten Gebiete haben keine solche Angabe.
 - **Filter:** Grad, Sterne, Zustieg, Ausrichtung, Absicherung, Regen, Routenlänge und mehr. Grad und Sterne gelten für dieselbe Route – «mindestens 3 Routen von 6a bis 6c+ mit ★★★★ oder mehr» findet also Gebiete, in denen es solche Routen wirklich gibt. Die Sortierung *Passende Routen* stellt die ergiebigsten Gebiete nach oben.
 - **Regen:** Im Kartenmenü (Ebenen-Knopf) unter *Regenradar* das Radar der letzten 2 Stunden (animiert) oder das neueste, schärfere Bild der italienischen Protezione Civile einblenden. An den Gebieten zeigen Tropfen, wo es gerade regnet, wo der Fels wohl noch nass ist und wo bald Regen erwartet wird. Der Filter *Jetzt trocken* (auch unter *Filter → Regen*) blendet alles andere aus, und jede Gebietsseite zeigt den Regen der letzten und nächsten 24 Stunden.
@@ -85,7 +85,8 @@ Jeder Push auf `main` startet den Workflow [`.github/workflows/pages.yml`](.gith
 - Die Grad-Umrechnung ist eine Näherung: Die Skalen messen nicht ganz dasselbe, und veröffentlichte Tabellen weichen um etwa eine Stufe voneinander ab.
 - Der Google-Maps-Knopf öffnet auf dem iPhone die Google-Maps-App. Ist sie nicht installiert, bietet die App nach kurzer Zeit den Link im Browser an.
 - Bei einigen Gebieten meldet Climbook mögliche Sperrungen zum Schutz brütender Greifvögel, die niemand bestätigt hat – sie tragen den Hinweis «Vorsicht».
-- Längen einzelner Routen gibt es nur dort, wo eine frei zugängliche Quelle sie nennt; sonst gilt die Spanne des Gebiets.
+- Längen einzelner Routen gibt es nur dort, wo eine frei zugängliche Quelle sie nennt (finale.climbing.land, theCrag); sonst gilt die Spanne des Gebiets.
+- Reihenfolge und fehlende Routen: Die Routenlisten von theCrag (gelesen am 8.10.2026) geben bei 129 Gebieten die Reihenfolge an der Wand vor (von links nach rechts) und ergänzen 450 Routen, die in der offiziellen Liste bzw. bei Climbook fehlten (markiert mit «nur theCrag», darunter viele Projekte). Bereits geführte Routen behalten Name und Grad. Wo theCrag ein Gebiet nicht herausgab, gilt weiter die Reihenfolge der bisherigen Quelle.
 - Die App ersetzt keinen Kletterführer. Sperrungen und Zustand der Haken immer vor Ort prüfen.
 
 Grad-Tabellen: Mountain Project (International Climbing Grade Comparison Chart) und Bergfreunde.de. Karten: OpenTopoMap, OpenStreetMap-Mitwirkende, Esri. Wetter: Open-Meteo.com (CC BY 4.0). Radar: RainViewer; Radar-DPC, Dipartimento della Protezione Civile (CC BY-SA 4.0). Kartenbibliothek: Leaflet (BSD-2-Clause), Leaflet.markercluster (MIT). Einzelne Koordinaten stammen von theCrag (CC BY-NC-SA) und aus OpenStreetMap (ODbL) – die App ist deshalb für die private, nicht kommerzielle Nutzung gedacht.
