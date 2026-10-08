@@ -33,6 +33,19 @@ jobs:
           shopt -s nullglob
           cp ./*.html ./*.js ./*.webmanifest ./*.png ./*.svg ./*.ico _site/
           touch _site/.nojekyll
+      - name: Stamp version
+        run: |
+          # One version per deploy (date + commit). It goes into the service worker (a changed sw.js makes installed apps
+          # fetch everything anew), into the page (shown under «Mehr») and into version.json (checked by the running app).
+          V="$(date -u +%Y.%m.%d)-${GITHUB_SHA::7}"
+          T="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          stamp(){ grep -qE "$2" "$1" || { echo "::error file=$1::no '$2' to stamp"; exit 1; }; sed -i -E "s|$2|$3|" "$1"; }
+          stamp _site/sw.js      'const BUILD = "[^"]*";'       "const BUILD = \"$V\";"
+          stamp _site/index.html 'const APP_VERSION = "[^"]*";' "const APP_VERSION = \"$V\";"
+          stamp _site/index.html 'const APP_BUILT = "[^"]*";'   "const APP_BUILT = \"$T\";"
+          printf '{"version":"%s","built":"%s"}\n' "$V" "$T" > _site/version.json
+          grep -h 'const BUILD =\|const APP_VERSION =\|const APP_BUILT =' _site/sw.js _site/index.html
+          cat _site/version.json
           ls -la _site
       - uses: actions/upload-pages-artifact@v3
         with:

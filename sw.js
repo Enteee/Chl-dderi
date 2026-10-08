@@ -1,7 +1,7 @@
 /* Kletteratlas – service worker. Lets the installed app start without a connection and keeps map tiles that were viewed.
    The cache "finale-atlas-user" belongs to the favourites store and is never touched here.
    The cache names keep the former working name "finale-atlas": renaming them would orphan what is already stored on people's devices. */
-const BUILD = "2026.10.07-a57ff55-wx3";
+const BUILD = "dev";                            // stamped by the deploy workflow
 const SHELL = "finale-atlas-shell-" + BUILD;     // the app files; replaced with every build
 const TILES = "finale-atlas-tiles-v1";           // map tiles that were looked at (limited number)
 const FONTS = "finale-atlas-fonts-v1";
@@ -74,6 +74,7 @@ self.addEventListener("fetch", e => {
   const url = new URL(req.url);
   if (url.origin === self.location.origin) {
     if (url.pathname.indexOf(new URL("./", self.location).pathname) !== 0) return;      // outside the app's folder
+    if (/\/version\.json$/.test(url.pathname)) return;                                  // the update check must reach the server
     const isPage = req.mode === "navigate" || /\/(index\.html)?$/.test(url.pathname);
     e.respondWith(isPage ? page(e) : asset(req));
   } else if (TILE_HOSTS.test(url.hostname)) e.respondWith(tile(req));

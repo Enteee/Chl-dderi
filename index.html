@@ -677,9 +677,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
 	transition: stroke-dashoffset 0.3s ease-out, stroke-opacity 0.3s ease-in;
 }
 
-/* Kletteratlas – app styles.
-   Layout: desktop = filter rail | map | side column (list, favourites or more);
-   phone = app bar, quick chips, one pane at a time, bottom tab bar; filters open as a sheet. */
+/* Kletteratlas */
 :root{
   --bg:#f4f1ec; --panel:#fbf9f6; --raise:#ffffff; --ink:#1d1538; --ink2:#5e5876; --line:#e2dcd2;
   --accent:#4b1fa0; --accent-ink:#ffffff; --accent-soft:#ece5fb;
@@ -1809,7 +1807,11 @@ const I18N = {
 "m.install.and":["Android: browser menu ⋮, then «Install app» or «Add to Home screen».","Android: Browser-Menü ⋮, dann «App installieren» oder «Zum Startbildschirm hinzufügen»."],
 "m.offline.on":["Works offline: the app and all crag data are stored on this device. Map areas you have already looked at stay available too; pictures need a connection.","Funktioniert offline: App und alle Gebietsdaten liegen auf diesem Gerät. Bereits angesehene Kartenausschnitte bleiben ebenfalls verfügbar; Bilder brauchen eine Verbindung."],
 "m.offline.off":["For offline use, open the page once from its web address (https).","Für die Offline-Nutzung die Seite einmal über ihre Web-Adresse (https) öffnen."],
-"m.update":["A new version is ready.","Eine neue Version ist bereit."],"m.reload":["Reload","Neu laden"],
+"m.update":["A new version is ready.","Eine neue Version ist bereit."],
+"m.ver.line":["Version {0} · published {1}","Version {0} · veröffentlicht {1}"],"m.ver.dev":["Local development version","Lokale Entwicklungsversion"],
+"m.refresh":["Load newest version","Neueste Version laden"],"m.refreshing":["Loading …","Wird geladen …"],
+"m.refresh.h":["Downloads the app files again. Favourites, logbook, settings and filters are kept.","Lädt die App-Dateien neu herunter. Favoriten, Logbuch, Einstellungen und Filter bleiben erhalten."],
+"m.refresh.off":["Only with an internet connection.","Nur mit Internetverbindung."],"m.reload":["Reload","Neu laden"],
 "m.data":["About the data","Über die Daten"],"m.topos":["Topos and guidebooks","Topos und Kletterführer"],"m.coverage":["Coverage of the research","Abdeckung der Recherche"],"m.method":["Methodology","Methodik"],
 "m.about":["About","Über"],
 "m.about.t":["Kletteratlas is a research aid for the sport-climbing crags around Finale Ligure and in the valleys west of it (Oltrefinale): {0} crags, {1} routes and {2} car parks with approach lines. It builds on the atlas «Chlädderi» by enteee. Data: Finale Outdoor Region, Outdooractive, Roc Pennavaire, theCrag, Camptocamp, Gulliver.it, Climbook, thetopo, climbingaway.fr, OpenStreetMap and others – see Methodology.","Der Kletteratlas ist eine Recherchehilfe für die Sportklettergebiete rund um Finale Ligure und in den Tälern westlich davon (Oltrefinale): {0} Gebiete, {1} Routen und {2} Parkplätze mit Zustiegslinien. Er baut auf dem Atlas «Chlädderi» von enteee auf. Daten: Finale Outdoor Region, Outdooractive, Roc Pennavaire, theCrag, Camptocamp, Gulliver.it, Climbook, thetopo, climbingaway.fr, OpenStreetMap und weitere – siehe Methodik."],
@@ -2344,7 +2346,8 @@ const CONF = ["High","Medium","Low","Unverified"];
 const GLO = GR.indexOf("3a"), GHI = GR.indexOf("9a");
 const BAND_FROM = ["5a","6a","7a","8a"].map(g=>GR.indexOf(g));          // lower bounds of the grade bands 5a–5c+, 6a–6c+, 7a–7c+, 8a+
 const bandOf = gi => { let k=0; while(k<4 && gi>=BAND_FROM[k]) k++; return k; };
-const APP_VERSION = "2026.10.07-a57ff55-wx3";
+const APP_VERSION = "dev";                 // stamped by the deploy workflow, like APP_BUILT
+const APP_BUILT = "";
 const byId = Object.create(null); S_ALL.forEach(s=>{ byId[s.id]=s; });
 
 // ---- preferences: read at once from the simple store so that language and theme are right from the first paint
@@ -3903,6 +3906,35 @@ $("favpane").addEventListener("click",async e=>{
 
 // ===================================================================== "more" page and info sheets
 let installEvt=null, updateWaiting=false, swOn=false;
+// ---- updates. «Neueste Version laden» drops only the stored app files (never favourites, logbook, settings, filters,
+// map tiles), asks the browser for the newest sw.js and reloads. A newer deploy is noticed by comparing version.json
+// with APP_VERSION when the app starts and whenever it comes back to the front (at most every 30 minutes).
+function updateReady(){
+  if(updateWaiting) return; updateWaiting = true; if(view==="more") renderMore();
+  toast(t("m.update"), null, false, 10000);
+  const row = $("toast").querySelector(".row");
+  if(row){ const b = document.createElement("button"); b.className = "btn"; b.type = "button"; b.textContent = t("m.reload");
+    b.addEventListener("click",()=>refreshApp(b)); row.appendChild(b); }
+}
+async function refreshApp(btn){
+  if(navigator.onLine===false){ toast(t("m.refresh.off"), null, false, 4000); return; }
+  if(btn){ btn.disabled = true; btn.textContent = t("m.refreshing"); }
+  try{
+    if(window.caches){ const keys = await caches.keys(); await Promise.all(keys.filter(k=>k.indexOf("finale-atlas-shell-")===0).map(k=>caches.delete(k))); }
+    if(navigator.serviceWorker){ const r = await navigator.serviceWorker.getRegistration(); if(r) await Promise.race([r.update().catch(()=>{}), new Promise(ok=>setTimeout(ok,4000))]); }
+  }catch(e){}
+  location.reload();
+}
+let verAt = 0;
+async function checkVersion(){
+  if(APP_VERSION==="dev" || !/^https?:$/.test(location.protocol) || navigator.onLine===false || updateWaiting) return;
+  if(Date.now()-verAt < 30*60*1000) return; verAt = Date.now();
+  try{ const r = await fetch("version.json", {cache:"no-store"}); if(!r.ok) return;
+    const j = await r.json(); if(j && j.version && j.version!==APP_VERSION) updateReady(); }catch(e){}
+}
+document.addEventListener("visibilitychange",()=>{ if(!document.hidden) checkVersion(); });
+window.addEventListener("online", ()=>{ if(view==="more") renderMore(); });
+window.addEventListener("offline",()=>{ if(view==="more") renderMore(); });
 const standalone = () => matchMedia("(display-mode: standalone)").matches || navigator.standalone===true;
 function renderMore(){
   const seg = (id, items, cur) => `<div class="seg" id="${id}" role="group">${items.map(x=>`<button type="button" data-v="${x[0]}" aria-pressed="${x[0]===cur}">${esc(x[1])}</button>`).join("")}</div>`;
@@ -3913,7 +3945,10 @@ function renderMore(){
   <section><h3>${esc(t("m.app"))}</h3>
     ${standalone()?`<div class="statusline ok">${ic("check")}<span>${esc(t("m.installed"))}</span></div>`
       :(installEvt?`<button class="btn primary" type="button" id="installNow">${ic("dl")}${esc(t("m.install"))}</button>`:`<p class="hint">${esc(t("m.install.ios"))}</p><p class="hint">${esc(t("m.install.and"))}</p>`)}
-    <p class="hint">${esc(t(swOn?"m.offline.on":"m.offline.off"))}</p></section>
+    <p class="hint">${esc(t(swOn?"m.offline.on":"m.offline.off"))}</p>
+    <p class="hint">${esc(APP_BUILT ? t("m.ver.line", APP_VERSION, fmtDate(APP_BUILT.slice(0,10))+" "+timeStr(new Date(APP_BUILT))) : t("m.ver.dev"))}</p>
+    <div class="row"><button class="btn" type="button" id="refreshApp" ${navigator.onLine===false?"disabled":""}>${ic("dl")}${esc(t("m.refresh"))}</button></div>
+    <p class="hint">${esc(t(navigator.onLine===false?"m.refresh.off":"m.refresh.h"))}</p></section>
   <section><h3>${esc(t("m.know"))}</h3><div class="menu">
     <button type="button" data-info="know">${ic("bulb")}${esc(t("m.know.b"))}<span class="hint">${esc(t("m.know.h"))}</span></button></div></section>
   <section><h3>${esc(t("m.data"))}</h3><div class="menu">
@@ -3930,7 +3965,7 @@ $("morepane").addEventListener("click",e=>{
   if(b && b.parentNode.id==="segTheme"){ prefs.theme=b.dataset.v; savePrefs(); applyTheme(); renderMore(); return; }
   const inf=e.target.closest("[data-info]"); if(inf){ openInfo(inf.dataset.info); return; }
   if(e.target.closest("#installNow") && installEvt){ installEvt.prompt(); installEvt=null; renderMore(); return; }
-  if(e.target.closest("#reloadNow")) location.reload();
+  if(e.target.closest("#reloadNow") || e.target.closest("#refreshApp")) refreshApp(e.target.closest("button"));
 });
 window.addEventListener("beforeinstallprompt",e=>{ e.preventDefault(); installEvt=e; if(view==="more") renderMore(); });
 window.addEventListener("appinstalled",()=>{ installEvt=null; if(view==="more") renderMore(); });
@@ -3971,6 +4006,7 @@ apply();
 if(map) fitShown(true);
 openToken();
 if(prefs.wx || F.wx!=="any") setTimeout(()=>wxLoad(), 800); else wxHintSync();
+setTimeout(checkVersion, 3000);
 if(activeFilters() && $("toast").hidden){                  // say that stored filters are in effect, with a way out
   toast(t("f.restored", activeFilters()), null, false, 7000);
   const row = $("toast").querySelector(".row");
@@ -3980,7 +4016,7 @@ if(activeFilters() && $("toast").hidden){                  // say that stored fi
 window.addEventListener("hashchange",()=>{ if(!layers.some(l=>l.name==="detail")) openToken(); });
 if("serviceWorker" in navigator && /^https?:$/.test(location.protocol)){
   const had = !!navigator.serviceWorker.controller; swOn = had;
-  const ready = ()=>{ if(updateWaiting) return; updateWaiting=true; if(view==="more") renderMore(); toast(t("m.update"),null,false,8000); };
+  const ready = updateReady;
   navigator.serviceWorker.addEventListener("controllerchange",()=>{ if(had) ready(); swOn=true; });
   navigator.serviceWorker.addEventListener("message",e=>{ if(e.data && e.data.type==="UPDATED") ready(); });
   window.addEventListener("load",()=>{ navigator.serviceWorker.register("sw.js").then(r=>{ swOn=!!(r && (r.active||r.installing||r.waiting)); if(view==="more") renderMore(); }).catch(()=>{}); });

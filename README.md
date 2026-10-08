@@ -39,9 +39,9 @@ Bevor du das Icon vom Homescreen löschst, kopiere den Code: Auf dem iPhone vers
 
 Im Repository **Add file → Upload files**, die neuen Dateien hochladen (gleiche Namen ersetzen die alten) und **Commit changes** – oder wie gewohnt mit Git auf `main` pushen. Jeder Commit auf `main` wird automatisch veröffentlicht (siehe unten).
 
-**Vorher die aktuelle Fassung holen:** Ein Upload ersetzt die ganze Datei. Wer `index.html` lokal weiterbearbeitet, lädt zuerst die aktuelle Version von `main` herunter – sonst gehen Änderungen verloren, die inzwischen im Repository dazugekommen sind. Bei Änderungen an der App die Versionsnummer `BUILD` in `sw.js` erhöhen, damit installierte Apps den alten Zwischenspeicher verwerfen.
+**Vorher die aktuelle Fassung holen:** Ein Upload ersetzt die ganze Datei. Wer `index.html` lokal weiterbearbeitet, lädt zuerst die aktuelle Version von `main` herunter – sonst gehen Änderungen verloren, die inzwischen im Repository dazugekommen sind. Die Versionsnummer setzt der Workflow bei jeder Veröffentlichung selbst (Datum + Commit, in `sw.js`, `index.html` und `version.json`); von Hand muss nichts erhöht werden.
 
-Die App holt sich die neue Version beim nächsten Start mit Netz selbst – spätestens beim zweiten Öffnen ist sie da. Favoriten, Logbuch und Einstellungen bleiben erhalten.
+Die App merkt beim Start und immer, wenn sie wieder in den Vordergrund kommt (höchstens alle 30 Minuten), dass eine neuere Version veröffentlicht ist, und bietet *Neu laden* an. Unter *Mehr → App* steht die laufende Version, und *Neueste Version laden* holt die App-Dateien jederzeit frisch – Favoriten, Logbuch, Einstellungen und Filter bleiben dabei erhalten. Die App holt sich die neue Version beim nächsten Start mit Netz selbst – spätestens beim zweiten Öffnen ist sie da. Favoriten, Logbuch und Einstellungen bleiben erhalten.
 
 Der Name unter einem Icon, das schon auf dem Homescreen liegt, ändert sich auf dem iPhone nicht von selbst. Wer dort den neuen Namen «Kletteratlas» sehen will: Code kopieren (siehe oben), Icon löschen, Seite in Safari neu zum Home-Bildschirm hinzufügen, Code einfügen.
 
