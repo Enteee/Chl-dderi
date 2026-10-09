@@ -3,11 +3,11 @@
 [![Jetzt ausprobieren](https://img.shields.io/badge/Jetzt%20ausprobieren-Kletteratlas-28157a?style=for-the-badge&logo=googlemaps&logoColor=white)](https://enteee.github.io/Chl-dderi/)
 [![Deploy to GitHub Pages](https://github.com/Enteee/Chl-dderi/actions/workflows/pages.yml/badge.svg?branch=main)](https://github.com/Enteee/Chl-dderi/actions/workflows/pages.yml)
 
-Karte und Liste der Sportklettergebiete rund um Finale Ligure und in Oltrefinale (Val Pennavaire, Val Neva, Toirano) – als App für den Homescreen, auf Deutsch und Englisch, mit Parkplätzen, Zustiegswegen, Navigation zum Parkplatz, Routenlängen, Regen- und Trocknungs-Info, Logbuch und Favoriten, die wirklich gespeichert bleiben.
+Karte und Liste der Sportklettergebiete rund um Finale Ligure, in Oltrefinale (Val Pennavaire, Val Neva, Toirano) und im Oberwallis – als App für den Homescreen, auf Deutsch und Englisch, mit Parkplätzen, Zustiegswegen, Navigation zum Parkplatz, Routenlängen, Regen- und Trocknungs-Info, Logbuch und Favoriten, die wirklich gespeichert bleiben.
 
 **Zur App: <https://enteee.github.io/Chl-dderi/>**
 
-311 Gebiete, rund 6600 Routen, 43 Parkplätze. Oben in der App wechselst du zwischen den Regionen **Finale** und **Oltrefinale**; alle Filter gelten jeweils innerhalb der gewählten Region.
+371 Gebiete, rund 7000 Routen, 68 Parkplätze. Oben in der App wechselst du zwischen den Regionen **Finale**, **Oltrefinale** und **Oberwallis**; alle Filter gelten jeweils innerhalb der gewählten Region.
 
 Hervorgegangen aus dem «Finale Single-Pitch Atlas», der ersten Version dieses Repositorys.
 
@@ -77,6 +77,7 @@ Jeder Push auf `main` startet den Workflow [`.github/workflows/pages.yml`](.gith
 - Die Quellen jedes Gebiets stehen in der App auf der Gebietsseite, die Methode unter *Mehr → Über die Daten*.
 - Zustiegswege sind berechnet (BRouter auf OpenStreetMap-Daten) und nicht vor Ort geprüft. Parkplätze mit hellem, umrandetem P sind geschätzt.
 - Oltrefinale hat keine offizielle Wandliste. Die Daten stammen dort vom lokalen Verein Roc Pennavaire und aus Community-Quellen. Wo keine Quelle die Wand verortet, steht eine weisse Raute neben dem Parkplatz; 12 Gebiete haben gar keine Position und stehen nur in der Liste.
+- Oberwallis: 60 Klettergärten und Mehrseillängen-Gebiete aus frei zugänglichen Quellen (Tourismus-Seiten, climbingaway, SAC-Tourenportal). Nur 20 Gebiete haben eine Routenliste; 16 haben keine Position und stehen nur in der Liste. Die vollständigen Topos stehen im SAC-Kletterführer «Oberwallis».
 - «Absicherung» (eng, gut, teils weit, weit; Haken neu oder alt) steht nur dort, wo eine Quelle es ausdrücklich sagt – bei 87 von 311 Gebieten. Nichts davon ist gemessen.
 - «Regensicher» steht nur dort, wo eine Quelle es ausdrücklich sagt. «Trocknet schnell» ist dagegen eine Schätzung aus Sonne und Ausrichtung; nur bei vier Gebieten gibt es dazu eine ausdrückliche Angabe einer Quelle. Nach langem Regen können Sinter und Löcher tagelang nass bleiben.
 - Regen pro Gebiet sind **Modellwerte** von [Open-Meteo](https://open-meteo.com/) (Raster ca. 1 km, stündlich, 2 Tage zurück und 2 Tage voraus) – keine Messung an der Wand; Gewitter verfehlt ein Modell oft. «Jetzt trocken» heisst: kein Regen jetzt, keiner in den nächsten 6 Stunden erwartet und weniger als 1 mm in der Zeit, die die Wand laut Schätzung zum Trocknen braucht (12 h schnell, 24 h mittel, 48 h langsam). Die Werte werden alle 30 Minuten neu geholt, nie für offline zwischengespeichert und tragen immer ihren Stand.
