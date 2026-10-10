@@ -5,9 +5,9 @@ name: Check mappacks
 
 on:
   push:
-    paths: ["pack.*.json", "mappack.schema.json", "tools/make-packs.sh", ".github/workflows/packs.yml"]
+    paths: ["maps/**", "mappack.schema.json", "tools/make-packs.sh", ".github/workflows/packs.yml"]
   pull_request:
-    paths: ["pack.*.json", "mappack.schema.json", "tools/make-packs.sh", ".github/workflows/packs.yml"]
+    paths: ["maps/**", "mappack.schema.json", "tools/make-packs.sh", ".github/workflows/packs.yml"]
   workflow_dispatch:
 
 permissions:
@@ -24,8 +24,8 @@ jobs:
       - name: Validate against the schema
         run: |
           shopt -s nullglob
-          packs=(pack.*.json)
-          if [ ${#packs[@]} -eq 0 ]; then echo "::error::no pack.*.json found"; exit 1; fi
+          packs=(maps/pack.*.json)
+          if [ ${#packs[@]} -eq 0 ]; then echo "::error::no mappack in maps/"; exit 1; fi
           printf 'packs: %s\n' "${packs[*]}"
           npx --yes ajv-cli@5 validate --spec=draft2020 --strict=false \
             -s mappack.schema.json $(printf -- '-d %s ' "${packs[@]}")

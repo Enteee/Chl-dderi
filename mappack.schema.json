@@ -14,16 +14,14 @@
       "type": "string",
       "pattern": "^[a-z0-9][a-z0-9-]{0,31}$"
     },
-    "name": { "$ref": "#/$defs/i18nText", "description": "Short label for the region switcher, e.g. «Oberwallis»." },
-    "fullName": { "$ref": "#/$defs/i18nText", "description": "Long name for headings, e.g. «Finale Ligure»." },
+    "name": { "$ref": "#/$defs/i18nText", "description": "Short label for the region switcher, two or three words at most." },
+    "fullName": { "$ref": "#/$defs/i18nText", "description": "Long name for headings, where the short label would be too terse." },
     "version": { "type": "string", "minLength": 1, "description": "Version of the pack data, e.g. a date «2026-10-10». Shown in the pack list and compared when a pack is re-installed." },
     "accessed": { "$ref": "#/$defs/date", "description": "When the sources were read." },
     "updated": { "$ref": "#/$defs/date", "description": "When the data last changed." },
     "partial": { "type": "boolean", "default": false, "description": "true for a sample or showcase pack that only holds a few crags. The app then keeps asking for a full pack." },
     "ch": { "type": "boolean", "default": false, "description": "Region in Switzerland: swisstopo base map and trails, MeteoSchweiz forecast, approach planner on swisstopo paths." },
-    "mapbg": { "enum": ["italy", "plain"], "default": "plain", "description": "Map background behind the tiles. «italy» goes with the Ligurian outline, «plain» with everything else." },
-    "rockMode": { "enum": ["verrucano", "plain", "perCrag"], "default": "perCrag", "description": "How the detail page names the rock: the Finale wording, a plain «limestone», or the rock field of each crag." },
-    "guideKey": { "enum": ["finale", "oltre", "ow", "none"], "default": "none", "description": "Which guidebook and route-list hints the detail page shows." },
+    "text": { "$ref": "#/$defs/text", "description": "The words that belong to this region: the app itself knows none of them." },
     "view": {
       "type": "object",
       "description": "Where the map opens for this region.",
@@ -91,7 +89,7 @@
     },
     "stats": {
       "type": "object",
-      "description": "Coverage numbers for the «Abdeckung» page. Free-form: the app only prints the ones it knows.",
+      "description": "Coverage numbers of the region, free-form. The app computes what it shows on the coverage page itself; these travel with the pack as its own record.",
       "additionalProperties": true
     },
     "de": {
@@ -110,6 +108,107 @@
       "properties": { "en": { "type": "string", "minLength": 1 }, "de": { "type": "string", "minLength": 1 } }
     },
     "date": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+
+    "text": {
+      "type": "object",
+      "description": "Everything the app would otherwise have to know about a region: how its rock is called, which guidebook covers it, the pages it adds under «More», its fun facts and its glossary. All of it is optional; what a pack leaves out, the app leaves out.",
+      "additionalProperties": true,
+      "properties": {
+        "rock": { "$ref": "#/$defs/i18nText", "description": "How the rock is named on every crag page of this region. Without it each crag's own «rock» field is used." },
+        "guide": { "$ref": "#/$defs/i18nText", "description": "One line under the links of a crag page, e.g. which guidebook holds the complete topos. When the pack also brings a page with the id «topos», the line links to it." },
+        "noPics": { "$ref": "#/$defs/i18nText", "description": "Shown instead of the gallery when the pack carries no pictures at all." },
+        "guideRef": { "$ref": "#/$defs/i18nText", "description": "Sentence around a crag's «guide» field (its place in a printed guidebook). {0} is replaced by that field." },
+        "licence": { "$ref": "#/$defs/i18nText", "description": "Where the data of this region comes from and under which licence. Shown under «About» next to the app's own notice." },
+        "links": {
+          "type": "object",
+          "description": "What the links of a crag are called, keyed like sector.links (plus «tc» for the area link). Without an entry the app falls back to a neutral label.",
+          "propertyNames": { "pattern": "^[a-z]{1,3}$" },
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "label": { "$ref": "#/$defs/i18nText", "description": "What the link offers, e.g. «Photo topo»." },
+              "note": { "$ref": "#/$defs/i18nText", "description": "The quiet line under it, usually the source and whether it is free." }
+            }
+          }
+        },
+        "pages": {
+          "type": "array",
+          "description": "Pages this region adds under «More → About the data».",
+          "items": { "$ref": "#/$defs/page" }
+        },
+        "facts": {
+          "type": "object",
+          "description": "Fun facts, shown on the «Worth knowing» page in the order given here.",
+          "additionalProperties": true,
+          "properties": {
+            "groups": {
+              "type": "array",
+              "description": "Headings for the facts. A fact without a group, or with one that is not listed, comes last without a heading.",
+              "items": { "type": "object", "required": ["key"], "additionalProperties": true,
+                "properties": { "key": { "type": "string" }, "en": { "type": "string" }, "de": { "type": "string" } } }
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["en", "de"],
+                "additionalProperties": true,
+                "properties": {
+                  "group": { "type": "string" },
+                  "en": { "type": "string" }, "de": { "type": "string" },
+                  "src": { "type": "string", "description": "Where the fact comes from." },
+                  "url": { "type": "string" },
+                  "go": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "string" },
+                          "description": "[crag name, route name]: the app offers a link into the atlas when it finds that route." }
+                }
+              }
+            }
+          }
+        },
+        "glossary": {
+          "type": "object",
+          "description": "Words a climber meets in the topos and on the signs of this region.",
+          "additionalProperties": true,
+          "properties": {
+            "title": { "$ref": "#/$defs/i18nText" },
+            "hint": { "$ref": "#/$defs/i18nText" },
+            "lang": { "type": "string", "description": "Language tag of the terms, e.g. «it», so that screen readers pronounce them." },
+            "items": {
+              "type": "array",
+              "items": { "type": "object", "required": ["term", "en", "de"], "additionalProperties": true,
+                "properties": { "term": { "type": "string" }, "en": { "type": "string" }, "de": { "type": "string" } } }
+            }
+          }
+        }
+      }
+    },
+
+    "page": {
+      "type": "object",
+      "description": "One page of running text. Blocks are shown in the order given.",
+      "required": ["id", "title", "blocks"],
+      "additionalProperties": true,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]{0,31}$", "description": "«topos» is linked from the crag pages; any other id only appears under «More»." },
+        "title": { "$ref": "#/$defs/i18nText" },
+        "blocks": { "type": "array", "items": { "$ref": "#/$defs/block" } }
+      }
+    },
+
+    "block": {
+      "type": "object",
+      "description": "Exactly one of h (heading), p (paragraph), hint (quiet paragraph) or ul (list). In the text, **bold** and [label](https://…) are understood; everything else is shown as written.",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "h": { "$ref": "#/$defs/i18nText" },
+        "p": { "$ref": "#/$defs/i18nText" },
+        "hint": { "$ref": "#/$defs/i18nText" },
+        "ul": { "type": "array", "items": { "$ref": "#/$defs/i18nText" } }
+      }
+    },
     "lat": { "type": "number", "minimum": -90, "maximum": 90 },
     "lon": { "type": "number", "minimum": -180, "maximum": 180 },
     "nullableString": { "type": ["string", "null"] },
@@ -306,7 +405,7 @@
         "tcOnly": { "type": ["boolean", "null"] },
         "tc": {
           "type": ["object", "null"],
-          "description": "What theCrag holds for this crag.",
+          "description": "What an outside route database holds for this crag: its name there, the number of routes and the height.",
           "additionalProperties": true,
           "properties": { "name": { "type": "string" }, "routes": { "type": ["integer", "null"] }, "height": { "$ref": "#/$defs/nullableNumber" } }
         },

@@ -24,25 +24,34 @@ my $srv = IO::Socket::INET->new(LocalAddr => "127.0.0.1", LocalPort => $port, Li
 $| = 1;
 print "serving $root on http://localhost:$port/  (Ctrl-C to stop)\n";
 
+$SIG{CHLD} = "IGNORE";                                      # no zombies from the children below
+
 while (my $c = $srv->accept) {
+  # One child per connection: a service worker likes to keep a request open while the page asks for the
+  # next file, and a server that answers one at a time would sit and wait.
+  my $pid = fork();
+  if (!defined $pid) { close $c; next }
+  if ($pid) { close $c; next }                              # parent: back to accept
+  close $srv;
   my $req = <$c>;
   while (my $l = <$c>) { last if $l =~ /^\r?\n$/ }          # skip the headers
-  unless (defined $req && $req =~ m{^(GET|HEAD)\s+(\S+)}) { close $c; next }
+  unless (defined $req && $req =~ m{^(GET|HEAD)\s+(\S+)}) { close $c; exit 0 }
   my ($method, $path) = ($1, $2);
   $path =~ s/[?#].*$//;
   $path =~ s/%([0-9A-Fa-f]{2})/chr hex $1/ge;
   $path = "/index.html" if $path eq "/";
   my $file = abs_path("$root$path") || "";
   if (!$file || $file !~ /^\Q$root\E/ || !-f $file) {        # nothing outside the folder, nothing missing
-    print $c "HTTP/1.0 404 Not Found\r\nContent-Length: 0\r\n\r\n"; close $c; next;
+    print $c "HTTP/1.0 404 Not Found\r\nContent-Length: 0\r\n\r\n"; close $c; exit 0;
   }
   my ($ext) = $file =~ /\.([A-Za-z0-9]+)$/;
   my $type = $TYPE{lc($ext // "")} || "application/octet-stream";
-  open my $fh, "<:raw", $file or do { print $c "HTTP/1.0 500 Error\r\n\r\n"; close $c; next };
+  open my $fh, "<:raw", $file or do { print $c "HTTP/1.0 500 Error\r\n\r\n"; close $c; exit 0 };
   my $body = do { local $/; <$fh> };
   close $fh;
   print $c "HTTP/1.0 200 OK\r\nContent-Type: $type\r\nContent-Length: " . length($body)
          . "\r\nCache-Control: no-store\r\nService-Worker-Allowed: /\r\n\r\n";
   print $c $body unless $method eq "HEAD";
   close $c;
+  exit 0;                                                   # the child is done
 }

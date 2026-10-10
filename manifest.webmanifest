@@ -1,7 +1,7 @@
 {
   "name": "Kletteratlas",
   "short_name": "Kletteratlas",
-  "description": "Karte und Liste der Sportklettergebiete rund um Finale Ligure und in Oltrefinale – mit Parkplätzen, Zustiegen, Navigation, Regen-Info, Logbuch und Favoriten.",
+  "description": "Karte und Liste von Sportklettergebieten – mit Parkplätzen, Zustiegen, Navigation, Wetter, Regen-Info, Logbuch und Favoriten. Die Gebiete kommen als Mappack dazu.",
   "lang": "de",
   "id": "./",
   "start_url": "./",
