@@ -33,6 +33,11 @@ let
     "^manifest\\.webmanifest$"
     "^index\\.html$"
     "^maps/"
+    # The German half of the interface texts, and the German for strings that arrive with the data.
+    "^src/i18n/de\\.json$"
+    "^src/i18n/dataTranslations\\.ts$"
+    # Grade scales: "sax" (Saxon), "fin" (Finnish), "aus" (Australian).
+    "^src/data/conv\\.json$"
   ];
 in
 {

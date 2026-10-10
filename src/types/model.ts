@@ -155,7 +155,16 @@ export interface Crag {
     /** "unknown" with no orientation, "mixed" with four or more, else null. */
     readonly oriKey: "unknown" | "mixed" | null;
     readonly lenMax: number | null;
+    /** The crag has a picture that is a topo or a sketch. */
     readonly topoPic: boolean;
+    /** The crag has an official page, a photo page or a pdf. */
+    readonly topoLink: boolean;
+    /** The wall itself is not located: the marker stands by the car park. */
+    readonly anchor: boolean;
+    readonly boltSp: Bolting["sp"] | null;
+    readonly boltC: Bolting["c"] | null;
+    /** Community stars per grade band, `[sum, rated routes]` for each of the five. */
+    readonly bandStars: readonly (readonly [sum: number, rated: number])[] | null;
 }
 
 /** One mounted region. The pack's own words travel with it; the app knows none of them. */
