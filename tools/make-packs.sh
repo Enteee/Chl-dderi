@@ -157,7 +157,7 @@ showcase_from_pack() {          # showcase_from_pack PACK ids outfile
     | del(.outline, .stats)' "$1" | jq -c "$AREA_N" > "$3"
 }
 
-size() { printf '%6.1f KB' "$(echo "scale=1; $(wc -c < "$1") / 1024" | bc)"; }
+size() { awk -v n="$(wc -c < "$1")" 'BEGIN{ printf "%6.1f KB", n/1024 }'; }
 show() { printf '%-20s %4d crags  %5d routes  %3d parks  %3d areas  %s\n' "$(basename "$1")" \
   "$(jq '.counts.crags' "$1")" "$(jq '.counts.routes' "$1")" "$(jq '.counts.parks' "$1")" \
   "$(jq '.counts.areas' "$1")" "$(size "$1")"; }

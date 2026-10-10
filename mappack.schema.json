@@ -28,7 +28,7 @@
       "type": "object",
       "description": "Where the map opens for this region.",
       "required": ["center"],
-      "additionalProperties": false,
+      "additionalProperties": true,
       "properties": {
         "center": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "number" }, "description": "[lat, lon]" },
         "zoom": { "type": "number", "minimum": 1, "maximum": 18 }
@@ -76,7 +76,7 @@
       "items": {
         "type": "object",
         "required": ["name", "lat", "lon"],
-        "additionalProperties": false,
+        "additionalProperties": true,
         "properties": { "name": { "type": "string" }, "lat": { "$ref": "#/$defs/lat" }, "lon": { "$ref": "#/$defs/lon" } }
       }
     },
@@ -122,7 +122,7 @@
       "properties": {
         "name": { "type": "string", "minLength": 1 },
         "n": { "type": "integer", "minimum": 0, "description": "Number of crags in this area group." },
-        "tcUrl": { "type": "string", "format": "uri" },
+        "tcUrl": { "type": "string" },
         "reg": { "type": "string", "description": "Ignored on load: the app stamps the pack id." }
       }
     },
@@ -136,7 +136,7 @@
         "nameDe": { "$ref": "#/$defs/nullableString" },
         "lat": { "$ref": "#/$defs/lat" },
         "lon": { "$ref": "#/$defs/lon" },
-        "est": { "type": "boolean", "description": "true: the position is estimated, not taken from a source." },
+        "est": { "type": ["boolean", "null"], "description": "true: the position is estimated, not taken from a source." },
         "note": { "$ref": "#/$defs/nullableString" },
         "noteDe": { "$ref": "#/$defs/nullableString" },
         "n": { "type": ["integer", "null"], "minimum": 0, "description": "Number of crags served by this car park." }
@@ -150,15 +150,15 @@
       "prefixItems": [
         { "type": "string" },
         { "type": ["string", "null"] },
-        { "type": ["integer", "null"], "minimum": 1 },
-        { "type": ["integer", "null"], "minimum": 0 }
+        { "type": ["integer", "null"], "minimum": 0, "description": "Pitches. 0 (or null) where no source says how many; the app then says nothing about pitches." },
+        { "type": ["integer", "null"], "minimum": 0, "description": "Place in the app's grade list, or null for a grade it does not know." }
       ]
     },
 
     "coord": {
       "type": "object",
       "required": ["lat", "lon"],
-      "additionalProperties": false,
+      "additionalProperties": true,
       "properties": {
         "lat": { "$ref": "#/$defs/lat" },
         "lon": { "$ref": "#/$defs/lon" },
