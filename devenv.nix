@@ -21,6 +21,8 @@ let
     "^index\\.html$"
     "^sw\\.js$"
     "^maps/"
+    "^assets/"
+    "^pnpm-lock\\.yaml$"
   ];
 
   # This project's prose and data are German, Italian and Romansh place names. `typos` only has an
@@ -83,7 +85,13 @@ in
     enable = true;
     package = pkgs.nodejs;
     corepack.enable = true;
+    # Install on shell entry, so that the tools the git hooks call (prettier, eslint, tsc, vitest)
+    # are in node_modules/.bin. pnpm.enable puts the nixpkgs pnpm on PATH too; every invocation
+    # happens in this directory, where the "packageManager" field decides the version.
+    pnpm.enable = true;
+    pnpm.install.enable = true;
   };
+  languages.typescript.enable = true;
 
   git-hooks.package = pkgs.prek;
 
@@ -152,6 +160,9 @@ in
 
     yamllint = {
       enable = true;
+      excludes = [
+        "^pnpm-lock\\.yaml$"
+      ];
       settings = {
         strict = true;
         # `on:` in a GitHub Actions workflow is a YAML 1.1 truthy value, so it has to be allowed.
@@ -176,6 +187,49 @@ in
       enable = true;
       excludes = natural-language;
       exclude_types = [ "svg" ];
+    };
+
+    # ---- the TypeScript app
+    # These call the tools from node_modules/.bin, which languages.javascript.pnpm.install puts
+    # there on shell entry. All of them look at the whole project rather than at the files prek
+    # hands over: tsc and vitest have to, and prettier and eslint are configured project-wide.
+    # Prettier owns the application source and its own two config files, and nothing else. Pointing
+    # it at the whole project reformats mappack.schema.json -- which is published, and whose $id
+    # other people's packs refer to -- along with manifest.webmanifest and devenv.yaml. Those are
+    # hand-maintained and have their own checkers.
+    prettier = {
+      enable = true;
+      entry = "${config.devenv.root}/node_modules/.bin/prettier --write src eslint.config.mjs vite.config.ts";
+      files = "(^src/|^eslint\\.config\\.mjs$|^vite\\.config\\.ts$|^\\.prettier)";
+      pass_filenames = false;
+    };
+
+    eslint = {
+      enable = true;
+      entry = "${config.devenv.root}/node_modules/.bin/eslint --max-warnings 0 --fix .";
+      files = "\\.(tsx?|mjs)$";
+      pass_filenames = false;
+    };
+
+    tsc = {
+      enable = true;
+      entry = "${config.devenv.root}/node_modules/.bin/tsc";
+      files = "(^src/|^package\\.json$|^tsconfig.*\\.json$|^mappack\\.schema\\.json$)";
+      pass_filenames = false;
+    };
+
+    tsc-node = {
+      enable = true;
+      entry = "${config.devenv.root}/node_modules/.bin/tsc --project tsconfig.node.json";
+      files = "(^vite\\.config\\.ts$|^tsconfig.*\\.json$|^package\\.json$)";
+      pass_filenames = false;
+    };
+
+    vitest = {
+      enable = true;
+      entry = "${config.devenv.root}/node_modules/.bin/vitest run";
+      files = "(^src/|^maps/|^mappack\\.schema\\.json$|^package\\.json$|^vite\\.config\\.ts$)";
+      pass_filenames = false;
     };
 
     # ---- the mappacks

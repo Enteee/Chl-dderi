@@ -1,0 +1,20 @@
+/node_modules
+/.pnpm-store
+/.devenv
+/.direnv
+/dist
+/coverage
+pnpm-lock.yaml
+
+# data, not source
+/maps
+
+# generated build output at the repository root
+/index.html
+/sw.js
+/assets
+
+# Markdown and the workflows have their own checkers (markdownlint, yamllint, actionlint), and the
+# German prose in README.md is written one paragraph per line on purpose.
+*.md
+/.github
