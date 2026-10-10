@@ -1,0 +1,268 @@
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
+
+let
+  # fix locale
+  use-locale = "C.UTF-8";
+  custom-locales = pkgs.glibcLocalesUtf8.override {
+    allLocales = false;
+    locales = [ "${use-locale}/UTF-8" ];
+  };
+
+  # Build output and vendored code rather than source: index.html carries minified Leaflet and
+  # Leaflet.markercluster inline, and the mappacks in maps/ are minified single-line JSON. The hooks
+  # that rewrite whitespace or count columns would either mangle them or report noise, so they skip
+  # these paths. index.html and sw.js become generated files once the TypeScript build lands.
+  generated = [
+    "^index\\.html$"
+    "^sw\\.js$"
+    "^maps/"
+  ];
+
+  # This project's prose and data are German, Italian and Romansh place names. `typos` only has an
+  # English dictionary, so on these files it reports ordinary German words as misspellings. It
+  # stays enabled for everything we write ourselves.
+  natural-language = [
+    "^README\\.md$"
+    "^manifest\\.webmanifest$"
+    "^index\\.html$"
+    "^maps/"
+  ];
+in
+{
+  env = {
+    # set do not track (https://consoledonottrack.com/)
+    DO_NOT_TRACK = 1;
+
+    # Prevent corepack from downloading the "latest" pnpm; the version comes from the
+    # "packageManager" field in package.json once that exists.
+    COREPACK_DEFAULT_TO_LATEST = 0;
+
+    # fix locale
+    LOCALE_ARCHIVE = "${custom-locales}/lib/locale/locale-archive";
+    LC_ALL = use-locale;
+    LC_CTYPE = use-locale;
+    LC_COLLATE = use-locale;
+    LC_MESSAGES = use-locale;
+    LC_NUMERIC = use-locale;
+    LC_TIME = use-locale;
+  };
+
+  packages = with pkgs; [
+    git
+
+    # tools/make-packs.sh needs only these two
+    jq
+    perl
+
+    # hook runner and the tools the hooks that are not wired through git-hooks.nix call directly
+    prek
+    check-jsonschema
+    renovate # for renovate-config-validator
+
+    # everyday shell, and `gh` for the pull requests and workflow runs of this repository
+    gh
+    curl
+    yq-go
+    dos2unix
+  ];
+
+  # https://devenv.sh/languages/
+  languages.nix.enable = true;
+
+  # Node is here for the TypeScript app. pnpm.install.enable is deliberately off until a
+  # package.json and a pnpm-lock.yaml exist -- devenv would fail on shell entry without them.
+  languages.javascript = {
+    enable = true;
+    package = pkgs.nodejs;
+    corepack.enable = true;
+  };
+
+  git-hooks.package = pkgs.prek;
+
+  tasks."devenv:git-hooks:run" = {
+    # Print the output of the git hooks that "devenv test" runs, otherwise a failing hook only
+    # reports that it failed.
+    showOutput = true;
+  };
+
+  # https://devenv.sh/git-hooks/
+  git-hooks.hooks = {
+    # ---- whitespace and file shape
+    dos2unix = {
+      enable = true;
+      entry = "dos2unix";
+      args = [ "--info=c" ];
+      excludes = generated;
+    };
+
+    trim-trailing-whitespace = {
+      enable = true;
+      excludes = generated;
+    };
+
+    end-of-file-fixer = {
+      enable = true;
+      excludes = generated;
+    };
+
+    check-executables-have-shebangs.enable = true;
+    check-shebang-scripts-are-executable.enable = true;
+    check-symlinks.enable = true;
+
+    # The largest mappack is ~650 KB. The limit is here to catch a stray second copy of one, or a
+    # build artefact landing in git by accident.
+    check-added-large-files = {
+      enable = true;
+      args = [ "--maxkb=1024" ];
+    };
+
+    editorconfig-checker = {
+      enable = true;
+      excludes = generated;
+    };
+
+    # ---- per language
+    nixfmt.enable = true;
+
+    shellcheck = {
+      enable = true;
+      args = [
+        "-x"
+        "-o"
+        "all"
+      ];
+    };
+
+    markdownlint = {
+      enable = true;
+      settings.configuration = {
+        # The German prose in README.md is written one paragraph per line, some of them 500
+        # characters long. Reflowing it would make the diffs useless.
+        MD013 = false;
+      };
+    };
+
+    yamllint = {
+      enable = true;
+      settings = {
+        strict = true;
+        # `on:` in a GitHub Actions workflow is a YAML 1.1 truthy value, so it has to be allowed.
+        configData = "{ extends: default, rules: { document-start: disable, line-length: {max: 165}, truthy: {allowed-values: ['true', 'false', 'on']} } }";
+      };
+    };
+
+    check-json.enable = true;
+    check-toml.enable = true;
+    actionlint.enable = true;
+
+    renovate-config-validator = {
+      enable = true;
+      entry = "renovate-config-validator";
+      files = "^renovate\\.json$";
+    };
+
+    # ---- secrets and spelling
+    ripsecrets.enable = true;
+
+    typos = {
+      enable = true;
+      excludes = natural-language;
+      exclude_types = [ "svg" ];
+    };
+
+    # ---- the mappacks
+    # Two independent checks, the same two that CI used to run: the schema says what a mappack may
+    # look like, make-packs.sh says whether the packs agree with each other and with their counts.
+    validate-mappacks = {
+      enable = true;
+      entry = "${config.devenv.root}/tools/validate-packs.sh";
+      files = "^(maps/.*\\.json|mappack\\.schema\\.json|tools/validate-packs\\.sh)$";
+      pass_filenames = false;
+    };
+
+    check-mappacks = {
+      enable = true;
+      entry = "${config.devenv.root}/tools/make-packs.sh";
+      args = [ "--check" ];
+      files = "^(maps/.*\\.json|mappack\\.schema\\.json|tools/make-packs\\.sh)$";
+      pass_filenames = false;
+    };
+  };
+
+  enterShell = ''
+    # is interactive shell?
+    if tty -s; then
+      devenv-help
+    fi
+  '';
+
+  scripts.devenv-help = {
+    description = "Print this help";
+    exec = ''
+      set -euo pipefail
+      cd '${config.devenv.root}'
+
+      echo
+      echo "Helper scripts provided by the devenv:"
+      echo
+      sed -e 's| |XXXXXX|g' -e 's|=| |' <<EOF | column -t | sed -e 's|^|- |' -e 's|XXXXXX| |g'
+      ${lib.generators.toKeyValue { } (lib.mapAttrs (_name: value: value.description) config.scripts)}
+      EOF
+      echo
+    '';
+  };
+
+  scripts.lint = {
+    description = "Run all git hooks over the whole repository";
+    exec = ''
+      (
+        set -euo pipefail
+        cd '${config.devenv.root}'
+
+        prek run "''${@:---all-files}"
+      )
+    '';
+  };
+
+  scripts.serve = {
+    description = "Serve the app over http so that the service worker works";
+    exec = ''
+      (
+        set -euo pipefail
+        cd '${config.devenv.root}'
+
+        ./tools/serve.pl "''${@}"
+      )
+    '';
+  };
+
+  scripts.make-packs = {
+    description = "Check the mappacks and put the showcase into the app";
+    exec = ''
+      (
+        set -euo pipefail
+        cd '${config.devenv.root}'
+
+        ./tools/make-packs.sh "''${@}"
+      )
+    '';
+  };
+
+  scripts.check-packs = {
+    description = "Check the mappacks against the schema and against each other";
+    exec = ''
+      (
+        set -euo pipefail
+        cd '${config.devenv.root}'
+
+        ./tools/validate-packs.sh
+        ./tools/make-packs.sh --check
+      )
+    '';
+  };
+}

@@ -19,14 +19,14 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "$ROOT"
+cd "${ROOT}"
 MAPS="maps"
-SHOW="$MAPS/pack.showcase.json"
+SHOW="${MAPS}/pack.showcase.json"
 
 CHECK=0
 FROM=""
 IDS=""
-while [ $# -gt 0 ]; do
+while [[ $# -gt 0 ]]; do
   case "$1" in
     --check) CHECK=1 ;;
     --showcase-from) FROM="$2"; shift ;;
@@ -36,27 +36,39 @@ while [ $# -gt 0 ]; do
   esac
   shift
 done
-[ -n "$FROM" ] && [ -z "$IDS" ] && { echo "error: --showcase-from also needs --ids" >&2; exit 2; }
+[[ -n "${FROM}" ]] && [[ -z "${IDS}" ]] && { echo "error: --showcase-from also needs --ids" >&2; exit 2; }
 
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 fail=0
-say() { printf '  %-6s %s\n' "$1" "$2"; [ "$1" = "FAIL" ] && fail=1 || true; }
-lines() { while IFS=$'\t' read -r a b; do say "$a" "$b"; done; }      # «ok|text» from jq, one line each
-size() { awk -v n="$(wc -c < "$1")" 'BEGIN{ printf "%6.1f KB", n/1024 }'; }
-show() { printf '%-26s %4d crags  %5d routes  %3d parks  %3d areas  %s\n' "$1" \
-  "$(jq '.counts.crags // (.sectors|length)' "$1")" "$(jq '.counts.routes // ([.sectors[].routes|length]|add)' "$1")" \
-  "$(jq '.parks|length' "$1")" "$(jq '.areas|length' "$1")" "$(size "$1")"; }
+say() { printf '  %-6s %s\n' "$1" "$2"; [[ "$1" = "FAIL" ]] && fail=1 || true; }
+lines() { while IFS=$'\t' read -r a b; do say "${a}" "${b}"; done; }      # «ok|text» from jq, one line each
+size() {                       # size FILE -> the file size as «  12.3 KB»
+  local bytes
+  bytes="$(wc -c < "$1")"
+  awk -v n="${bytes}" 'BEGIN{ printf "%6.1f KB", n/1024 }'
+}
+show() {                       # show FILE -> one summary line for the pack
+  local crags routes parks areas bytes
+  crags="$(jq '.counts.crags // (.sectors|length)' "$1")"
+  routes="$(jq '.counts.routes // ([.sectors[].routes|length]|add)' "$1")"
+  parks="$(jq '.parks|length' "$1")"
+  areas="$(jq '.areas|length' "$1")"
+  bytes="$(size "$1")"
+  printf '%-26s %4d crags  %5d routes  %3d parks  %3d areas  %s\n' \
+    "$1" "${crags}" "${routes}" "${parks}" "${areas}" "${bytes}"
+}
 
-# the number of crags per area group, once the crags of the pack are known
+# the number of crags per area group, once the crags of the pack are known.
+# shellcheck disable=SC2016 # $p and $a are jq variables, they must not expand in the shell
 AREA_N='. as $p | .areas = [ $p.areas[] as $a | $a | .n = ([ $p.sectors[] | select(.area == $a.name) ] | length) ]'
 
 # ---------------------------------------------------------------- cut a showcase out of a pack
-if [ -n "$FROM" ]; then
-  [ -f "$FROM" ] || { echo "error: $FROM does not exist" >&2; exit 1; }
-  ids="$(jq -c -n --arg s "$IDS" '$s | split(",") | map(sub("^\\s+";"") | sub("\\s+$";""))')"
-  out="$SHOW"; [ "$CHECK" = 1 ] && out="$TMP/pack.showcase.json"
-  jq -c --argjson ids "$ids" '
+if [[ -n "${FROM}" ]]; then
+  [[ -f "${FROM}" ]] || { echo "error: ${FROM} does not exist" >&2; exit 1; }
+  ids="$(jq -c -n --arg s "${IDS}" '$s | split(",") | map(sub("^\\s+";"") | sub("\\s+$";""))')"
+  out="${SHOW}"; [[ "${CHECK}" = 1 ]] && out="${TMP}/pack.showcase.json"
+  jq -c --argjson ids "${ids}" '
     . as $p
     | ($p.sectors | map(select(.id as $i | $ids | index($i)))) as $sec
     | ($sec | map([.pk, .pkOff, ((.ap // [])[] | .pk)] | map(select(. != null))) | flatten | unique) as $pkeys
@@ -76,25 +88,25 @@ if [ -n "$FROM" ]; then
     | .bbox = [ ($pts | map(.lon) | min), ($pts | map(.lat) | min), ($pts | map(.lon) | max), ($pts | map(.lat) | max) ]
     # a showcase shows crags, not the research of a region: pages, facts and glossary stay behind
     | (if .text then .text |= del(.pages, .facts, .glossary) else . end)
-    | del(.outline, .stats)' "$FROM" | jq -c "$AREA_N" > "$out"
-  SHOWSRC="$FROM"
-  echo "showcase cut from $FROM"
+    | del(.outline, .stats)' "${FROM}" | jq -c "${AREA_N}" > "${out}"
+  SHOWSRC="${FROM}"
+  echo "showcase cut from ${FROM}"
 fi
 
 # ---------------------------------------------------------------- what is there
 shopt -s nullglob
 PACKS=()
-for p in "$MAPS"/pack.*.json; do [ "$p" = "$SHOW" ] && continue; PACKS+=("$p"); show "$p"; done
-[ -f "$SHOW" ] && show "$SHOW"
-[ ${#PACKS[@]} -gt 0 ] || [ -f "$SHOW" ] || { echo "error: no mappack in $MAPS/" >&2; exit 1; }
+for p in "${MAPS}"/pack.*.json; do [[ "${p}" = "${SHOW}" ]] && continue; PACKS+=("${p}"); show "${p}"; done
+[[ -f "${SHOW}" ]] && show "${SHOW}"
+[[ ${#PACKS[@]} -gt 0 ]] || [[ -f "${SHOW}" ]] || { echo "error: no mappack in ${MAPS}/" >&2; exit 1; }
 
 echo "checks"
 ALL=("${PACKS[@]}")
-[ -f "$SHOW" ] && ALL+=("$SHOW")
+[[ -f "${SHOW}" ]] && ALL+=("${SHOW}")
 
 # every pack on its own: the format, and the references that a JSON Schema cannot follow
 for p in "${ALL[@]}"; do
-  jq -r --arg f "$(basename "$p")" '
+  jq -r --arg f "$(basename "${p}")" '
     (.picSrc // [] | length) as $npic
     | [ .areas[].name ] as $areas
     | [ .parks | keys[] ] as $parks
@@ -115,12 +127,12 @@ for p in "${ALL[@]}"; do
          then empty else "counts.routes says \(.counts.routes), there are \(.sectors | map(.routes | length) | add // 0)" end),
         (if (.counts.parks // (.parks | length)) == (.parks | length) then empty else "counts.parks does not match" end)
       ] | unique
-    | if length == 0 then "ok|\($f): format and references in order" else "FAIL|\($f): \(join("; "))" end' "$p" \
+    | if length == 0 then "ok|\($f): format and references in order" else "FAIL|\($f): \(join("; "))" end' "${p}" \
   | tr '|' '\t' | lines
 done
 
 # the packs among themselves: a crag belongs to one region, a region id appears once
-if [ ${#PACKS[@]} -gt 0 ]; then
+if [[ ${#PACKS[@]} -gt 0 ]]; then
   jq -s -r '
     [ ([.[].id] | if (unique | length) == length then empty else "two packs share an id" end),
       ([.[].sectors[].id] | if (unique | length) == length then empty
@@ -130,31 +142,34 @@ if [ ${#PACKS[@]} -gt 0 ]; then
 fi
 
 # the showcase must be a part of the pack it was cut from, so that loading that pack simply replaces it
-if [ -f "$SHOW" ]; then
+if [[ -f "${SHOW}" ]]; then
   src="${SHOWSRC:-}"
-  if [ -z "$src" ]; then
-    want="$(jq -r '.id' "$SHOW")"
-    for p in "${PACKS[@]}"; do [ "$(jq -r '.id' "$p")" = "$want" ] && src="$p"; done
+  if [[ -z "${src}" ]]; then
+    want="$(jq -r '.id' "${SHOW}")"
+    for p in "${PACKS[@]}"; do
+      pack_id="$(jq -r '.id' "${p}")"
+      if [[ "${pack_id}" == "${want}" ]]; then src="${p}"; fi
+    done
   fi
-  if [ -n "$src" ]; then
+  if [[ -n "${src}" ]]; then
     jq -s -r '.[0] as $show | .[1] as $full
       | ($show.sectors | map(.id)) as $ids
       | if $show.id == $full.id and $show.partial == true
            and (($full.sectors | map(select(.id as $i | $ids | index($i))) | sort_by(.id)) == ($show.sectors | sort_by(.id)))
         then "ok|showcase: \($ids | length) crags, same id and same data as in \($full.id)"
         else "FAIL|the showcase does not match the pack with the id «\($full.id)»" end' \
-      "$SHOW" "$src" | tr '|' '\t' | lines
+      "${SHOW}" "${src}" | tr '|' '\t' | lines
   else
     say ok "showcase: the pack it was cut from is not here, nothing to compare"
   fi
 fi
 
-[ "$fail" = 0 ] || { echo "checks failed" >&2; exit 1; }
+[[ "${fail}" = 0 ]] || { echo "checks failed" >&2; exit 1; }
 
 # ---------------------------------------------------------------- the showcase goes into the app
-if [ "$CHECK" = 0 ] && [ -f "$SHOW" ]; then
+if [[ "${CHECK}" = 0 ]] && [[ -f "${SHOW}" ]]; then
   if grep -q 'SHOWCASE:BEGIN' index.html; then
-    perl -0pi -e 'BEGIN { local $/; open F, "<", "'"$SHOW"'" or die; $p = <F>; chomp $p }
+    perl -0pi -e 'BEGIN { local $/; open F, "<", "'"${SHOW}"'" or die; $p = <F>; chomp $p }
       s{/\* SHOWCASE:BEGIN \*/.*?/\* SHOWCASE:END \*/}{/* SHOWCASE:BEGIN */const SHOWCASE = $p;/* SHOWCASE:END */}s' index.html
     echo "showcase spliced into index.html"
   else

@@ -1,0 +1,38 @@
+name: Checks
+
+# Everything that guards this repository runs through devenv, so that a check cannot pass locally
+# and fail here (or the other way round). `lint` runs every git hook from devenv.nix over every
+# file: the whitespace and file-shape hooks, shellcheck, actionlint, yamllint, markdownlint, the
+# secret and spelling scans, and the two mappack checks (schema, then internal consistency).
+#
+# This is `prek run --all-files`, not `devenv test`. Both run the same hooks, but `devenv test`
+# only reports that a task failed -- it swallows the output of the hook that failed, which would
+# leave a red job here with nothing to go on.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+      # Pull-only: the public devenv cache saves building the tool closure from source.
+      - uses: cachix/cachix-action@v16
+        with:
+          name: devenv
+      - name: Install devenv
+        run: nix profile install nixpkgs#devenv
+      - name: Run every check
+        run: devenv shell -- lint
