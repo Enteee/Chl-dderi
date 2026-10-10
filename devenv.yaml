@@ -12,3 +12,4 @@ inputs:
     url: github:cachix/devenv-nixpkgs/rolling
   pre-commit-hooks:
     follows: git-hooks
+allowUnfree: true

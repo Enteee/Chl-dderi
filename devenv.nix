@@ -55,6 +55,9 @@ in
   packages = with pkgs; [
     git
 
+    # Ai
+    claude-code
+
     # tools/make-packs.sh needs only these two
     jq
     perl
