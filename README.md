@@ -7,7 +7,7 @@ Karte und Liste der Sportklettergebiete rund um Finale Ligure, in Oltrefinale (V
 
 **Zur App: <https://enteee.github.io/Chl-dderi/>**
 
-400 Gebiete, rund 7500 Routen, 69 Parkplätze. Oben in der App wechselst du zwischen den Regionen **Finale**, **Oltrefinale** und **Oberwallis**; alle Filter gelten jeweils innerhalb der gewählten Region.
+405 Gebiete, rund 8000 Routen, 69 Parkplätze. Oben in der App wechselst du zwischen den Regionen **Finale**, **Oltrefinale** und **Oberwallis**; alle Filter gelten jeweils innerhalb der gewählten Region.
 
 Hervorgegangen aus dem «Finale Single-Pitch Atlas», der ersten Version dieses Repositorys.
 
@@ -77,7 +77,7 @@ Jeder Push auf `main` startet den Workflow [`.github/workflows/pages.yml`](.gith
 - Die Quellen jedes Gebiets stehen in der App auf der Gebietsseite, die Methode unter *Mehr → Über die Daten*.
 - Zustiegswege sind berechnet (BRouter auf OpenStreetMap-Daten) und nicht vor Ort geprüft. Parkplätze mit hellem, umrandetem P sind geschätzt.
 - Oltrefinale hat keine offizielle Wandliste. Die Daten stammen dort vom lokalen Verein Roc Pennavaire und aus Community-Quellen. Wo keine Quelle die Wand verortet, steht eine weisse Raute neben dem Parkplatz; 12 Gebiete haben gar keine Position und stehen nur in der Liste.
-- Oberwallis: 89 Klettergärten und Mehrseillängen-Gebiete aus frei zugänglichen Quellen (Tourismus-Seiten, climbingaway, SAC-Tourenportal, theCrag). 48 Gebiete haben eine Routenliste; 19 haben keine Position und stehen nur in der Liste. Im Saastal und Mattertal stammen die Listen von theCrag (Reihenfolge an der Wand); wo theCrag gesperrt war (Dossen, Eschelbalmen), von Vertical-Life – dort ist die Reihenfolge unbekannt. Die vollständigen Topos stehen im SAC-Kletterführer «Oberwallis»; die App nennt dazu Nummer und Seite.
+- Oberwallis: 94 Klettergärten und Mehrseillängen-Gebiete aus frei zugänglichen Quellen (Tourismus-Seiten, climbingaway, SAC-Tourenportal, theCrag, Vertical-Life). 63 Gebiete haben eine Routenliste (rund 1400 Routen); 18 haben keine Position und stehen nur in der Liste. Die Listen stammen wo möglich von theCrag (Reihenfolge an der Wand); wo theCrag gesperrt war (z. B. Herr der Ringe, Simplonpass, Il Cippo, Zeneggen, Dossen), von Vertical-Life – dort ist die Reihenfolge unbekannt, und Schreibvarianten derselben Route sind zusammengeführt. Bei einigen Gebieten kennt Vertical-Life nur einen Teil der Routen; die Routenzahl von theCrag steht dann dabei. Die vollständigen Topos stehen im SAC-Kletterführer «Oberwallis»; die App nennt dazu Nummer und Seite.
 - «Absicherung» (eng, gut, teils weit, weit; Haken neu oder alt) steht nur dort, wo eine Quelle es ausdrücklich sagt – bei 87 von 311 Gebieten. Nichts davon ist gemessen.
 - «Regensicher» steht nur dort, wo eine Quelle es ausdrücklich sagt. «Trocknet schnell» ist dagegen eine Schätzung aus Sonne und Ausrichtung; nur bei vier Gebieten gibt es dazu eine ausdrückliche Angabe einer Quelle. Nach langem Regen können Sinter und Löcher tagelang nass bleiben.
 - Regen pro Gebiet sind **Modellwerte** von [Open-Meteo](https://open-meteo.com/) (Raster ca. 1 km, stündlich, 2 Tage zurück und 2 Tage voraus) – keine Messung an der Wand; Gewitter verfehlt ein Modell oft. «Jetzt trocken» heisst: kein Regen jetzt, keiner in den nächsten 6 Stunden erwartet und weniger als 1 mm in der Zeit, die die Wand laut Schätzung zum Trocknen braucht (12 h schnell, 24 h mittel, 48 h langsam). Die Werte werden alle 30 Minuten neu geholt, nie für offline zwischengespeichert und tragen immer ihren Stand.
