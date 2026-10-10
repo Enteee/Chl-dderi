@@ -11,8 +11,9 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import unusedImports from "eslint-plugin-unused-imports";
 
 export default defineConfig([
-    // Build output, vendored data and generated code.
-    globalIgnores(["dist/", "assets/", "index.html", "sw.js", "maps/", ".devenv/"]),
+    // Build output, vendored data and generated code. `sw.js` and `workbox-*.js` at the root are
+    // what vite-plugin-pwa emits; they are committed because the deploy publishes them.
+    globalIgnores(["dist/", "assets/", "index.html", "sw.js", "workbox-*.js", "maps/", ".devenv/"]),
 
     js.configs.recommended,
     ...tseslint.configs.recommended,

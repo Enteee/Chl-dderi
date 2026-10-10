@@ -27,24 +27,36 @@ jobs:
       - uses: actions/configure-pages@v5
       - name: Prepare site
         run: |
-          # The app is a flat folder: publish every web file at the repository root
-          # (index.html, sw.js, manifest, icons, favicons, the mappacks and their schema), nothing else.
+          # Named one by one rather than globbed. The repository root used to hold nothing but the
+          # app and its data, so `cp ./*.json` was safe; now package.json, tsconfig.json and
+          # renovate.json live there too, and none of them belongs on a public site.
+          #
+          # maps/ is deliberately not published either: a mappack is not part of the app. Whoever
+          # wants to offer one puts it where they like and enters its address in the app.
           mkdir _site
           shopt -s nullglob
-          cp ./*.html ./*.js ./*.json ./*.webmanifest ./*.png ./*.svg ./*.ico _site/
+          # The app: built by `build` and committed, so these are the reviewed bytes.
+          cp index.html sw.js _site/
+          cp ./workbox-*.js _site/
+          cp -R assets _site/assets
+          # What the app asks for by name at runtime.
+          cp manifest.webmanifest mappack.schema.json _site/
+          cp ./*.png ./*.svg ./*.ico _site/
           touch _site/.nojekyll
-      - name: Stamp version
+          # Fail loudly rather than deploying half an app.
+          test -s _site/index.html
+          test -s _site/sw.js
+          test -d _site/assets
+      - name: Write version.json
         run: |
-          # One version per deploy (date + commit). It goes into the service worker (a changed sw.js makes installed apps
-          # fetch everything anew), into the page (shown under «Mehr») and into version.json (checked by the running app).
+          # One version per deploy (date + commit). It is not stamped into the bundle: that would
+          # make the build non-reproducible, and the committed output could never be checked
+          # against a fresh build. The app reads this file instead -- the service worker caches it
+          # with the rest of the shell, and a `no-store` fetch of the same address is how the app
+          # notices that a newer version is out.
           V="$(date -u +%Y.%m.%d)-${GITHUB_SHA::7}"
           T="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          stamp(){ grep -qE "$2" "$1" || { echo "::error file=$1::no '$2' to stamp"; exit 1; }; sed -i -E "s|$2|$3|" "$1"; }
-          stamp _site/sw.js      'const BUILD = "[^"]*";'       "const BUILD = \"$V\";"
-          stamp _site/index.html 'const APP_VERSION = "[^"]*";' "const APP_VERSION = \"$V\";"
-          stamp _site/index.html 'const APP_BUILT = "[^"]*";'   "const APP_BUILT = \"$T\";"
           printf '{"version":"%s","built":"%s"}\n' "$V" "$T" > _site/version.json
-          grep -h 'const BUILD =\|const APP_VERSION =\|const APP_BUILT =' _site/sw.js _site/index.html
           cat _site/version.json
           ls -la _site
       - uses: actions/upload-pages-artifact@v3

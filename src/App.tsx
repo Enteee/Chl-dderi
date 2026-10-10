@@ -14,10 +14,11 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import Box from "@mui/material/Box";
+import CircularProgress from "@mui/material/CircularProgress";
 import Paper from "@mui/material/Paper";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { useEffect } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 
@@ -26,18 +27,39 @@ import { useAppDispatch, useAppSelector } from "@app/hooks";
 import { Persistence } from "@app/Persistence";
 import { uiActions } from "@app/slices/uiSlice";
 
-import { CragPage } from "./features/crag/CragPage";
-import { FavouritesPage } from "./features/favourites/FavouritesPage";
-import { KnowPage } from "./features/know/KnowPage";
 import { CragList } from "./features/list/CragList";
 import { FiltersDrawer } from "./features/list/FiltersDrawer";
-import { LogbookPage } from "./features/logbook/LogbookPage";
 import { MapPane } from "./features/map/MapPane";
-import { MorePage } from "./features/more/MorePage";
-import { PackPage } from "./features/more/PackPage";
-import { PacksDialog } from "./features/packs/PacksDialog";
 import { Toasts } from "./features/shell/Toasts";
 import { TopBar } from "./features/shell/TopBar";
+import { UpdateBanner } from "./features/shell/UpdateBanner";
+
+/**
+ * The map, the list and a crag are what the app opens with, so they are in the first bundle.
+ * Everything else is a page the viewer has to go to, and arrives when they do -- which keeps the
+ * first load small on the mobile connection this app is actually used on.
+ */
+const CragPage = lazy(async () => ({
+    default: (await import("./features/crag/CragPage")).CragPage,
+}));
+const FavouritesPage = lazy(async () => ({
+    default: (await import("./features/favourites/FavouritesPage")).FavouritesPage,
+}));
+const KnowPage = lazy(async () => ({
+    default: (await import("./features/know/KnowPage")).KnowPage,
+}));
+const LogbookPage = lazy(async () => ({
+    default: (await import("./features/logbook/LogbookPage")).LogbookPage,
+}));
+const MorePage = lazy(async () => ({
+    default: (await import("./features/more/MorePage")).MorePage,
+}));
+const PackPage = lazy(async () => ({
+    default: (await import("./features/more/PackPage")).PackPage,
+}));
+const PacksDialog = lazy(async () => ({
+    default: (await import("./features/packs/PacksDialog")).PacksDialog,
+}));
 
 /** `#<crag-id>`, the deep link the old app used, before react-router sees it. */
 const LegacyTokens = () => {
@@ -169,26 +191,38 @@ const BottomNav = () => {
     );
 };
 
+/** While a page is on its way. Deliberately quiet: the pages arrive in a few milliseconds. */
+const RouteFallback = () => (
+    <Box sx={{ display: "flex", justifyContent: "center", pt: 6 }}>
+        <CircularProgress size={28} />
+    </Box>
+);
+
 export const App = () => (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100%", minHeight: 0 }}>
         <Persistence />
         <LegacyTokens />
         <TopBar />
         <Box component="main" sx={{ flex: 1, minHeight: 0, position: "relative" }}>
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/crag/:id" element={<CragPage />} />
-                <Route path="/fav" element={<FavouritesPage />} />
-                <Route path="/log" element={<LogbookPage />} />
-                <Route path="/more" element={<MorePage />} />
-                <Route path="/know" element={<KnowPage />} />
-                <Route path="/page/:pageId" element={<PackPage />} />
-                <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
+            <Suspense fallback={<RouteFallback />}>
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/crag/:id" element={<CragPage />} />
+                    <Route path="/fav" element={<FavouritesPage />} />
+                    <Route path="/log" element={<LogbookPage />} />
+                    <Route path="/more" element={<MorePage />} />
+                    <Route path="/know" element={<KnowPage />} />
+                    <Route path="/page/:pageId" element={<PackPage />} />
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+            </Suspense>
         </Box>
         <BottomNav />
         <FiltersDrawer />
-        <PacksDialog />
+        <Suspense fallback={null}>
+            <PacksDialog />
+        </Suspense>
         <Toasts />
+        <UpdateBanner />
     </Box>
 );

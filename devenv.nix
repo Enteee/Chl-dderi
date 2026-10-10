@@ -22,6 +22,7 @@ let
     "^sw\\.js$"
     "^maps/"
     "^assets/"
+    "^workbox-.*\\.js$"
     "^pnpm-lock\\.yaml$"
   ];
 
@@ -40,6 +41,8 @@ let
     "^src/data/conv\\.json$"
     # The page description, in German, the same text as in manifest.webmanifest.
     "^src/index\\.html$"
+    # German prose, like README.md.
+    "^CONTRIBUTING\\.md$"
   ];
 in
 {
@@ -192,7 +195,8 @@ in
 
     typos = {
       enable = true;
-      excludes = natural-language;
+      # Both lists: the generated bundles carry the German interface texts inside them.
+      excludes = natural-language ++ generated;
       exclude_types = [ "svg" ];
     };
 
@@ -236,6 +240,16 @@ in
       enable = true;
       entry = "${config.devenv.root}/node_modules/.bin/vitest run";
       files = "(^src/|^maps/|^mappack\\.schema\\.json$|^package\\.json$|^vite\\.config\\.ts$)";
+      pass_filenames = false;
+    };
+
+    # The committed app at the repository root has to be the one the sources build. This runs the
+    # build and syncs it; if that changes anything, the hook reports "files were modified by this
+    # hook" exactly as prettier does, and the fresh output is there to be added to the commit.
+    build-current = {
+      enable = true;
+      entry = "${config.devenv.root}/tools/check-build.sh";
+      files = "(^src/|^package\\.json$|^pnpm-lock\\.yaml$|^vite\\.config\\.ts$|^tsconfig.*\\.json$|^maps/pack\\.showcase\\.json$)";
       pass_filenames = false;
     };
 
@@ -293,8 +307,44 @@ in
     '';
   };
 
+  scripts.dev = {
+    description = "Start the development server with live reloading";
+    exec = ''
+      (
+        set -euo pipefail
+        cd '${config.devenv.root}'
+
+        ./node_modules/.bin/vite "''${@}"
+      )
+    '';
+  };
+
+  scripts.build = {
+    description = "Build the app into the repository root";
+    exec = ''
+      (
+        set -euo pipefail
+        cd '${config.devenv.root}'
+
+        ./tools/check-build.sh
+      )
+    '';
+  };
+
+  scripts.test = {
+    description = "Run the unit tests";
+    exec = ''
+      (
+        set -euo pipefail
+        cd '${config.devenv.root}'
+
+        ./node_modules/.bin/vitest "''${@:-run}"
+      )
+    '';
+  };
+
   scripts.serve = {
-    description = "Serve the app over http so that the service worker works";
+    description = "Serve the built app over http so that the service worker works";
     exec = ''
       (
         set -euo pipefail
@@ -306,7 +356,7 @@ in
   };
 
   scripts.make-packs = {
-    description = "Check the mappacks and put the showcase into the app";
+    description = "Check the mappacks, or cut a showcase out of one";
     exec = ''
       (
         set -euo pipefail

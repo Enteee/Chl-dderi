@@ -1,14 +1,13 @@
 #!/usr/bin/env bash
-# Kletteratlas – check the mappacks in maps/ and put the showcase into the app.
+# Kletteratlas – check the mappacks in maps/ and cut the showcase out of a pack.
 #
-#   tools/make-packs.sh                      check every maps/pack.*.json, then splice the showcase
-#                                            (maps/pack.showcase.json) into index.html
+#   tools/make-packs.sh                      check every maps/pack.*.json
 #   tools/make-packs.sh --check              check only, write nothing
 #   tools/make-packs.sh --showcase-from FILE --ids id1,id2,…
 #                                            cut a showcase out of a full pack: those crags with their
 #                                            car parks and area groups, marked «partial», without the
 #                                            region's research pages, facts and glossary. Writes
-#                                            maps/pack.showcase.json and splices it into index.html.
+#                                            maps/pack.showcase.json; the build puts it into the app.
 #
 # What is checked: the format and the fields the app insists on, that every area group and car park a crag
 # refers to exists, that the counts match the data, that no crag id appears in two packs, and – when a
@@ -167,13 +166,9 @@ fi
 [[ "${fail}" = 0 ]] || { echo "checks failed" >&2; exit 1; }
 
 # ---------------------------------------------------------------- the showcase goes into the app
+# Nothing to splice any more: src/app/DataProvider.tsx imports maps/pack.showcase.json, so the
+# build puts the showcase into the app by itself. Writing the file is all this script has to do.
 if [[ "${CHECK}" = 0 ]] && [[ -f "${SHOW}" ]]; then
-  if grep -q 'SHOWCASE:BEGIN' index.html; then
-    perl -0pi -e 'BEGIN { local $/; open F, "<", "'"${SHOW}"'" or die; $p = <F>; chomp $p }
-      s{/\* SHOWCASE:BEGIN \*/.*?/\* SHOWCASE:END \*/}{/* SHOWCASE:BEGIN */const SHOWCASE = $p;/* SHOWCASE:END */}s' index.html
-    echo "showcase spliced into index.html"
-  else
-    echo "note: no SHOWCASE markers in index.html – nothing spliced"
-  fi
+  echo "showcase written to ${SHOW} – run the build to put it into the app"
 fi
 echo "done"

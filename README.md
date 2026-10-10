@@ -71,9 +71,11 @@ Bevor du das Icon vom Homescreen löschst, kopiere den Code: Auf dem iPhone vers
 
 ## Aktualisieren
 
-Im Repository **Add file → Upload files**, die neuen Dateien hochladen (gleiche Namen ersetzen die alten) und **Commit changes** – oder wie gewohnt mit Git auf `main` pushen. Jeder Commit auf `main` wird automatisch veröffentlicht (siehe unten).
+Die App wird aus `src/` gebaut. `index.html`, `sw.js` und `assets/` im Hauptordner sind **Ergebnis des Baus** und werden nicht von Hand bearbeitet – wer sie anfasst, verliert die Änderung beim nächsten Bau. Der Weg ist also: in `src/` ändern, `build` laufen lassen, das Ergebnis mitcommitten und auf `main` pushen. Ein Git-Hook baut vor jedem Commit selbst und meldet sich, wenn das Mitgecommittete nicht zum Quelltext passt; mehr dazu unter *Entwicklung*.
 
-**Vorher die aktuelle Fassung holen:** Ein Upload ersetzt die ganze Datei. Wer `index.html` lokal weiterbearbeitet, lädt zuerst die aktuelle Version von `main` herunter – sonst gehen Änderungen verloren, die inzwischen im Repository dazugekommen sind. Die Versionsnummer setzt der Workflow bei jeder Veröffentlichung selbst (Datum + Commit, in `sw.js`, `index.html` und `version.json`); von Hand muss nichts erhöht werden.
+Hochladen über **Add file → Upload files** im Browser geht damit nicht mehr: eine gebaute `index.html` lässt sich nicht sinnvoll von Hand ändern.
+
+Die Versionsnummer setzt der Workflow bei jeder Veröffentlichung selbst (Datum + Commit) und schreibt sie in `version.json`. In der App selbst steht keine Versionsnummer: nur so baut derselbe Quelltext zweimal dasselbe, und nur so lässt sich prüfen, ob das Mitgecommittete wirklich aus dem Quelltext stammt.
 
 Die App merkt beim Start und immer, wenn sie wieder in den Vordergrund kommt (höchstens alle 30 Minuten), dass eine neuere Version veröffentlicht ist, und bietet *Neu laden* an. Unter *Mehr → App* steht die laufende Version, und *Neueste Version laden* holt die App-Dateien jederzeit frisch – Favoriten, Logbuch, Einstellungen und Filter bleiben dabei erhalten. Die App holt sich die neue Version beim nächsten Start mit Netz selbst – spätestens beim zweiten Öffnen ist sie da. Favoriten, Logbuch und Einstellungen bleiben erhalten.
 
@@ -81,13 +83,13 @@ Der Name unter einem Icon, das schon auf dem Homescreen liegt, ändert sich auf 
 
 ## Veröffentlichung (GitHub Pages)
 
-Jeder Push auf `main` startet den Workflow [`.github/workflows/pages.yml`](.github/workflows/pages.yml). Er veröffentlicht alle Web-Dateien aus dem Hauptordner (`*.html`, `*.js`, `*.json`, `*.webmanifest`, `*.png`, `*.svg`, `*.ico`) unter <https://enteee.github.io/Chl-dderi/>. Das Status-Badge oben zeigt, ob der letzte Lauf geklappt hat; manuell starten über **Actions → Deploy to GitHub Pages → Run workflow**.
+Jeder Push auf `main` startet den Workflow [`.github/workflows/pages.yml`](.github/workflows/pages.yml). Er veröffentlicht die App aus dem Hauptordner – `index.html`, `sw.js`, `assets/`, das Manifest, die Icons und `mappack.schema.json` – unter <https://enteee.github.io/Chl-dderi/>. Das Status-Badge oben zeigt, ob der letzte Lauf geklappt hat; manuell starten über **Actions → Deploy to GitHub Pages → Run workflow**.
 
 - Einmalig nötig: **Settings → Pages → Build and deployment → Source = *GitHub Actions***.
 - GitHub Pages gibt es für **private** Repositories nur mit einem bezahlten GitHub-Plan (z. B. Pro). Mit dem Gratis-Plan schaltet GitHub Pages ab, sobald das Repository privat wird, und der Workflow scheitert mit «Get Pages site failed». Die veröffentlichte Seite selbst ist in jedem Fall öffentlich.
-- Die App-Dateien liegen absichtlich alle auf einer Ebene, ohne Unterordner. Neue Dateien dieser Typen werden automatisch mitveröffentlicht.
+- Die App-Dateien liegen auf einer Ebene; dazu kommt `assets/` mit den gebauten Bündeln. Der Workflow nennt jede Datei einzeln und veröffentlicht nichts, was er nicht kennt – `package.json`, `tsconfig.json` und `renovate.json` liegen inzwischen auch im Hauptordner und gehören nicht auf eine öffentliche Seite.
 - Der Ordner `maps/` wird **nicht** veröffentlicht: Mappacks gehören nicht zur App. Wer eigene Packs anbieten will, legt sie dorthin, wo er sie haben will (eigenes Repository, Webspace, Cloud) und gibt ihre Adresse in der App ein.
-- Lokal testen: `tools/serve.pl` starten (oder `python3 -m http.server`) und <http://localhost:8000/> öffnen. Der Service Worker, der Cache-Speicher für die Mappacks und das Laden eines Packs von einer Adresse laufen nur über `http(s)://`, nicht beim direkten Öffnen der Datei.
+- Lokal testen: `build` und dann `serve` (oder `python3 -m http.server`) und <http://localhost:8000/> öffnen. Beim Entwickeln ist `dev` bequemer. Der Service Worker, der Cache-Speicher für die Mappacks und das Laden eines Packs von einer Adresse laufen nur über `http(s)://`, nicht beim direkten Öffnen der Datei.
 
 ### Eigene Kopie
 
@@ -99,17 +101,59 @@ Jeder Push auf `main` startet den Workflow [`.github/workflows/pages.yml`](.gith
 
 | Datei | Zweck |
 | --- | --- |
-| `index.html` | die ganze App samt Kostprobe |
-| `mappack.schema.json` | das Format eines Mappacks (JSON Schema) |
-| `maps/pack.showcase.json` | die Kostprobe, wie sie in `index.html` steckt |
+| `src/` | **der Quelltext der App** (TypeScript, React, Material UI) |
+| `index.html`, `sw.js`, `assets/` | **gebaut**, nicht von Hand bearbeiten – das ist die veröffentlichte App |
+| `mappack.schema.json` | das Format eines Mappacks (JSON Schema); daraus kommen die Typen und die Prüfung in der App |
+| `maps/pack.showcase.json` | die Kostprobe; der Bau legt sie in die App |
 | `maps/pack.*.json` | weitere Mappacks, die hier liegen (werden nicht veröffentlicht) |
-| `tools/make-packs.sh` | prüft die Mappacks und setzt die Kostprobe in die App ein |
+| `tools/make-packs.sh` | prüft die Mappacks und schneidet eine Kostprobe aus einem Pack |
+| `tools/validate-packs.sh` | prüft die Mappacks gegen `mappack.schema.json` |
+| `tools/sync-build.sh`, `tools/check-build.sh` | legen den Bau in den Hauptordner, und prüfen, ob das Mitgecommittete stimmt |
 | `tools/serve.pl` | kleiner lokaler Server zum Ausprobieren |
-| `sw.js` | macht die App offline-fähig |
+| `devenv.nix`, `devenv.yaml` | die Entwicklungsumgebung samt Git-Hooks |
+| `package.json`, `tsconfig*.json`, `vite.config.ts`, `eslint.config.mjs` | der Bau und die Prüfwerkzeuge |
 | `manifest.webmanifest` | Name, Farben und Icons für die Installation |
 | `icon-*.png`, `apple-touch-icon.png`, `favicon*` | App-Icon in allen nötigen Grössen |
 | `.github/workflows/pages.yml` | veröffentlicht die App bei jedem Push auf `main` |
-| `.github/workflows/packs.yml` | prüft die Mappacks gegen das Schema |
+| `.github/workflows/ci.yml` | lässt alle Prüfungen laufen |
+
+## Entwicklung
+
+Die Umgebung steckt in [`devenv.nix`](devenv.nix). Mit [devenv](https://devenv.sh/) und [direnv](https://direnv.net/):
+
+```sh
+direnv allow     # oder: devenv shell
+devenv-help      # zeigt, was es gibt
+```
+
+Danach stehen bereit:
+
+| Befehl | Was er tut |
+| --- | --- |
+| `dev` | Entwicklungsserver mit Live-Reload (<http://localhost:5173/>). Liefert auch `maps/` aus, damit sich ein Pack lokal über eine Adresse laden lässt. |
+| `build` | baut die App und legt sie in den Hauptordner |
+| `test` | die Unit-Tests (Vitest) |
+| `lint` | alle Git-Hooks über das ganze Repository |
+| `serve` | serviert die gebaute App über http (der Service Worker braucht `http(s)://`) |
+| `check-packs` | prüft die Mappacks gegen das Schema und gegeneinander |
+| `make-packs` | dasselbe, und schneidet auf Wunsch eine Kostprobe aus einem Pack |
+
+Vor jedem Commit laufen die Hooks: Whitespace, `shellcheck`, `actionlint`, `yamllint`, `markdownlint`, Rechtschreibung, Geheimnisse – und für die App `prettier`, `eslint`, `tsc` und die Tests. Dazu zwei, die eigens für dieses Repository da sind:
+
+- **Die Mappacks** werden zweifach geprüft: `tools/validate-packs.sh` nimmt jedes Pack gegen `mappack.schema.json`, `tools/make-packs.sh --check` prüft sie gegeneinander (Zählstände, Parkplatz- und Zonenverweise, kein Gebiet in zwei Packs).
+- **Der Bau** wird mitgeprüft: `index.html`, `sw.js` und `assets/` sind gebaut und trotzdem eingecheckt, damit die veröffentlichten Bytes nachlesbar bleiben. Der Hook baut vor dem Commit selbst; passt das Ergebnis nicht zum Mitgecommitteten, meldet er «files were modified by this hook» und legt das Frische hin, so wie es `prettier` auch tut.
+
+Wo was liegt:
+
+```text
+src/core/      Logik ohne Oberfläche: Packs, Filter, Grade, Logbuch, Speicher – mit Tests
+src/types/     mappack.ts spiegelt das Schema, model.ts ist das, womit die App arbeitet
+src/features/  die Oberfläche, nach Thema: map, list, crag, logbook, packs, more, know
+src/app/       Zustand (Redux) und die geladenen Packs (Context)
+src/i18n/      die Oberflächentexte, je 767 Schlüssel auf Englisch und Deutsch
+```
+
+Was ein Mappack an Worten mitbringt – Gesteinsname, Führerhinweis, ganze Seiten, Fun Facts, Glossar –, kennt die App nicht; sie zeigt nur, was im Pack steht. Aus Pack-Text wird nie HTML: `src/core/text.ts` gibt Tokens zurück, die React einsetzt.
 
 ## Daten und Grenzen
 
