@@ -3283,9 +3283,8 @@ function initMap(){
   map.on("zoomend", parkVis); parkVis();
   dblZoom();
   map.on("click", planMapClick);
-  map.on("click",e=>{ if(picking || plan.on || Date.now()-dblZoom.at<600) return; clearTimeout(dblZoom.timer); const was = selId, had = !!ptWx.pop;
-    dblZoom.timer = setTimeout(()=>{ if(selId!==was) return; if(was) deselect(); else if(had){ if(ptWx.pop){ map.closePopup(ptWx.pop); ptWx.pop = null; } } else pointInfo(e.latlng); }, 280); });
-  map.on("contextmenu",e=>{ if(picking || plan.on) return; pointInfo(e.latlng); });          // long press / right click: always the point   // a little later, so that a double tap zooms without closing the call-out
+  map.on("click",()=>{ if(picking || plan.on || Date.now()-dblZoom.at<600) return; clearTimeout(dblZoom.timer); const was = selId;     // weather only for crags, not for any point of the map
+    dblZoom.timer = setTimeout(()=>{ if(selId===was && was) deselect(); }, 280); });   // a little later, so that a double tap zooms without closing the call-out
   $("btnLoc").addEventListener("click",e=>{ e.stopPropagation(); locate(); });
   $("legend").open = !isPhone();
   renderLegend(); locState(); drawAllPaths();
