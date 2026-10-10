@@ -98,7 +98,7 @@ Jeder Push auf `main` startet den Workflow [`.github/workflows/pages.yml`](.gith
 ## Dateien
 
 | Datei | Zweck |
-|---|---|
+| --- | --- |
 | `index.html` | die ganze App samt Kostprobe |
 | `mappack.schema.json` | das Format eines Mappacks (JSON Schema) |
 | `maps/pack.showcase.json` | die Kostprobe, wie sie in `index.html` steckt |

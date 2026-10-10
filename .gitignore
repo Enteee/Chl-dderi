@@ -1,0 +1,20 @@
+# devenv
+.devenv*
+devenv.local.nix
+.direnv
+# devenv writes this as a symlink into the nix store
+.pre-commit-config.yaml
+
+# node / the TypeScript build
+node_modules/
+.pnpm-store/
+dist/
+coverage/
+*.tsbuildinfo
+
+# written by the GitHub Pages workflow at deploy time, never by hand
+version.json
+
+# editors and operating systems
+.DS_Store
+*.swp
