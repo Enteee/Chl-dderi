@@ -188,7 +188,7 @@ export const csvText = (
             crag?.region ?? "",
         ]);
     }
-    return `﻿${rows.map((r) => r.map(cell).join(";")).join("\r\n")}\r\n`;
+    return `\uFEFF${rows.map((r) => r.map(cell).join(";")).join("\r\n")}\r\n`;
 };
 
 export interface LogStats {

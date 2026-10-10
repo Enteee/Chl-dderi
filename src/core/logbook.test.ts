@@ -144,13 +144,13 @@ describe("ids and dates", () => {
 
 describe("csvText", () => {
     const columns = {
-        date: "Datum",
+        date: "Date",
         route: "Route",
-        grade: "Grad",
-        style: "Stil",
-        stars: "Sterne",
-        crag: "Gebiet",
-        area: "Zone",
+        grade: "Grade",
+        style: "Style",
+        stars: "Stars",
+        crag: "Crag",
+        area: "Area",
         region: "Region",
     };
     const lookup = {
@@ -165,7 +165,7 @@ describe("csvText", () => {
 
     it("separates with semicolons and ends lines with CRLF", () => {
         const csv = csvText([entry({ s: "c1" })], columns, lookup);
-        expect(csv).toContain("Datum;Route;Grad;Stil;Sterne;Gebiet;Zone;Region\r\n");
+        expect(csv).toContain("Date;Route;Grade;Style;Stars;Crag;Area;Region\r\n");
         expect(csv.endsWith("\r\n")).toBe(true);
         expect(csv).toContain("2026-10-01;Route;6a;RP;;Rocca;Perti;Finale");
     });
