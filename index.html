@@ -1771,11 +1771,13 @@ const I18N = {
 "ch.head":["swisstopo layers","Ebenen swisstopo"],"ch.trails":["Hiking trails (swisstopo)","Wanderwege (swisstopo)"],"ch.wrz":["Wildlife quiet zones (FOEN)","Wildruhezonen (BAFU)"],
 "wx.note.ch":["In Switzerland the rain comes from MeteoSwiss' model ICON-CH1/CH2 (1–2 km).","In der Schweiz stammt der Regen aus dem Modell ICON-CH1/CH2 der MeteoSchweiz (1–2 km)."],
 "j.fc":["Weather","Wetter"],
+"pt.a":["Point on the map","Punkt auf der Karte"],"pt.t":["Selected point","Gewählter Punkt"],"pt.h":["Point at {0} m","Punkt auf {0} m"],"pt.wx":["Weather here","Wetter hier"],
 "fc.h":["Weather forecast","Wetterprognose"],"fc.h.ch":["Weather (MeteoSwiss model)","Wetter (Modell der MeteoSchweiz)"],
 "fc.load":["Loading the forecast …","Prognose wird geladen …"],"fc.fail":["Forecast not available ({0}).","Prognose nicht verfügbar ({0})."],"fc.none":["No forecast yet.","Noch keine Prognose."],
 "fc.retry":["Load forecast","Prognose laden"],"fc.offline":["offline","offline"],
 "fc.today":["Today","Heute"],"fc.tomorrow":["Tomorrow","Morgen"],
 "fc.elev.ch":["For the height of the wall: {0} m a.s.l. (swisstopo height model).","Für die Höhe der Wand: {0} m ü. M. (Höhenmodell swisstopo)."],
+"fc.elev.pt":["For the height of the point: {0} m a.s.l. (swisstopo height model).","Für die Höhe des Punkts: {0} m ü. M. (Höhenmodell swisstopo)."],
 "fc.elev.om":["For {0} m a.s.l. (terrain height of the model grid).","Für {0} m ü. M. (Geländehöhe des Modellrasters)."],
 "fc.legend":["Per day: highest and lowest temperature, rain with its probability, sunshine and wind (mean / gusts). Tap a day for every 3 hours and the freezing level.","Pro Tag: Höchst- und Tiefsttemperatur, Regen mit Wahrscheinlichkeit, Sonnenschein und Wind (Mittel / Böen). Tippe auf einen Tag für die Werte alle 3 Stunden und die Nullgradgrenze."],
 "fc.fz":["freezing level {0} m","Nullgradgrenze {0} m"],"fc.pp":["{0} %","{0} %"],"fc.time":["Time","Zeit"],"fc.temp":["Temp.","Temp."],"fc.rain3":["Rain 3 h","Regen 3 h"],"fc.wind":["Wind km/h","Wind km/h"],
@@ -2990,7 +2992,9 @@ function initMap(){
   map.on("zoomend", parkVis); parkVis();
   dblZoom();
   map.on("click", planMapClick);
-  map.on("click",()=>{ if(picking || plan.on || Date.now()-dblZoom.at<600) return; clearTimeout(dblZoom.timer); const was = selId; dblZoom.timer = setTimeout(()=>{ if(selId===was) deselect(); }, 280); });   // a little later, so that a double tap zooms without closing the call-out
+  map.on("click",e=>{ if(picking || plan.on || Date.now()-dblZoom.at<600) return; clearTimeout(dblZoom.timer); const was = selId, had = !!ptWx.pop;
+    dblZoom.timer = setTimeout(()=>{ if(selId!==was) return; if(was) deselect(); else if(had){ if(ptWx.pop){ map.closePopup(ptWx.pop); ptWx.pop = null; } } else pointInfo(e.latlng); }, 280); });
+  map.on("contextmenu",e=>{ if(picking || plan.on) return; pointInfo(e.latlng); });          // long press / right click: always the point   // a little later, so that a double tap zooms without closing the call-out
   $("btnLoc").addEventListener("click",e=>{ e.stopPropagation(); locate(); });
   $("legend").open = !isPhone();
   renderLegend(); locState(); drawAllPaths();
@@ -3273,7 +3277,38 @@ function fcFor(s, force){
 function fcChanged(s){
   const cur = currentDetail(), sec = $("fcsec");
   if(cur===s && sec && !$("detail").hidden){ const tmp=document.createElement("div"); tmp.innerHTML=fcHTML(s); sec.replaceWith(tmp.firstElementChild); }
+  const ps = $("ptfc"); if(ptWx.s===s && ps){ const tmp=document.createElement("div"); tmp.innerHTML=fcHTML(s, "ptfc"); ps.replaceWith(tmp.firstElementChild); }
 }
+// ---- weather at any point of the map (as in the Wind app): a tap on the map shows the point, its height and «Weather here»
+const ptWx = {s:null, pop:null};
+const ptOf = (lat, lon) => ({id:`pt:${lat.toFixed(3)},${lon.toFixed(3)}`, coord:{lat, lon}, reg:null, routes:[]});
+function ptTitle(o){ const d = fc.data[o.id], h = o.alt!=null ? o.alt : d && d.elevSrc==="swisstopo" ? d.elev : null;
+  return h!=null ? t("pt.h", fmtInt(Math.round(h))) : t("pt.t"); }
+function pointInfo(ll){
+  const o = ptOf(ll.lat, ll.lng), ch = inCH(o.coord);
+  const el = document.createElement("div"); el.className = "pop";
+  const draw = () => { el.innerHTML = `<div class="a">${esc(t("pt.a"))}</div><div class="t">${esc(ptTitle(o))}</div>
+    <div class="hint num">${o.coord.lat.toFixed(5)}, ${o.coord.lon.toFixed(5)}${ch?` · LV95 ${toLV95(o.coord.lat,o.coord.lon).map(v=>fmtInt(Math.round(v))).join(" / ")}`:""}</div>
+    <div class="row poprow"><button type="button" class="btn cta" data-ptwx>${ic("sun")}${esc(t("pt.wx"))}</button></div>`; };
+  draw();
+  el.addEventListener("click", e=>{ if(e.target.closest("[data-ptwx]")) openPointWx(o); });
+  if(ptWx.pop) map.closePopup(ptWx.pop);
+  ptWx.pop = L.popup({closeButton:true, autoPan:true, autoPanPadding:[16,16], offset:[0,-4], maxWidth:280, minWidth:190, className:"ptpop"}).setLatLng(ll).setContent(el).openOn(map);
+  ptWx.pop.on("remove", ()=>{ if(ptWx.pop && !map.hasLayer(ptWx.pop)) ptWx.pop = null; });
+  if(ch) chHeight(o.coord.lat, o.coord.lon).then(h=>{ o.alt = h; draw(); if(ptWx.pop) ptWx.pop.update(); }).catch(()=>{});
+}
+function openPointWx(o){
+  ptWx.s = o;
+  openSheet(`<div class="shead"><div style="min-width:0;flex:1"><div class="hint">${esc(t("pt.a"))} · <span class="num">${o.coord.lat.toFixed(4)}, ${o.coord.lon.toFixed(4)}</span></div>
+      <h2>${esc(ptTitle(o))}</h2></div><button class="btn" type="button" data-x aria-label="${esc(t("close"))}">${ic("x")}</button></div>
+    ${fcHTML(o, "ptfc")}`, ()=>{ ptWx.s = null; });
+  fcFor(o);
+}
+$("sheetbox").addEventListener("click", e=>{
+  const o = ptWx.s; if(!o) return;
+  if(e.target.closest("[data-fcload]")){ fcFor(o, true); fcChanged(o); return; }
+  const fd = e.target.closest("[data-fcday]"); if(fd){ fc.open[o.id] = fc.open[o.id]===fd.dataset.fcday ? null : fd.dataset.fcday; fcChanged(o); }
+});
 // one symbol for a day: the precipitation it brings, if it rains for more than a passing hour; otherwise its most common sky
 function daySymbol(codes, rain){
   const wet = codes.filter(c=>c>=51);
@@ -3317,11 +3352,12 @@ function fcHourRows(o, d){
       <b class="num">${tC(o.temp[i])}</b><span class="num rr${rr>=0.1?" on":""}">${rr>=0.1?mmTxt(rr):"–"}</span><span class="num">${windArrow(o.wd[i])} ${Math.round(+o.ws[i]||0)}<small> / ${Math.round(+o.wg[i]||0)}</small></span></div>`); }
   return rows.join("");
 }
-function fcHTML(s){
+function fcHTML(s, sid){
+  sid = sid || "fcsec";
   const o = fc.data[s.id], ch = isCHcrag(s), busy = !!fc.busy[s.id], err = fc.err[s.id];
   const head = secHead("sun","--sun",esc(t(ch?"fc.h.ch":"fc.h")));
-  if(!o) return `<section class="sec" id="fcsec">${head}<div class="hint">${esc(busy?t("fc.load"):err?t("fc.fail",err):t("fc.none"))}</div>
-    ${busy?"":`<div class="row"><button class="btn small" type="button" id="fcLoad">${esc(t("fc.retry"))}</button></div>`}</section>`;
+  if(!o) return `<section class="sec" id="${sid}">${head}<div class="hint">${esc(busy?t("fc.load"):err?t("fc.fail",err):t("fc.none"))}</div>
+    ${busy?"":`<div class="row"><button class="btn small" type="button" data-fcload>${esc(t("fc.retry"))}</button></div>`}</section>`;
   const days = fcDays(o);
   const rows = days.map((d,i)=>{ const open = fc.open[s.id]===d.d, fz = d.fz.length ? [Math.min.apply(null,d.fz), Math.max.apply(null,d.fz)] : null;
     return `<button type="button" class="fcd${open?" open":""}" data-fcday="${d.d}" aria-expanded="${open}"><span class="dl">${esc(dayLabel(d.d,i))}</span>
@@ -3332,9 +3368,9 @@ function fcHTML(s){
       + (open ? `<div class="fcx"><div class="hint">${esc(wmoTxt(d.code))}${fz?` · ${esc(t("fc.fz", fzTxt(fz)))}`:""}</div>
         <div class="fchead hint"><span>${esc(t("fc.time"))}</span><span></span><span>${esc(t("fc.temp"))}</span><span>${esc(t("fc.rain3"))}</span><span>${esc(t("fc.wind"))}</span></div>${fcHourRows(o,d)}</div>` : "");
   }).join("");
-  const elev = o.elev!=null ? t(o.elevSrc==="swisstopo"?"fc.elev.ch":"fc.elev.om", fmtInt(Math.round(o.elev))) : "";
+  const elev = o.elev!=null ? t(o.elevSrc==="swisstopo"?(s.id.indexOf("pt:")===0?"fc.elev.pt":"fc.elev.ch"):"fc.elev.om", fmtInt(Math.round(o.elev))) : "";
   const src = o.model==="ch" ? t("fc.src.ch", o.chUntil ? dayLabelShort(o.chUntil) : "") : t(ch?"fc.src.chfail":"fc.src.om");
-  return `<section class="sec" id="fcsec">${head}
+  return `<section class="sec" id="${sid}">${head}
     <div class="hint">${esc(elev)}</div>
     <div class="fcdays">${rows || `<div class="hint">${esc(t("fc.none"))}</div>`}</div>
     <div class="hint">${esc(t("fc.legend"))}</div>
@@ -4425,7 +4461,7 @@ $("detail").addEventListener("click",e=>{
   const rv=e.target.closest("[data-rv]"); if(rv && s){ routeView=rv.dataset.rv; rerenderRoutes(s); return; }
   if(e.target.closest("#showmap") && s){ showOnMap(s.id); return; }
   if(e.target.closest("#wxLoad")){ wxLoad(true); return; }
-  if(e.target.closest("#fcLoad") && s){ fcFor(s, true); fcChanged(s); return; }
+  if(e.target.closest("[data-fcload]") && s){ fcFor(s, true); fcChanged(s); return; }
   const fd=e.target.closest("[data-fcday]"); if(fd && s){ fc.open[s.id] = fc.open[s.id]===fd.dataset.fcday ? null : fd.dataset.fcday; fcChanged(s); return; }
   if(e.target.closest("#plan") && s){ planOpen(s.id); return; }
   if(e.target.closest("#wxRadar") && s){ if(prefs.radar==="off") setRadar("rv", true); if(initMap.baseMenu) initMap.baseMenu(); showOnMap(s.id); return; }
