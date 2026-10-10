@@ -1214,6 +1214,49 @@ table.gloss td{padding:4px 12px 4px 0;border-bottom:1px solid var(--line)}
 @media print{ header.bar,.subbar,nav.tabs,#filters,#mappane,.dhead,.toast{display:none!important} body,html{height:auto;overflow:visible} #detail{position:static}
   .hero{background:none;color:var(--ink);box-shadow:none;border:1px solid var(--line)} .hero::before{display:none} #detail .hero h2{color:var(--ink)} }
 
+/* weather symbols (MeteoSwiss pictogram codes, drawn as in the Wind app) */
+:root{--wx-sun:#f8d808;--wx-ray:#f8c000;--wx-moon:#c9d2da;--wx-cloud:#dcdcdc;--wx-cloud-s:#a3a3a3;--wx-dark:#a6adb3;--wx-rain:#1f78e0;--wx-snow:#6fa6dc;--halo:#ffffff}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){--wx-moon:#c3cedb;--wx-cloud:#c9cfd4;--wx-cloud-s:#8a949c;--wx-dark:#8d979f;--wx-rain:#5aa2ec;--wx-snow:#a7cdf2;--halo:#141e27} }
+:root[data-theme="dark"]{--wx-moon:#c3cedb;--wx-cloud:#c9cfd4;--wx-cloud-s:#8a949c;--wx-dark:#8d979f;--wx-rain:#5aa2ec;--wx-snow:#a7cdf2;--halo:#141e27}
+.fcdays{display:grid;gap:2px}
+.fcd{display:grid;grid-template-columns:62px 36px 60px minmax(0,.9fr) minmax(0,1.1fr);align-items:center;gap:6px;width:100%;
+  text-align:left;border:1px solid transparent;border-radius:var(--r-s);background:none;padding:3px 6px;color:var(--ink);font-size:13.5px;cursor:pointer}
+.fcd:hover{border-color:var(--line)} .fcd.open{background:var(--raise);border-color:var(--line)}
+.fcd .dl{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fci svg{width:34px;height:34px;display:block}
+.fcd .tt b{font-size:15px}
+.fcd small,.fch small{color:var(--ink2);font-size:11.5px}
+.fcd .rr,.fch .rr{color:var(--ink2)} .fcd .rr.on,.fch .rr.on{color:#7c3aed;font-weight:600}
+.fcd .rr,.fcd .mt{display:grid;line-height:1.25} .fcd .mt{color:var(--ink2);font-size:12.5px} .fcd .mt>span{display:inline-flex;align-items:center;gap:3px;white-space:nowrap}
+.fcd .mt svg.i{width:1em;height:1em;flex:none} .fcd .sun svg.i{color:var(--sun)}
+.fcx{border:1px solid var(--line);border-top:0;border-radius:0 0 var(--r-s) var(--r-s);margin:-3px 0 4px;padding:6px 8px;display:grid;gap:1px;background:var(--panel)}
+.fch,.fchead{display:grid;grid-template-columns:48px 30px 44px minmax(56px,1fr) minmax(70px,1fr);align-items:center;gap:6px;font-size:13px}
+.fch .fci svg{width:26px;height:26px} .fch.past{opacity:.5}
+.warr{display:inline-block;font-weight:700;color:var(--ink2)}
+:root[data-theme="dark"] .fcd .rr.on,:root[data-theme="dark"] .fch .rr.on{color:#c4a3ff}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .fcd .rr.on, :root:not([data-theme="light"]) .fch .rr.on{color:#c4a3ff} }
+@media (max-width:360px){ .fcd{grid-template-columns:54px 32px 54px minmax(0,1fr) minmax(0,1fr);gap:4px;font-size:13px} .fci svg{width:30px;height:30px} }
+/* approach planner on swisstopo's trails */
+.planbar{position:absolute;left:10px;bottom:28px;z-index:520;width:min(390px,calc(100% - 76px));max-height:calc(100% - 90px);overflow:auto;background:var(--raise);
+  border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:8px 10px;display:grid;gap:8px;font-size:13.5px}
+.planbar:not([hidden]) ~ .legend{display:none}
+.plhead{display:flex;align-items:center;gap:6px}
+.plhead .ttl{flex:1;min-width:0;display:flex;align-items:center;gap:6px;font:600 16px var(--display)} .plhead .ttl span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.plhead .ttl svg.i{color:var(--park);flex:none}
+.plbody{display:grid;gap:8px} .plbody[hidden]{display:none}
+.plbody select{flex:1;min-width:0}
+.plsum{display:flex;flex-wrap:wrap;gap:3px 12px;align-items:baseline;font-size:14.5px}
+.plbar{display:flex;height:8px;border-radius:4px;overflow:hidden;gap:1px;background:var(--line)}
+.plleg{display:flex;flex-wrap:wrap;gap:3px 12px;font-size:12.5px}
+.plleg span{display:inline-flex;align-items:center;gap:5px} .plleg i{width:18px;height:0;border-top:4px solid var(--c);border-radius:2px} .plleg i.c0{border-top:3px dotted var(--c)}
+.plprof{position:relative;height:64px} .plprof svg{width:100%;height:64px;display:block}
+.plprof .pa{fill:var(--accent-soft)} .plprof .pl{fill:none;stroke:var(--accent);stroke-width:1.6;vector-effect:non-scaling-stroke}
+.plprof span{position:absolute;left:4px;font-size:11px;color:var(--ink2)} .plprof .hi{top:0} .plprof .lo{bottom:2px}
+.plm{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;font:700 12px var(--sans,system-ui);color:#fff;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.45);background:#0f7b55}
+.plm.z{background:#d81b78} .plm.v{background:#fff;color:#1d1538;border-color:#1d1538;width:20px;height:20px;margin:2px;font-size:11px}
+#map.planning{cursor:crosshair}
+@media (max-width:860px), (max-height:500px) and (orientation:landscape){ #map.planning .leaflet-control-scale{display:none} }
+@media (max-width:860px), (max-height:500px) and (orientation:landscape){ .planbar{left:8px;right:8px;width:auto;bottom:8px;max-height:46%} }
 </style>
 </head>
 <body>
@@ -1246,6 +1289,7 @@ table.gloss td{padding:4px 12px 4px 0;border-bottom:1px solid var(--line)}
 <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.4v.4"/></symbol>
 <symbol id="i-book" viewBox="0 0 24 24"><path d="M6 3.5h10.5a1.5 1.5 0 0 1 1.5 1.5v15.5H7.5A2.5 2.5 0 0 1 5 18V4.5a1 1 0 0 1 1-1z"/><path d="M5 18a2.5 2.5 0 0 1 2.5-2.5H18M9 8h5.5M9 11.5h5.5"/></symbol>
 <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3.5s6 6.3 6 10.6a6 6 0 0 1-12 0c0-4.3 6-10.6 6-10.6z"/></symbol>
+<symbol id="i-wind" viewBox="0 0 24 24"><path d="M3 9h11a3 3 0 1 0-3-3M3 15h15a3 3 0 1 1-3 3M3 12h7"/></symbol>
 <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5V5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></symbol>
 <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
 <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9.5 7V4h5v3M6.5 7l1 13h9l1-13M10 11v6M14 11v6"/></symbol>
@@ -1335,6 +1379,7 @@ table.gloss td{padding:4px 12px 4px 0;border-bottom:1px solid var(--line)}
         <div class="basemenu" id="basemenu" role="menu" hidden></div>
       </div>
       <div class="radarbar" id="radarbar" hidden></div>
+      <div class="planbar" id="planbar" role="region" aria-live="polite" hidden></div>
       <details class="legend" id="legend"></details>
     </section>
 
@@ -1722,6 +1767,44 @@ const I18N = {
 "park":["Car park","Parkplatz"],
 "park.crags":["Crags from here","Gebiete ab hier"],"park.alt":["alternative","Alternative"],
 
+"base.ch":["swisstopo national map","Landeskarte swisstopo"],"base.chsat":["swisstopo aerial image","Luftbild swisstopo"],
+"ch.head":["swisstopo layers","Ebenen swisstopo"],"ch.trails":["Hiking trails (swisstopo)","Wanderwege (swisstopo)"],"ch.wrz":["Wildlife quiet zones (FOEN)","Wildruhezonen (BAFU)"],
+"wx.note.ch":["In Switzerland the rain comes from MeteoSwiss' model ICON-CH1/CH2 (1–2 km).","In der Schweiz stammt der Regen aus dem Modell ICON-CH1/CH2 der MeteoSchweiz (1–2 km)."],
+"j.fc":["Weather","Wetter"],
+"fc.h":["Weather forecast","Wetterprognose"],"fc.h.ch":["Weather (MeteoSwiss model)","Wetter (Modell der MeteoSchweiz)"],
+"fc.load":["Loading the forecast …","Prognose wird geladen …"],"fc.fail":["Forecast not available ({0}).","Prognose nicht verfügbar ({0})."],"fc.none":["No forecast yet.","Noch keine Prognose."],
+"fc.retry":["Load forecast","Prognose laden"],"fc.offline":["offline","offline"],
+"fc.today":["Today","Heute"],"fc.tomorrow":["Tomorrow","Morgen"],
+"fc.elev.ch":["For the height of the wall: {0} m a.s.l. (swisstopo height model).","Für die Höhe der Wand: {0} m ü. M. (Höhenmodell swisstopo)."],
+"fc.elev.om":["For {0} m a.s.l. (terrain height of the model grid).","Für {0} m ü. M. (Geländehöhe des Modellrasters)."],
+"fc.legend":["Per day: highest and lowest temperature, rain with its probability, sunshine and wind (mean / gusts). Tap a day for every 3 hours and the freezing level.","Pro Tag: Höchst- und Tiefsttemperatur, Regen mit Wahrscheinlichkeit, Sonnenschein und Wind (Mittel / Böen). Tippe auf einen Tag für die Werte alle 3 Stunden und die Nullgradgrenze."],
+"fc.fz":["freezing level {0} m","Nullgradgrenze {0} m"],"fc.pp":["{0} %","{0} %"],"fc.time":["Time","Zeit"],"fc.temp":["Temp.","Temp."],"fc.rain3":["Rain 3 h","Regen 3 h"],"fc.wind":["Wind km/h","Wind km/h"],
+"fc.src.ch":["MeteoSwiss ICON-CH1/CH2 (1–2 km) up to {0}, after that and for the probability ICON-EU/ECMWF via Open-Meteo. Model values, not a measurement at the wall;","MeteoSchweiz ICON-CH1/CH2 (1–2 km) bis {0}, danach und für die Wahrscheinlichkeit ICON-EU/ECMWF über Open-Meteo. Modellwerte, keine Messung an der Wand;"],
+"fc.src.chfail":["The MeteoSwiss model did not answer; values from Open-Meteo's default models.","Das Modell der MeteoSchweiz hat nicht geantwortet; Werte aus den Standardmodellen von Open-Meteo."],
+"fc.src.om":["Model values from Open-Meteo, not a measurement at the wall;","Modellwerte von Open-Meteo, keine Messung an der Wand;"],
+"fc.asof":["as of {0}.","Stand {0}."],"fc.ms":["MeteoSwiss: warnings and local forecast","MeteoSchweiz: Warnungen und Lokalprognose"],
+"ap.plan":["Plan on swisstopo trails","Auf swisstopo-Wegen planen"],
+"ap.plan.hint":["Plans the approach over the official hiking trails of swisstopo, with height profile and walking time; start, via points and the end can be moved on the map.","Plant den Zustieg über die offiziellen Wanderwege von swisstopo, mit Höhenprofil und Wanderzeit; Start, Zwischenpunkte und Ziel lassen sich auf der Karte verschieben."],
+"pl.h":["Approach to {0}","Zustieg zu {0}"],"pl.start":["Start","Start"],
+"pl.from.pk":["Car park: {0}","Parkplatz: {0}"],"pl.from.me":["My position","Mein Standort"],"pl.from.map":["Point on the map …","Punkt auf der Karte …"],"pl.point":["Point on the map","Punkt auf der Karte"],
+"pl.tap.start":["Tap the map where the approach starts.","Tippe auf die Karte, wo der Zustieg beginnt."],"pl.tap.via":["Tap the map to add a via point (tap a via point to remove it).","Tippe auf die Karte, um einen Zwischenpunkt zu setzen (Zwischenpunkt antippen entfernt ihn)."],
+"pl.nome":["Your position could not be found – tap the map where you start.","Dein Standort wurde nicht gefunden – tippe auf die Karte, wo du startest."],
+"pl.via":["Via point","Zwischenpunkt"],"pl.via.t":["Via point – drag to move, tap to remove","Zwischenpunkt – ziehen zum Verschieben, antippen zum Entfernen"],"pl.clear":["Remove via points","Zwischenpunkte entfernen"],
+"pl.crag":["Crag page","Gebietsseite"],"pl.min":["Collapse","Einklappen"],"pl.max":["Expand","Aufklappen"],
+"pl.busy":["Reading swisstopo's trails and searching the way …","Wanderwege von swisstopo werden gelesen und der Weg gesucht …"],
+"pl.fail":["The approach could not be planned: {0}","Der Zustieg konnte nicht geplant werden: {0}"],
+"pl.far":["the points are more than 15 km apart","die Punkte liegen mehr als 15 km auseinander"],"pl.nonet":["no hiking trails in this area","keine Wanderwege in diesem Gebiet"],
+"pl.back":["back ≈ {0}","zurück ≈ {0}"],
+"pl.cat.0":["off-trail (straight line)","weglos (Luftlinie)"],"pl.cat.1":["Hiking trail","Wanderweg"],"pl.cat.2":["Mountain trail","Bergwanderweg"],"pl.cat.3":["Alpine trail","Alpinwanderweg"],"pl.cat.4":["Path (OpenStreetMap)","Weg (OpenStreetMap)"],
+"pl.prof":["Height profile of the approach","Höhenprofil des Zustiegs"],
+"pl.osm":["swisstopo's trails could not be read ({0}); the way follows OpenStreetMap paths (BRouter) instead.","Die Wanderwege von swisstopo konnten nicht gelesen werden ({0}); der Weg folgt stattdessen Pfaden aus OpenStreetMap (BRouter)."],
+"pl.none":["swisstopo's trails could not be read ({0}), and the OpenStreetMap routing did not answer either: straight line only. Try again later.","Die Wanderwege von swisstopo konnten nicht gelesen werden ({0}), und das Routing auf OpenStreetMap hat auch nicht geantwortet: nur Luftlinie. Später nochmals versuchen."],
+"pl.off.hint":["Dotted: no official trail – the last bit to the wall usually follows a climbers' path that is not in the network. Check on the spot.","Gepunktet: kein offizieller Wanderweg – das letzte Stück zur Wand führt meist über einen Kletterer-Pfad, der nicht im Wegnetz ist. Vor Ort prüfen."],
+"pl.alpine":["Alpine trails (white-blue-white) can be pathless and need sure-footedness, a head for heights and alpine experience.","Alpinwanderwege (weiss-blau-weiss) sind teils weglos und verlangen Trittsicherheit, Schwindelfreiheit und alpine Erfahrung."],
+"pl.time":["Walking time after the formula of the Swiss hiking trails (as on the signposts), without breaks; heights from the swisstopo height model.","Wanderzeit nach der Formel der Schweizer Wanderwege (wie auf den Wegweisern), ohne Pausen; Höhen aus dem Höhenmodell von swisstopo."],
+"pl.time.flat":["Walking time without height profile – on the flat only.","Wanderzeit ohne Höhenprofil – nur für die Ebene gerechnet."],
+"pl.src":["Trails: swissTLM3D hiking trails, Swiss hiking trail federation.","Wege: swissTLM3D-Wanderwege, Schweizer Wanderwege."],
+"pl.gpx.name":["Approach {0}","Zustieg {0}"],
 "map.base":["Base map","Kartenhintergrund"],"base.topo":["Topographic","Topografisch"],"base.street":["Street","Strasse"],"base.sat":["Satellite","Satellit"],"base.outline":["Outline only","Nur Umrisse"],
 "map.allpaths":["All approaches","Alle Zustiege"],"map.allparks":["All car parks","Alle Parkplätze"],
 "rd.head":["Rain radar","Regenradar"],"rd.off":["Off","Aus"],"rd.rv":["Last 2 hours (animated)","Letzte 2 Stunden (animiert)"],"rd.dpc":["Italy, latest image (sharper)","Italien, neuestes Bild (schärfer)"],
@@ -1903,7 +1986,7 @@ const I18N = {
 "cov.nomap":["{0} crags have no known position; they are in the list but not on the map.", "{0} Gebiete haben keine bekannte Position; sie stehen in der Liste, aber nicht auf der Karte."],
 "cov.ap":["Approach lines, distances and climbs are computed along mapped paths and not checked on site; car parks marked as estimated are placed from descriptions.", "Zustiegslinien, Distanzen und Höhenmeter sind entlang kartierter Wege berechnet und nicht vor Ort geprüft; als geschätzt markierte Parkplätze sind nach Beschreibungen gesetzt."],
 "cov.topo":["Topos and guidebooks:", "Topos und Kletterführer:"],
-"m.lic":["Licences: route lists partly from theCrag (CC BY-NC-SA 4.0), maps © OpenStreetMap contributors (ODbL), weather Open-Meteo (CC BY 4.0). For private, non-commercial use.", "Lizenzen: Routenlisten teils von theCrag (CC BY-NC-SA 4.0), Karten © OpenStreetMap-Mitwirkende (ODbL), Wetter Open-Meteo (CC BY 4.0). Für die private, nicht kommerzielle Nutzung."],
+"m.lic":["Licences: route lists partly from theCrag (CC BY-NC-SA 4.0), maps © OpenStreetMap contributors (ODbL) and, in Switzerland, © swisstopo, weather Open-Meteo and MeteoSwiss (CC BY 4.0). For private, non-commercial use.", "Lizenzen: Routenlisten teils von theCrag (CC BY-NC-SA 4.0), Karten © OpenStreetMap-Mitwirkende (ODbL) und in der Schweiz © swisstopo, Wetter Open-Meteo und MeteoSchweiz (CC BY 4.0). Für die private, nicht kommerzielle Nutzung."],
 "m.coverage":["Coverage", "Abdeckung"],
 "m.about":["About","Über"],"m.contrib":["Made by","Gemacht von"],
 "m.about.t":["Kletteratlas is a guide to the sport-climbing crags around Finale Ligure, in the valleys west of it (Oltrefinale) and in the Upper Valais: {0} crags, {1} routes and {2} car parks with approach lines. It builds on the atlas «Chlädderi» by enteee.", "Der Kletteratlas ist ein Führer zu den Sportklettergebieten rund um Finale Ligure, in den Tälern westlich davon (Oltrefinale) und im Oberwallis: {0} Gebiete, {1} Routen und {2} Parkplätze mit Zustiegslinien. Er baut auf dem Atlas «Chlädderi» von enteee auf."],
@@ -2219,7 +2302,7 @@ const byId = Object.create(null); S_ALL.forEach(s=>{ byId[s.id]=s; });
 // The app is called «Kletteratlas». The storage names below keep the former working name «finale-atlas» on purpose:
 // renaming them would hide the favourites and settings that are already saved on people's devices.
 const store = window.FinaleStore ? FinaleStore.open({ns:"finale-atlas"}) : null;
-const prefs = { lang:null, theme:"auto", base:"topo", region:D.regions[0].key, allPaths:false, radar:"off", wx:true, allParks:false };
+const prefs = { lang:null, theme:"auto", base:"topo", baseCH:"ch", region:D.regions[0].key, allPaths:false, radar:"off", wx:true, allParks:false, chTrails:true, chWrz:false };
 try{ const j = JSON.parse(localStorage.getItem("finale-atlas:prefs")||"null"); if(j && j.v) Object.assign(prefs, j.v); }catch(e){}
 if(!D.regions.some(r=>r.key===prefs.region)) prefs.region = D.regions[0].key;
 function savePrefs(){ if(store) store.set("prefs", Object.assign({}, prefs)); }
@@ -2578,7 +2661,9 @@ function activeFilters(){
   return n;
 }
 function setRegion(key, fit){
+  const was = prefs.region;
   prefs.region = key; savePrefs(); $("app").dataset.reg = key;
+  if(map && was!==key){ planClose(); if(initMap.regionBase) initMap.regionBase(); }
   S = S_ALL.filter(s=>s.reg===key);
   if(F.area && !S.some(s=>s.area===F.area)) F.area = "";                  // the other filters carry over unchanged
   if(F.muni && F.muni!=="?" && !S.some(s=>s.municipality===F.muni)) F.muni = "";
@@ -2735,6 +2820,50 @@ let map=null, cluster=null, clusterA=null, markers={}, pLayer=null, parkVis=()=>
 const cssv = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const ROUTE_COL = "#d81b78";
 const ROUTE_ATTR = 'Routing: <a href="https://brouter.de" target="_blank" rel="noopener">BRouter</a>';
+// ---- Switzerland: swisstopo maps (WMTS of geo.admin.ch, Web Mercator) and the official hiking trails as an overlay
+const inCH = p => !!p && p.lat>=45.82 && p.lat<=47.81 && p.lon>=5.96 && p.lon<=10.49;     // rough box; ICON-CH and swisstopo cover the border areas too
+const regCH = () => prefs.region==="ow";
+const isCHcrag = s => s.reg==="ow" || inCH(s.coord || (s.pk && PK[s.pk]));
+const WMTS = (id, ext) => `https://wmts.geo.admin.ch/1.0.0/${id}/default/current/3857/{z}/{x}/{y}.${ext}`;
+const CH_ATTR = '© <a href="https://www.swisstopo.admin.ch/" target="_blank" rel="noopener">swisstopo</a>';
+const CH_OV = { chTrails:{id:"ch.swisstopo.swisstlm3d-wanderwege", op:1, attr:CH_ATTR}, chWrz:{id:"ch.bafu.wrz-wildruhezonen_portal", op:.75, attr:'Wildruhezonen: BAFU / Kantone'} };
+const chOv = {};
+const plan = {on:false};                       // the approach planner (see «approach planner» below)
+// an overlay tile layer of geo.admin.ch; after repeated errors it falls back to the WMS service (as in the Wind app)
+function chTiles(k){
+  const d = CH_OV[k]; let ok = 0, bad = 0, swapped = false;
+  const lyr = L.tileLayer(WMTS(d.id,"png"),{pane:"chov", opacity:d.op, maxNativeZoom:18, maxZoom:18, attribution:d.attr, className:"chov"});
+  lyr.on("tileload",()=>{ ok++; });
+  lyr.on("tileerror",()=>{ if(swapped || ok || ++bad<4 || chOv[k]!==lyr || !map.hasLayer(lyr)) return; swapped = true;
+    map.removeLayer(lyr);
+    chOv[k] = L.tileLayer.wms("https://wms.geo.admin.ch/?",{layers:d.id, format:"image/png", transparent:true, version:"1.3.0", pane:"chov", opacity:d.op, maxZoom:18, attribution:d.attr}).addTo(map); });
+  return lyr;
+}
+function chOverlays(){
+  if(!map) return;
+  Object.keys(CH_OV).forEach(k=>{
+    const on = regCH() && (prefs[k] || (k==="chTrails" && plan.on));
+    if(on && !chOv[k]) chOv[k] = chTiles(k).addTo(map);
+    if(!on && chOv[k]){ map.removeLayer(chOv[k]); delete chOv[k]; }
+  });
+}
+// swisstopo services (api3.geo.admin.ch, CORS open): height model, elevation profile and the trail network
+const API3 = "https://api3.geo.admin.ch/rest/services/";
+function toLV95(lat, lon){                        // WGS84 → LV95 (swisstopo's approximate formulas, ~1 m)
+  const phi = (lat*3600 - 169028.66)/10000, lam = (lon*3600 - 26782.5)/10000;
+  return [2600072.37 + 211455.93*lam - 10938.51*lam*phi - 0.36*lam*phi*phi - 44.54*lam**3,
+          1200147.07 + 308807.95*phi + 3745.25*lam*lam + 76.63*phi*phi - 194.56*lam*lam*phi + 119.79*phi**3];
+}
+function fromLV95(E, N){                          // LV95 → WGS84 [lat, lon]
+  const y = (E - 2600000)/1e6, x = (N - 1200000)/1e6;
+  return [(16.9023892 + 3.238272*x - 0.270978*y*y - 0.002528*x*x - 0.0447*y*y*x - 0.0140*x*x*x)*100/36,
+          (2.6779094 + 4.728982*y + 0.791484*y*x + 0.1306*y*x*x - 0.0436*y*y*y)*100/36];
+}
+async function chHeight(lat, lon){
+  const [E, N] = toLV95(lat, lon);
+  const r = await fetch(`${API3}height?easting=${E.toFixed(1)}&northing=${N.toFixed(1)}&sr=2056`); if(!r.ok) throw new Error("HTTP "+r.status);
+  const h = parseFloat((await r.json()).height); if(!(h>0)) throw new Error("no height"); return h;
+}
 function decodeLine(str){                       // encoded polyline, precision 5 -> [[lat,lon],…]
   const out=[]; let i=0, lat=0, lon=0;
   while(i<str.length){
@@ -2784,24 +2913,26 @@ function initMap(){
   (D.places||[]).forEach(q=>{ L.marker([q.lat,q.lon],{interactive:false,pane:"base",icon:L.divIcon({className:"",iconSize:[0,0],html:`<span class="mlabel" style="position:absolute;transform:translate(-50%,-50%)">${esc(q.name)}</span>`})}).addTo(map); });
   const OSMC='© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>';
   const BASES = {
+    ch:{ch:true, layer:()=>L.tileLayer(WMTS("ch.swisstopo.pixelkarte-farbe","jpeg"),{maxNativeZoom:18,maxZoom:18,attribution:CH_ATTR})},
+    chsat:{ch:true, layer:()=>L.tileLayer(WMTS("ch.swisstopo.swissimage","jpeg"),{maxNativeZoom:19,maxZoom:18,attribution:CH_ATTR})},
     topo:{layer:()=>L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",{subdomains:"abc",maxNativeZoom:17,maxZoom:18,attribution:OSMC+', SRTM · © <a href="https://opentopomap.org" target="_blank" rel="noopener">OpenTopoMap</a> (CC-BY-SA)'})},
     street:{layer:()=>L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxNativeZoom:19,maxZoom:18,attribution:OSMC})},
     sat:{layer:()=>L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxNativeZoom:18,maxZoom:18,attribution:'© Esri, Maxar, Earthstar Geographics'})},
     outline:{layer:null}
   };
   const note=$("mapnote"); let cur=null, auto=true, timer=null, curKey=null;
-  const ORDER=["topo","street","sat"];
+  const order = () => regCH() ? ["ch","topo","street","sat"] : ["topo","street","sat"];
   note.addEventListener("click",()=>{ note.hidden=true; });
   const BND = 'Boundaries: ISTAT (openpolis)';
   const outline = on => { base.setStyle(on?{fillOpacity:1,opacity:1}:{fillOpacity:0,opacity:0}); document.querySelectorAll(".mlabel").forEach(e=>{ e.hidden=!on; });
     if(map.attributionControl){ map.attributionControl.removeAttribution(BND); if(on) map.attributionControl.addAttribution(BND); } };
   setBase = function(k, byUser){
-    if(byUser){ auto=false; note.hidden=true; prefs.base=k; savePrefs(); }
+    if(byUser){ auto=false; note.hidden=true; if(regCH()) prefs.baseCH=k; else prefs.base=k; savePrefs(); }
     clearTimeout(timer); if(cur){ map.removeLayer(cur); cur=null; } curKey=k; tilesOk=false; outline(true); renderBaseMenu();
     if(k==="outline") return;
     const lyr = cur = BASES[k].layer(); let errs=0;
     const fail = ()=>{ if(cur!==lyr || tilesOk) return; clearTimeout(timer);
-      if(auto){ const nxt=ORDER[ORDER.indexOf(k)+1]; if(nxt){ setBase(nxt); return; }
+      if(auto){ const o=order(), nxt=o[o.indexOf(k)+1]; if(nxt){ setBase(nxt); return; }
         map.removeLayer(lyr); cur=null; curKey="outline"; note.textContent=t("map.blocked"); }
       else { map.removeLayer(lyr); cur=null; curKey="outline"; note.textContent=t("map.baseFail", t("base."+k)); }
       note.hidden=false; renderBaseMenu(); };
@@ -2811,9 +2942,12 @@ function initMap(){
     timer = setTimeout(fail, auto?6000:15000);
   };
   function renderBaseMenu(){
-    $("basemenu").innerHTML = Object.keys(BASES).map(k=>`<button type="button" role="menuitemradio" aria-checked="${k===curKey}" data-base="${k}">${k===curKey?ic("check"):`<span style="width:1.15em"></span>`}${esc(t("base."+k))}</button>`).join("")
+    $("basemenu").innerHTML = Object.keys(BASES).filter(k=>!BASES[k].ch || regCH()).map(k=>`<button type="button" role="menuitemradio" aria-checked="${k===curKey}" data-base="${k}">${k===curKey?ic("check"):`<span style="width:1.15em"></span>`}${esc(t("base."+k))}</button>`).join("")
       + `<label><input type="checkbox" id="allParks" ${prefs.allParks?"checked":""}> ${esc(t("map.allparks"))}</label>`
       + `<label style="border-top:0"><input type="checkbox" id="allPaths" ${prefs.allPaths?"checked":""}> ${esc(t("map.allpaths"))}</label>`
+      + (regCH() ? `<div class="mhead">${esc(t("ch.head"))}</div>`
+        + `<label><input type="checkbox" id="chTrails" ${prefs.chTrails?"checked":""}> ${esc(t("ch.trails"))}</label>`
+        + `<label style="border-top:0"><input type="checkbox" id="chWrz" ${prefs.chWrz?"checked":""}> ${esc(t("ch.wrz"))}</label>` : "")
       + `<div class="mhead">${esc(t("rd.head"))}</div>`
       + ["off","rv","dpc"].map(k=>`<button type="button" role="menuitemradio" aria-checked="${k===prefs.radar}" data-radar="${k}">${k===prefs.radar?ic("check"):`<span style="width:1.15em"></span>`}${esc(t("rd."+k))}</button>`).join("")
       + `<label><input type="checkbox" id="wxMarks" ${prefs.wx?"checked":""}> ${esc(t("rd.marks"))}</label>`;
@@ -2824,14 +2958,18 @@ function initMap(){
     const r=e.target.closest("[data-radar]"); if(r){ setRadar(r.dataset.radar, true); renderBaseMenu(); $("basemenu").hidden=true; } });
   $("basemenu").addEventListener("change",e=>{ if(e.target.id==="allPaths"){ prefs.allPaths=e.target.checked; savePrefs(); drawAllPaths(); }
     if(e.target.id==="allParks"){ prefs.allParks=e.target.checked; savePrefs(); parkVis(); }
+    if(e.target.id==="chTrails" || e.target.id==="chWrz"){ prefs[e.target.id]=e.target.checked; savePrefs(); chOverlays(); }
     if(e.target.id==="wxMarks"){ prefs.wx=e.target.checked; savePrefs(); if(prefs.wx) wxLoad(); refreshFavMarkers(); renderLegend(); } });
   initMap.baseMenu = renderBaseMenu;
   document.addEventListener("click",()=>{ $("basemenu").hidden=true; });
   L.DomEvent.disableClickPropagation($("mapctl")); L.DomEvent.disableClickPropagation($("legend"));
   initMap.relabel = ()=>{ renderBaseMenu(); $("btnBase").title=t("map.base"); renderLegend(); locState(); radarBar(); };
-  const want = BASES[prefs.base] ? prefs.base : "topo";
-  if(want!=="topo") auto=false;
-  setBase(want);
+  // the base map follows the region: swisstopo in Switzerland, OpenTopoMap elsewhere; each region keeps its own choice
+  initMap.regionBase = ()=>{ const def = regCH() ? "ch" : "topo", pick = regCH() ? prefs.baseCH : prefs.base;
+    const want = BASES[pick] && (!BASES[pick].ch || regCH()) ? pick : def;
+    auto = want===def; setBase(want); chOverlays(); wxAttr(); };
+  map.createPane("chov"); map.getPane("chov").style.zIndex=250;
+  initMap.regionBase();
   map.attributionControl.setPrefix(false);
   L.control.scale({imperial:false, maxWidth:90}).addTo(map);
   allLayer = L.layerGroup().addTo(map);
@@ -2851,7 +2989,8 @@ function initMap(){
     const a = map.getZoom()>=13; if(a && !map.hasLayer(clusterA)) map.addLayer(clusterA); if(!a && map.hasLayer(clusterA)) map.removeLayer(clusterA); };   // crags placed by their car park appear together with the car parks
   map.on("zoomend", parkVis); parkVis();
   dblZoom();
-  map.on("click",()=>{ if(picking || Date.now()-dblZoom.at<600) return; clearTimeout(dblZoom.timer); const was = selId; dblZoom.timer = setTimeout(()=>{ if(selId===was) deselect(); }, 280); });   // a little later, so that a double tap zooms without closing the call-out
+  map.on("click", planMapClick);
+  map.on("click",()=>{ if(picking || plan.on || Date.now()-dblZoom.at<600) return; clearTimeout(dblZoom.timer); const was = selId; dblZoom.timer = setTimeout(()=>{ if(selId===was) deselect(); }, 280); });   // a little later, so that a double tap zooms without closing the call-out
   $("btnLoc").addEventListener("click",e=>{ e.stopPropagation(); locate(); });
   $("legend").open = !isPhone();
   renderLegend(); locState(); drawAllPaths();
@@ -2901,7 +3040,7 @@ function renderMarkers(){
   const ms=[], as=[];
   shown.forEach(s=>{ if(!s.coord) return;
     const m = L.marker([s.coord.lat,s.coord.lon],{icon:icon(s),title:s.name,riseOnHover:true});
-    m.on("click",()=>{ targetRoute=null; selectOnMap(s.id,{fit:!s.anchor}); });
+    m.on("click",()=>{ if(plan.on) return; targetRoute=null; selectOnMap(s.id,{fit:!s.anchor}); });
     markers[s.id]=m; (s.anchor?as:ms).push(m); });
   if(cluster.addLayers){ cluster.addLayers(ms); clusterA.addLayers(as); } else { ms.forEach(m=>cluster.addLayer(m)); as.forEach(m=>clusterA.addLayer(m)); }
   drawAllPaths();
@@ -2926,6 +3065,8 @@ function drawAllPaths(){
 // None of these requests go through the service worker, so nothing old is ever shown as current; the age is always printed.
 const WX_URL = "https://api.open-meteo.com/v1/forecast", WX_TTL = 30*60*1000, WX_GRID = 0.01, WX_KEY = "finale-atlas:wx";
 const WX_ATTR = 'Weather: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a> (CC BY 4.0)';
+const WX_CH_MODEL = "meteoswiss_icon_seamless";                      // MeteoSwiss ICON-CH1 (1 km, ~33 h) and ICON-CH2 (2 km, 5 days), via Open-Meteo
+const WX_CH_ATTR = 'Wetter Schweiz: <a href="https://www.meteoswiss.admin.ch/" target="_blank" rel="noopener">MeteoSchweiz</a> ICON-CH1/CH2 (CC BY 4.0)';
 const RV_ATTR = 'Radar: <a href="https://www.rainviewer.com/" target="_blank" rel="noopener">RainViewer</a>';
 const DPC_ATTR = 'Radar: <a href="https://radar.protezionecivile.it/" target="_blank" rel="noopener">Radar-DPC, Protezione Civile</a> (CC BY-SA 4.0)';
 const wx = {at:null, err:null, busy:null, pts:Object.create(null)};      // pts["lat,lon"] = {t:[unix s], p:[mm], pr:[%]}
@@ -2937,18 +3078,26 @@ function wxLoad(force){
   if(wx.busy) return wx.busy;
   if(!force && wx.at && Date.now()-wx.at < WX_TTL) return Promise.resolve();
   if(navigator.onLine===false) return Promise.resolve();
+  // Swiss crags get the rain of MeteoSwiss' own model (ICON-CH1/CH2, 1–2 km); the probability, which a single model run cannot give,
+  // and any hour the Swiss model leaves empty come from Open-Meteo's default blend, like everywhere else.
+  const chKeys = new Set(S_ALL.filter(isCHcrag).map(wxKeyOf).filter(Boolean));
   const keys = [...new Set(S_ALL.map(wxKeyOf).filter(Boolean))];
+  const groups = [keys.filter(k=>!chKeys.has(k)), keys.filter(k=>chKeys.has(k))];
+  const get = async url => { const r = await fetch(url, {cache:"no-store"}); if(!r.ok) throw new Error("HTTP "+r.status); const j = await r.json(); return Array.isArray(j) ? j : [j]; };
   wx.busy = (async()=>{
     try{
       const pts = Object.create(null);
-      for(let i=0;i<keys.length;i+=100){
-        const ch = keys.slice(i,i+100);
+      for(let g=0; g<2; g++) for(let i=0;i<groups[g].length;i+=100){
+        const ch = groups[g].slice(i,i+100);
         const url = `${WX_URL}?latitude=${ch.map(k=>k.split(",")[0]).join(",")}&longitude=${ch.map(k=>k.split(",")[1]).join(",")}`
           + "&hourly=precipitation,precipitation_probability&past_days=2&forecast_days=2&timeformat=unixtime&timezone=GMT";
-        const r = await fetch(url, {cache:"no-store"});
-        if(!r.ok) throw new Error("HTTP "+r.status);
-        let j = await r.json(); if(!Array.isArray(j)) j = [j];
-        j.forEach((o,n)=>{ const h=o&&o.hourly; if(h && ch[n]) pts[ch[n]] = {t:h.time||[], p:h.precipitation||[], pr:h.precipitation_probability||[]}; });
+        const [a, b] = await Promise.allSettled([get(url), g ? get(url.replace("&hourly=precipitation,precipitation_probability","&hourly=precipitation")+"&models="+WX_CH_MODEL) : Promise.reject(null)]);
+        if(a.status!=="fulfilled" && b.status!=="fulfilled") throw a.reason;
+        const A = a.status==="fulfilled" ? a.value : [], B = b.status==="fulfilled" ? b.value : [];
+        ch.forEach((k,n)=>{ const ha = A[n] && A[n].hourly, hb = B[n] && B[n].hourly, h = ha || hb; if(!h) return;
+          const t = h.time || [], bt = hb ? hb.time || [] : [], bi = new Map(bt.map((x,i)=>[x,i]));
+          const p = t.map((x,i)=>{ const j = bi.get(x), v = hb && j!=null ? hb.precipitation[j] : null; return v!=null ? v : (ha ? ha.precipitation[i] : null); });
+          pts[k] = {t, p, pr: ha ? ha.precipitation_probability||[] : [], m: hb ? "ch" : undefined}; });
       }
       wx.pts = pts; wx.at = Date.now(); wx.err = null;
       try{ localStorage.setItem(WX_KEY, JSON.stringify({at:wx.at, pts})); }catch(e){}
@@ -2994,8 +3143,13 @@ function wxHTML(s){
     <div class="wxnums"><span>${esc(t("wx.p24"))}: <b>${mmTxt(w.p24)}</b></span><span>${esc(t("wx.p48"))}: <b>${mmTxt(w.p48)}</b></span>
       <span>${esc(t("wx.n6"))}: <b>${mmTxt(w.n6)}</b>${w.pr6?` (${esc(t("wx.prob",Math.round(w.pr6)))})`:""}</span><span>${esc(t("wx.n24"))}: <b>${mmTxt(w.n24)}</b></span>
       ${ago?`<span>${esc(t("wx.since",ago))}</span>`:""}</div>
-    <div class="hint">${esc(t("wx.note", timeStr(new Date(wx.at))))} <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> (CC BY 4.0)</div>
+    <div class="hint">${esc(t("wx.note", timeStr(new Date(wx.at))))}${w.d.m==="ch"?" "+esc(t("wx.note.ch")):""} ${w.d.m==="ch"?`<a href="https://www.meteoswiss.admin.ch/" target="_blank" rel="noopener">MeteoSchweiz</a>, `:""}<a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> (CC BY 4.0)</div>
     ${map?`<div class="row"><button class="btn small" type="button" id="wxRadar">${ic("layers")}${esc(t("wx.radar"))}</button></div>`:""}</section>`;
+}
+function wxAttr(){
+  if(!map || !map.attributionControl) return;
+  map.attributionControl.removeAttribution(WX_ATTR); map.attributionControl.removeAttribution(WX_CH_ATTR);
+  if(wx.at && prefs.wx) map.attributionControl.addAttribution(regCH() ? WX_CH_ATTR : WX_ATTR);
 }
 function wxChanged(){
   wxHintSync();
@@ -3003,10 +3157,192 @@ function wxChanged(){
   const cur = currentDetail(), sec = $("wxsec");
   if(cur && sec && !$("detail").hidden){ const tmp=document.createElement("div"); tmp.innerHTML=wxHTML(cur); sec.replaceWith(tmp.firstElementChild);
     const tile=$("wxtile"); if(tile) tile.innerHTML=wxTile(cur); }
-  if(map && map.attributionControl){ map.attributionControl.removeAttribution(WX_ATTR); if(wx.at && prefs.wx) map.attributionControl.addAttribution(WX_ATTR); }
+  wxAttr();
 }
 setInterval(()=>{ if(!document.hidden && (prefs.wx || F.wx!=="any")) wxLoad(); }, 5*60*1000);
 document.addEventListener("visibilitychange",()=>{ if(!document.hidden){ if(prefs.wx || F.wx!=="any") wxLoad(); if(radar.kind!=="off") radarRefresh(); else if(wx.at) refreshFavMarkers(); } });
+
+// Weather symbols after MeteoSwiss' pictogram codes, drawn as in the Wind app
+// [Sonne 0/1 frei/2 hinter Wolke/3 halb verdeckt, Wolke 0/1 klein/2 normal/3 dunkel, Niederschlag r|s|m, Anzahl, Gewitter, Nebel 1 Hochnebel/2 Nebel, hohe Wolken]
+const MS_SPEC = {
+  1: [1, 0, '', 0, 0, 0, 0], 2: [1, 1, '', 0, 0, 0, 0], 3: [2, 2, '', 0, 0, 0, 0], 4: [3, 2, '', 0, 0, 0, 0], 5: [0, 2, '', 0, 0, 0, 0], 35: [0, 2, '', 0, 0, 0, 0],
+  26: [1, 0, '', 0, 0, 0, 1], 27: [0, 2, '', 0, 0, 1, 0], 28: [0, 0, '', 0, 0, 2, 0],
+  6: [2, 2, 'r', 1, 0, 0, 0], 29: [2, 1, 'r', 1, 0, 0, 0], 32: [2, 2, 'r', 2, 0, 0, 0], 7: [2, 2, 'm', 1, 0, 0, 0], 31: [2, 2, 'm', 2, 0, 0, 0], 8: [2, 2, 's', 1, 0, 0, 0], 30: [2, 1, 's', 1, 0, 0, 0],
+  9: [0, 2, 'r', 2, 0, 0, 0], 33: [0, 2, 'r', 3, 0, 0, 0], 10: [0, 2, 'm', 2, 0, 0, 0], 11: [0, 2, 's', 2, 0, 0, 0], 34: [0, 2, 's', 3, 0, 0, 0],
+  12: [2, 2, '', 0, 1, 0, 0], 13: [2, 2, 'r', 1, 1, 0, 0], 36: [2, 2, 'r', 1, 1, 0, 0], 37: [2, 2, 's', 1, 1, 0, 0],
+  14: [0, 3, 'r', 1, 0, 0, 0], 17: [0, 3, 'r', 2, 0, 0, 0], 20: [0, 3, 'r', 3, 0, 0, 0], 15: [0, 3, 'm', 1, 0, 0, 0], 18: [0, 3, 'm', 2, 0, 0, 0], 21: [0, 3, 'm', 3, 0, 0, 0],
+  16: [0, 3, 's', 1, 0, 0, 0], 19: [0, 3, 's', 2, 0, 0, 0], 22: [0, 3, 's', 3, 0, 0, 0],
+  23: [0, 3, '', 0, 1, 0, 0], 24: [0, 3, 'r', 2, 1, 0, 0], 25: [0, 3, 'r', 3, 1, 0, 0], 40: [0, 3, 'r', 1, 1, 0, 0], 41: [0, 2, 'r', 1, 1, 0, 0], 38: [0, 2, 'r', 2, 1, 0, 0], 39: [0, 2, 's', 2, 1, 0, 0], 42: [0, 3, 's', 2, 1, 0, 0],
+};
+let wxSeq = 0;
+function wxInner(code) {
+  const night = code > 100;
+  const base = night ? code - 100 : code;
+  const [sun, cloud, pt, pn, thunder, fog, high] = MS_SPEC[base] || [0, 2, '', 0, 0, 0, 0];
+  let g = '';
+  const small = cloud === 1;
+  // Sonne / Mond
+  if (sun) {
+    const free = !cloud;
+    const peek = sun === 3;
+    const cx = free ? (high ? 27 : 24) : small ? 20 : peek ? 27 : 17, cy = free ? (high ? 26 : 24) : small ? 19 : peek ? 14 : 16, r = free ? 9.5 : small ? 8.5 : peek ? 6.5 : 7.5;
+    if (night) {
+      const id = 'wxm' + (++wxSeq);
+      g += `<mask id="${id}"><rect width="48" height="48" fill="#fff"/><circle cx="${cx + r * 0.55}" cy="${cy - r * 0.45}" r="${r * 0.9}" fill="#000"/></mask><circle cx="${cx}" cy="${cy}" r="${r}" style="fill:var(--wx-moon)" mask="url(#${id})"/>`;
+    } else {
+      let rays = '';
+      for (let k = 0; k < 8; k++) {
+        const a = (k * Math.PI) / 4 + Math.PI / 8 * 0, r1 = r + 2.6, r2 = r + 6.2;
+        rays += `M${(cx + r1 * Math.cos(a)).toFixed(1)} ${(cy + r1 * Math.sin(a)).toFixed(1)}L${(cx + r2 * Math.cos(a)).toFixed(1)} ${(cy + r2 * Math.sin(a)).toFixed(1)}`;
+      }
+      g += `<path d="${rays}" style="stroke:var(--wx-ray)" stroke-width="2.6" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="${r}" style="fill:var(--wx-sun);stroke:var(--wx-ray)" stroke-width="0.8"/>`;
+    }
+  }
+  // hohe Wolken: graue Schleier über der Sonne (oben links)
+  if (high) g += '<path d="M5 13.5h19M9 19.5h16M3 25.5h13M10 31.5h9" fill="none" style="stroke:var(--wx-cloud-s)" stroke-width="2.4" stroke-linecap="round" opacity="0.9"/>';
+  if (fog === 2) g += '<path d="M8 17h32M5 24h38M8 31h32M12 38h24" fill="none" style="stroke:var(--wx-cloud-s)" stroke-width="3" stroke-linecap="round"/>';
+  // Wolke
+  if (cloud) {
+    const fill = cloud === 3 ? 'var(--wx-dark)' : 'var(--wx-cloud)';
+    const tr = small ? 'translate(19 20) scale(0.72)' : (sun || fog === 1 || pt || thunder) ? 'translate(9 10)' : 'translate(8 13)';
+    g += `<g transform="${tr}"><path d="M8 26h21a7 7 0 0 0 0.6-13.97A10 10 0 0 0 10.4 10.5 7.8 7.8 0 0 0 8 26z" style="fill:${fill};stroke:var(--wx-cloud-s)" stroke-width="1.3" stroke-linejoin="round"/></g>`;
+  }
+  if (fog === 1) g += '<path d="M9 41h30M13 46h22" fill="none" style="stroke:var(--wx-cloud-s)" stroke-width="2.6" stroke-linecap="round"/>';
+  // Niederschlag unter der Wolke
+  if (pt && pn) {
+    const n = pt === 'm' ? Math.max(2, pn) : pn;
+    const xs = thunder ? (n === 1 ? [16] : n === 2 ? [15, 37] : [12, 17, 37]) : n === 1 ? [26] : n === 2 ? [21, 31] : [17, 26, 35];
+    xs.forEach((x, i) => {
+      const kind = pt === 'm' ? (i % 2 ? 's' : 'r') : pt;
+      if (kind === 'r') g += `<path d="M${x + 1.5} 39L${x - 1.5} 45.5" style="stroke:var(--wx-rain)" stroke-width="2.6" stroke-linecap="round"/>`;
+      else g += `<path d="M${x} 38.5v7M${x - 3} 40.2l6 3.6M${x + 3} 40.2l-6 3.6" style="stroke:var(--wx-snow)" stroke-width="1.7" stroke-linecap="round"/>`;
+    });
+  }
+  if (thunder) g += '<path d="M27 32l-6.5 8.5h5l-3 7.5 9.5-10.5h-5.2l3-5.5z" style="fill:var(--wx-sun);stroke:var(--halo)" stroke-width="1" stroke-linejoin="round"/>';
+  return g;
+}
+const wxSvg = (code) => `<svg viewBox="0 0 48 48" aria-hidden="true">${wxInner(code)}</svg>`;
+
+// Open-Meteo-Wettercode (WMO) → MeteoSchweiz-Piktogramm (Nacht +100)
+const WMO_MS = { 0: 1, 1: 2, 2: 3, 3: 5, 45: 28, 48: 28, 51: 14, 53: 14, 55: 17, 56: 15, 57: 18, 61: 14, 63: 17, 65: 20, 66: 15, 67: 18, 71: 16, 73: 19, 75: 22, 77: 16, 80: 6, 81: 32, 82: 33, 85: 8, 86: 11, 95: 24, 96: 25, 99: 25 };
+const wmoToMs = (code, isDay) => { const c = WMO_MS[code] ?? 5; return isDay === 0 ? c + 100 : c; };
+
+// ===================================================================== weather forecast per crag (MeteoSwiss in Switzerland)
+// Hourly values for 7 days, summed up per day: symbol, temperature, rain, sunshine, wind and the freezing level. In Switzerland the
+// values come from MeteoSwiss' ICON-CH1/CH2 (via Open-Meteo, as in the Wind app); hours it does not cover (probability, days 6–7) come
+// from Open-Meteo's default blend. Temperatures are for the height of the wall: in Switzerland from the swisstopo height model.
+const FC_TTL = 60*60*1000, FC_KEY = "finale-atlas:fc";
+const FC_VARS = "temperature_2m,precipitation,weather_code,is_day,wind_speed_10m,wind_gusts_10m,wind_direction_10m,sunshine_duration,precipitation_probability,freezing_level_height";
+const fc = {data:Object.create(null), busy:Object.create(null), err:Object.create(null), open:Object.create(null)};
+try{ const j = JSON.parse(localStorage.getItem(FC_KEY)||"null"); if(j) Object.keys(j).forEach(k=>{ if(j[k] && Date.now()-j[k].at < 6*36e5) fc.data[k]=j[k]; }); }catch(e){}
+function fcSave(){ try{ const keep = Object.keys(fc.data).sort((a,b)=>fc.data[b].at-fc.data[a].at).slice(0,12), o = {}; keep.forEach(k=>{ o[k]=fc.data[k]; }); localStorage.setItem(FC_KEY, JSON.stringify(o)); }catch(e){} }
+const TZP = new Intl.DateTimeFormat("en-CA",{timeZone:"Europe/Zurich", year:"numeric", month:"2-digit", day:"2-digit", hour:"2-digit", hourCycle:"h23"});
+function zh(ts){ const o = {}; TZP.formatToParts(new Date(ts*1000)).forEach(p=>{ o[p.type]=p.value; }); return {d:`${o.year}-${o.month}-${o.day}`, h:+o.hour%24}; }
+async function fcJSON(url){ const r = await fetch(url, {cache:"no-store"}); if(!r.ok) throw new Error("HTTP "+r.status); return r.json(); }
+function fcFor(s, force){
+  const c = fc.data[s.id];
+  if(!force && c && Date.now()-c.at < FC_TTL) return Promise.resolve(c);
+  if(fc.busy[s.id]) return fc.busy[s.id];
+  if(navigator.onLine===false){ fc.err[s.id] = t("fc.offline"); return Promise.resolve(c||null); }
+  const p = wxPos(s); if(!p) return Promise.resolve(null);
+  return fc.busy[s.id] = (async()=>{
+    try{
+      const ch = isCHcrag(s);
+      let elev = c && c.elevSrc==="swisstopo" ? c.elev : null;
+      if(ch && elev==null) elev = await chHeight(p.lat, p.lon).catch(()=>null);
+      const q = `${WX_URL}?latitude=${p.lat.toFixed(4)}&longitude=${p.lon.toFixed(4)}${elev!=null?`&elevation=${Math.round(elev)}`:""}`
+        + `&hourly=${FC_VARS}&wind_speed_unit=kmh&timeformat=unixtime&timezone=Europe%2FZurich&forecast_days=7`;
+      const [a, b] = await Promise.allSettled([ch ? fcJSON(q+"&models="+WX_CH_MODEL) : Promise.reject(null), fcJSON(q)]);
+      const A = a.status==="fulfilled" && a.value && a.value.hourly ? a.value : null, B = b.status==="fulfilled" && b.value && b.value.hourly ? b.value : null;
+      if(!A && !B) throw (b.reason || a.reason || new Error("no data"));
+      const base = B || A, tt = base.hourly.time || [], ai = A ? new Map((A.hourly.time||[]).map((x,i)=>[x,i])) : null;
+      const pick = k => tt.map((x,i)=>{ const j = ai && ai.get(x), va = j!=null && A.hourly[k] ? A.hourly[k][j] : null;
+        if(va!=null) return va; const vb = B && B.hourly[k] ? B.hourly[k][i] : null; return vb==null ? null : vb; });
+      const chHours = A ? tt.filter(x=>{ const j = ai.get(x); return j!=null && A.hourly.precipitation && A.hourly.precipitation[j]!=null; }).length : 0;
+      const o = {at:Date.now(), t:tt, temp:pick("temperature_2m"), rr:pick("precipitation"), wc:pick("weather_code"), day:pick("is_day"),
+        ws:pick("wind_speed_10m"), wg:pick("wind_gusts_10m"), wd:pick("wind_direction_10m"), sun:pick("sunshine_duration"),
+        pp:pick("precipitation_probability"), fz:pick("freezing_level_height"),
+        elev: elev!=null ? elev : (Number.isFinite(base.elevation) ? base.elevation : null), elevSrc: elev!=null ? "swisstopo" : "model",
+        model: chHours ? "ch" : "om", chUntil: chHours ? tt[chHours-1] : null};
+      fc.data[s.id] = o; delete fc.err[s.id]; fcSave();
+      return o;
+    }catch(e){ fc.err[s.id] = String(e && e.message || e); return c||null; }
+    finally{ delete fc.busy[s.id]; fcChanged(s); }
+  })();
+}
+function fcChanged(s){
+  const cur = currentDetail(), sec = $("fcsec");
+  if(cur===s && sec && !$("detail").hidden){ const tmp=document.createElement("div"); tmp.innerHTML=fcHTML(s); sec.replaceWith(tmp.firstElementChild); }
+}
+// one symbol for a day: the precipitation it brings, if it rains for more than a passing hour; otherwise its most common sky
+function daySymbol(codes, rain){
+  const wet = codes.filter(c=>c>=51);
+  if(wet.length>=2 && rain>=0.5) return Math.max.apply(null, wet);
+  const n = {}; codes.forEach(c=>{ if(c<51) n[c]=(n[c]||0)+1; });
+  let best = codes.length ? codes[0] : 3, bn = -1; Object.keys(n).forEach(c=>{ if(n[c]>bn || (n[c]===bn && +c>best)){ best=+c; bn=n[c]; } }); return best;
+}
+function fcDays(o){
+  const by = new Map();
+  o.t.forEach((ts,i)=>{ const z = zh(ts); let d = by.get(z.d); if(!d){ d = {d:z.d, h:[], tmin:Infinity, tmax:-Infinity, rr:0, pp:0, sun:0, ws:0, wg:0, fz:[], codes:[]}; by.set(z.d, d); }
+    d.h.push(i);
+    const T = o.temp[i]; if(T!=null){ d.tmin=Math.min(d.tmin,T); d.tmax=Math.max(d.tmax,T); }
+    d.rr += +o.rr[i]||0; d.pp = Math.max(d.pp, +o.pp[i]||0); d.sun += +o.sun[i]||0;
+    d.ws = Math.max(d.ws, +o.ws[i]||0); d.wg = Math.max(d.wg, +o.wg[i]||0);
+    if(z.h>=8 && z.h<=19){ if(o.wc[i]!=null) d.codes.push(+o.wc[i]); if(o.fz[i]!=null) d.fz.push(+o.fz[i]); } });
+  return [...by.values()].filter(d=>d.h.length>=20 && Number.isFinite(d.tmax)).map(d=>Object.assign(d, {code:daySymbol(d.codes, d.rr)}));
+}
+const WMO_T = {0:["clear","sonnig"],1:["mainly clear","meist sonnig"],2:["partly cloudy","teilweise bewölkt"],3:["overcast","bedeckt"],45:["fog","Nebel"],48:["fog with rime","Nebel mit Raureif"],
+  51:["light drizzle","leichter Nieselregen"],53:["drizzle","Nieselregen"],55:["dense drizzle","starker Nieselregen"],56:["freezing drizzle","gefrierender Nieselregen"],57:["freezing drizzle","gefrierender Nieselregen"],
+  61:["light rain","leichter Regen"],63:["rain","Regen"],65:["heavy rain","starker Regen"],66:["freezing rain","gefrierender Regen"],67:["freezing rain","gefrierender Regen"],
+  71:["light snow","leichter Schneefall"],73:["snow","Schneefall"],75:["heavy snow","starker Schneefall"],77:["snow grains","Schneegriesel"],
+  80:["rain showers","Regenschauer"],81:["heavy showers","kräftige Regenschauer"],82:["violent showers","heftige Regenschauer"],85:["snow showers","Schneeschauer"],86:["heavy snow showers","kräftige Schneeschauer"],
+  95:["thunderstorms","Gewitter"],96:["thunderstorms with hail","Gewitter mit Hagel"],99:["thunderstorms with hail","Gewitter mit Hagel"]};
+const wmoTxt = c => { const e = WMO_T[c]; return e ? e[LANG==="de"?1:0] : ""; };
+const DIRS8 = ["N","NE","E","SE","S","SW","W","NW"];
+const dirTxt = d => d==null ? "" : oriL(DIRS8[Math.round(((+d%360)+360)%360/45)%8]);
+const windArrow = d => d==null ? "" : `<span class="warr" style="transform:rotate(${Math.round(+d+180)}deg)" aria-hidden="true">↑</span>`;     // arrow points where the wind goes
+const r50 = v => Math.round(v/50)*50, fzTxt = f => r50(f[0])===r50(f[1]) ? fmtInt(r50(f[0])) : fmtInt(r50(f[0]))+"–"+fmtInt(r50(f[1]));
+const tC = v => v==null ? "–" : Math.round(v)+"°";
+function dayLabel(iso, i){
+  if(i===0) return t("fc.today"); if(i===1) return t("fc.tomorrow");
+  const p = iso.split("-"), d = new Date(Date.UTC(+p[0], p[1]-1, +p[2], 12));
+  return d.toLocaleDateString(LANG==="de"?"de-CH":"en-GB",{weekday:"short", day:"numeric", timeZone:"UTC"});
+}
+function fcHourRows(o, d){
+  const now = Date.now()/1000, rows = [];
+  for(let k=0;k<d.h.length;k++){ const i = d.h[k], z = zh(o.t[i]); if(z.h%3 || z.h<3) continue;
+    let rr = 0; for(let m=Math.max(0,k-2); m<=k; m++) rr += +o.rr[d.h[m]]||0;               // rain of the three hours up to this one
+    const code = o.wc[i]!=null ? +o.wc[i] : 3;
+    rows.push(`<div class="fch${o.t[i]<now-1800?" past":""}"><span class="num">${String(z.h).padStart(2,"0")}:00</span><span class="fci" title="${esc(wmoTxt(code))}">${wxSvg(wmoToMs(code, o.day[i]))}</span>
+      <b class="num">${tC(o.temp[i])}</b><span class="num rr${rr>=0.1?" on":""}">${rr>=0.1?mmTxt(rr):"–"}</span><span class="num">${windArrow(o.wd[i])} ${Math.round(+o.ws[i]||0)}<small> / ${Math.round(+o.wg[i]||0)}</small></span></div>`); }
+  return rows.join("");
+}
+function fcHTML(s){
+  const o = fc.data[s.id], ch = isCHcrag(s), busy = !!fc.busy[s.id], err = fc.err[s.id];
+  const head = secHead("sun","--sun",esc(t(ch?"fc.h.ch":"fc.h")));
+  if(!o) return `<section class="sec" id="fcsec">${head}<div class="hint">${esc(busy?t("fc.load"):err?t("fc.fail",err):t("fc.none"))}</div>
+    ${busy?"":`<div class="row"><button class="btn small" type="button" id="fcLoad">${esc(t("fc.retry"))}</button></div>`}</section>`;
+  const days = fcDays(o);
+  const rows = days.map((d,i)=>{ const open = fc.open[s.id]===d.d, fz = d.fz.length ? [Math.min.apply(null,d.fz), Math.max.apply(null,d.fz)] : null;
+    return `<button type="button" class="fcd${open?" open":""}" data-fcday="${d.d}" aria-expanded="${open}"><span class="dl">${esc(dayLabel(d.d,i))}</span>
+      <span class="fci" title="${esc(wmoTxt(d.code))}">${wxSvg(wmoToMs(d.code,1))}</span>
+      <span class="tt num"><b>${tC(d.tmax)}</b> <span class="hint">${tC(d.tmin)}</span></span>
+      <span class="num rr${d.rr>=0.2?" on":""}"><span>${d.rr>=0.1?mmTxt(d.rr):"0 mm"}</span>${d.pp?`<small>${esc(t("fc.pp", Math.round(d.pp)))}</small>`:""}</span>
+      <span class="num mt"><span class="sun">${ic("sun")}${(d.sun/3600).toFixed(d.sun<36000?1:0)} h</span><span>${ic("wind")}${Math.round(d.ws)}<small> / ${Math.round(d.wg)} km/h</small></span></span></button>`
+      + (open ? `<div class="fcx"><div class="hint">${esc(wmoTxt(d.code))}${fz?` · ${esc(t("fc.fz", fzTxt(fz)))}`:""}</div>
+        <div class="fchead hint"><span>${esc(t("fc.time"))}</span><span></span><span>${esc(t("fc.temp"))}</span><span>${esc(t("fc.rain3"))}</span><span>${esc(t("fc.wind"))}</span></div>${fcHourRows(o,d)}</div>` : "");
+  }).join("");
+  const elev = o.elev!=null ? t(o.elevSrc==="swisstopo"?"fc.elev.ch":"fc.elev.om", fmtInt(Math.round(o.elev))) : "";
+  const src = o.model==="ch" ? t("fc.src.ch", o.chUntil ? dayLabelShort(o.chUntil) : "") : t(ch?"fc.src.chfail":"fc.src.om");
+  return `<section class="sec" id="fcsec">${head}
+    <div class="hint">${esc(elev)}</div>
+    <div class="fcdays">${rows || `<div class="hint">${esc(t("fc.none"))}</div>`}</div>
+    <div class="hint">${esc(t("fc.legend"))}</div>
+    <div class="hint">${esc(src)} ${esc(t("fc.asof", timeStr(new Date(o.at))))}${busy?" · "+esc(t("fc.load")):err?" · "+esc(t("fc.fail",err)):""}
+      ${o.model==="ch"?`<a href="https://www.meteoswiss.admin.ch/" target="_blank" rel="noopener">MeteoSchweiz</a>, `:""}<a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> (CC BY 4.0)${o.elevSrc==="swisstopo"?" · "+CH_ATTR:""}</div>
+    ${ch?`<div class="row"><a class="btn small" href="${LANG==="de"?"https://www.meteoschweiz.admin.ch/":"https://www.meteoswiss.admin.ch/"}" target="_blank" rel="noopener">${ic("ext")}${esc(t("fc.ms"))}</a></div>`:""}</section>`;
+}
+const dayLabelShort = ts => {    return new Date(ts*1000).toLocaleString(LANG==="de"?"de-CH":"en-GB",{weekday:"short", hour:"2-digit", minute:"2-digit", timeZone:"Europe/Zurich"}); };
 
 // ---- radar layer
 const radar = {kind:"off", layers:[], times:[], i:0, timer:null, play:true, at:0, guard:null};
@@ -3208,6 +3544,304 @@ function showOnMap(id){                          // from the detail page or the 
   if(!shown.includes(s)){ F = F0(); apply(); }
   const go = ()=>selectOnMap(id,{fit:true});
   setTimeout(()=>{ map.invalidateSize(); if(s.coord) go(); else if(s.pk){ const p=PK[s.pk]; map.setView([p.lat,p.lon],16); openParkPopup(s.pk); } }, isPhone()?90:0);
+}
+
+// ===================================================================== approach planner on swisstopo's trails (Switzerland)
+// The official hiking trails of swissTLM3D (layer ch.swisstopo.swisstlm3d-wanderwege) are read for the area around the points
+// (api3 identify, with their geometry), joined into a network and searched for the shortest way (Dijkstra). Where the start, a
+// via point or the wall lies off the network, the last bit is a straight line («off-trail»), drawn dotted. Heights come from the
+// swisstopo height model (profile.json), the time from the formula of the Swiss hiking trails – the one on the yellow signposts.
+// If the trail network cannot be read, BRouter on OpenStreetMap stands in, and the panel says so.
+const PL_LAYERS = ["ch.swisstopo.swisstlm3d-wanderwege"];
+const PL_COL = {0:"#1d1538", 1:"#e8a200", 2:"#d7263d", 3:"#1f5fd6", 4:ROUTE_COL};        // off-trail, hiking, mountain, alpine trail, OSM path
+const PL_W = {0:4, 1:1, 2:1.05, 3:1.6, 4:1.1};                                          // detour factors for the search (off-trail counts four times)
+const PL_SNAP = 800;                                                                    // furthest a point may lie from a trail (m)
+Object.assign(plan, {s:null, pts:[], res:null, busy:false, err:"", seq:0, grp:null, pick:null, min:false, net:new Map(), start:""});
+const HIKE_C = [14.271, 3.6991, 2.5922, -1.4384, 0.32105, 0.81542, -0.090261, -0.20757, 0.010192, 0.028588, -0.00057466, -0.0021842, 1.5176e-5, 8.6894e-5, -1.3584e-7, -1.4026e-6];
+function hikeMin(pr){                              // minutes; pr = [{d: m from start, h: m}], formula of the Swiss hiking trails (from the Wind app)
+  let tm = 0;
+  for(let i=1;i<pr.length;i++){ const d = pr[i].d-pr[i-1].d; if(!(d>0)) continue;
+    const s = (pr[i].h-pr[i-1].h)*10/d; let mpk = 0;
+    if(s>-4 && s<4){ for(let j=0;j<HIKE_C.length;j++) mpk += HIKE_C[j]*s**j; } else mpk = s>0 ? 17*s : -9*s;
+    tm += d*mpk/1000; }
+  return tm;
+}
+const catOf = props => { const x = JSON.stringify(props||{}); return /alpin/i.test(x) ? 3 : /bergwander|mountain|montagne|montagna/i.test(x) ? 2 : 1; };
+async function plNet(bb){                          // trail lines in the box [E0,N0,E1,N1] (LV95): [{c:[[E,N],…], cat}]
+  const key = bb.map(v=>Math.round(v/200)).join(",");
+  if(plan.net.has(key)) return plan.net.get(key);
+  const lines = []; let lim = 200;
+  for(const id of PL_LAYERS){
+    for(let off=0; off<2000; off+=lim){
+      const url = `${API3}all/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=${bb.map(v=>Math.round(v)).join(",")}`
+        + `&imageDisplay=1000,1000,96&mapExtent=${bb.map(v=>Math.round(v)).join(",")}&tolerance=0&layers=all:${id}&sr=2056`
+        + `&returnGeometry=true&geometryFormat=geojson&lang=${LANG==="de"?"de":"en"}&limit=${lim}&offset=${off}`;
+      let j;
+      try{ j = await fcJSON(url); }
+      catch(e){ if(off===0 && lim===200 && /HTTP 400/.test(e.message)){ lim = 50; off = -lim; continue; } throw e; }
+      const res = (j && j.results) || [];
+      res.forEach(f=>{ const g = f.geometry || {}, cat = catOf(f.properties || f.attributes);
+        const parts = g.paths || (g.type==="LineString" ? [g.coordinates] : g.type==="MultiLineString" ? g.coordinates : []);
+        (parts||[]).forEach(c=>{ if(Array.isArray(c) && c.length>1) lines.push({c:c.map(p=>[+p[0], +p[1]]), cat}); }); });
+      if(res.length < lim) break;
+    }
+  }
+  plan.net.set(key, lines); if(plan.net.size>12) plan.net.delete(plan.net.keys().next().value);
+  return lines;
+}
+// network: nodes (vertices, merged within ~2 m), edges between consecutive vertices, a grid of segments for the nearest-trail search
+function plGraph(lines){
+  const X = [], Y = [], adj = [], cell = new Map(), segs = [], grid = new Map(), G = 100;
+  const node = (x, y) => { const cx = Math.round(x/2), cy = Math.round(y/2);
+    for(let a=-1;a<=1;a++) for(let b=-1;b<=1;b++){ const k = cell.get((cx+a)+":"+(cy+b)); if(k!=null && Math.hypot(X[k]-x, Y[k]-y)<=2.5) return k; }
+    const k = X.length; X.push(x); Y.push(y); adj.push([]); cell.set(cx+":"+cy, k); return k; };
+  const link = (a, b, cat) => { if(a===b) return; const d = Math.hypot(X[a]-X[b], Y[a]-Y[b]); adj[a].push({to:b, d, cat}); adj[b].push({to:a, d, cat}); return d; };
+  const index = (a, b, cat) => { const i = segs.length; segs.push([a,b,cat]);
+    const x0 = Math.floor(Math.min(X[a],X[b])/G), x1 = Math.floor(Math.max(X[a],X[b])/G), y0 = Math.floor(Math.min(Y[a],Y[b])/G), y1 = Math.floor(Math.max(Y[a],Y[b])/G);
+    for(let x=x0;x<=x1;x++) for(let y=y0;y<=y1;y++){ const k = x+":"+y; if(!grid.has(k)) grid.set(k, []); grid.get(k).push(i); } };
+  lines.forEach(l=>{ let p = node(l.c[0][0], l.c[0][1]);
+    for(let i=1;i<l.c.length;i++){ const q = node(l.c[i][0], l.c[i][1]); if(q!==p){ link(p, q, l.cat); index(p, q, l.cat); } p = q; } });
+  const g = {X, Y, adj, segs, grid, G, n:X.length};
+  // trail ends that stop on another trail without a shared vertex (T-junctions): join them to the nearest point of that trail
+  for(let k=0;k<g.n;k++){ if(adj[k].length!==1) continue;
+    const hit = plNear(g, X[k], Y[k], 6, 1).find(h=>h.a!==k && h.b!==k && h.a!==adj[k][0].to && h.b!==adj[k][0].to);
+    if(hit){ const p = X.length; X.push(hit.x); Y.push(hit.y); adj.push([]); link(p, hit.a, hit.cat); link(p, hit.b, hit.cat); link(k, p, hit.cat); } }
+  // trails that cross without a shared vertex: a node at the crossing, joined to the ends of both segments
+  const done = new Set();
+  grid.forEach(list=>{ for(let i=0;i<list.length;i++) for(let j=i+1;j<list.length;j++){
+    const u = segs[list[i]], v = segs[list[j]], key = list[i]+":"+list[j];
+    if(done.has(key) || u[0]===v[0] || u[0]===v[1] || u[1]===v[0] || u[1]===v[1]) continue; done.add(key);
+    const x1 = X[u[0]], y1 = Y[u[0]], dx1 = X[u[1]]-x1, dy1 = Y[u[1]]-y1, x2 = X[v[0]], y2 = Y[v[0]], dx2 = X[v[1]]-x2, dy2 = Y[v[1]]-y2;
+    const den = dx1*dy2 - dy1*dx2; if(Math.abs(den)<1e-9) continue;
+    const a = ((x2-x1)*dy2 - (y2-y1)*dx2)/den, c = ((x2-x1)*dy1 - (y2-y1)*dx1)/den;
+    if(a<0 || a>1 || c<0 || c>1) continue;
+    const p = X.length; X.push(x1+a*dx1); Y.push(y1+a*dy1); adj.push([]);
+    link(p, u[0], u[2]); link(p, u[1], u[2]); link(p, v[0], v[2]); link(p, v[1], v[2]); } });
+  g.n = X.length;
+  return g;
+}
+function plNear(g, x, y, maxD, maxN){             // nearest points on trail segments, distinct places first
+  const r = Math.ceil(maxD/g.G), cx = Math.floor(x/g.G), cy = Math.floor(y/g.G), seen = new Set(), out = [];
+  for(let a=-r;a<=r;a++) for(let b=-r;b<=r;b++){ const list = g.grid.get((cx+a)+":"+(cy+b)); if(!list) continue;
+    list.forEach(i=>{ if(seen.has(i)) return; seen.add(i); const [p, q, cat] = g.segs[i];
+      const dx = g.X[q]-g.X[p], dy = g.Y[q]-g.Y[p], l2 = dx*dx+dy*dy, u = l2 ? Math.max(0, Math.min(1, ((x-g.X[p])*dx+(y-g.Y[p])*dy)/l2)) : 0;
+      const px = g.X[p]+u*dx, py = g.Y[p]+u*dy, d = Math.hypot(px-x, py-y);
+      if(d<=maxD) out.push({a:p, b:q, cat, x:px, y:py, d}); }); }
+  out.sort((m,n)=>m.d-n.d);
+  const pick = [];
+  for(const h of out){ if(pick.length>=maxN) break; if(pick.length && h.d > pick[0].d*1.5+60) break;
+    if(pick.every(o=>Math.hypot(o.x-h.x, o.y-h.y)>25)) pick.push(h); }
+  return pick;
+}
+// one leg: from point A to point B (LV95) over the network; returns [{x,y,cat}] where cat is the kind of way leading to that point
+function plLeg(g, A, B){
+  const base = g.X.length, X = g.X, Y = g.Y, extra = new Map();
+  const add = (a, b, d, cat, w) => { [[a,b],[b,a]].forEach(([u,v])=>{ if(!extra.has(u)) extra.set(u, []); extra.get(u).push({to:v, d, cat, w}); }); };
+  const vnode = (x, y) => { X.push(x); Y.push(y); return X.length-1; };
+  const S = vnode(A[0], A[1]), T = vnode(B[0], B[1]);
+  const straight = Math.hypot(A[0]-B[0], A[1]-B[1]);
+  add(S, T, straight, 0, straight*PL_W[0]);
+  [[S, A], [T, B]].forEach(([v, P])=>{ plNear(g, P[0], P[1], PL_SNAP, 4).forEach(h=>{
+    const k = vnode(h.x, h.y);
+    add(k, h.a, Math.hypot(h.x-X[h.a], h.y-Y[h.a]), h.cat); add(k, h.b, Math.hypot(h.x-X[h.b], h.y-Y[h.b]), h.cat);
+    add(v, k, h.d, 0, h.d*PL_W[0]); }); });
+  const n = X.length, dist = new Float64Array(n).fill(Infinity), prev = new Int32Array(n).fill(-1), pcat = new Int8Array(n), heap = [[0, S]];
+  dist[S] = 0;
+  const push = it => { heap.push(it); let i = heap.length-1; while(i>0){ const p = (i-1)>>1; if(heap[p][0]<=heap[i][0]) break; [heap[p],heap[i]]=[heap[i],heap[p]]; i=p; } };
+  const pop = () => { const top = heap[0], last = heap.pop(); if(heap.length){ heap[0] = last; let i = 0;
+    for(;;){ const l = 2*i+1, r = l+1; let m = i; if(l<heap.length && heap[l][0]<heap[m][0]) m = l; if(r<heap.length && heap[r][0]<heap[m][0]) m = r; if(m===i) break; [heap[m],heap[i]]=[heap[i],heap[m]]; i = m; } } return top; };
+  while(heap.length){ const [dd, u] = pop(); if(dd>dist[u]) continue; if(u===T) break;
+    const es = u<g.n ? g.adj[u].concat(extra.get(u)||[]) : (extra.get(u)||[]);
+    for(const e of es){ const nd = dd + (e.w!=null ? e.w : e.d*PL_W[e.cat]); if(nd<dist[e.to]){ dist[e.to] = nd; prev[e.to] = u; pcat[e.to] = e.cat; push([nd, e.to]); } } }
+  const out = []; for(let v=T; v>=0; v=prev[v]){ out.push({x:X[v], y:Y[v], cat:pcat[v]}); if(v===S) break; }
+  X.length = base; Y.length = base;
+  return out.reverse();
+}
+async function plBrouter(a, b){                   // stand-in when the swisstopo network is out of reach: OpenStreetMap paths
+  const j = await fcJSON(`https://brouter.de/brouter?lonlats=${a[1].toFixed(6)},${a[0].toFixed(6)}%7C${b[1].toFixed(6)},${b[0].toFixed(6)}&profile=hiking-mountain&alternativeidx=0&format=geojson`);
+  const c = j && j.features && j.features[0] && j.features[0].geometry && j.features[0].geometry.coordinates;
+  if(!Array.isArray(c) || c.length<2) throw new Error("no route");
+  return c.map(p=>{ const [x, y] = toLV95(+p[1], +p[0]); return {x, y, cat:4}; });
+}
+async function plProfile(pts){                     // heights from the swisstopo height model along the route
+  let line = pts.map(p=>[p.x, p.y]);
+  if(line.length>150){ const k = (line.length-1)/149, s = []; for(let i=0;i<150;i++) s.push(line[Math.round(i*k)]); line = s; }
+  let len = 0; for(let i=1;i<pts.length;i++) len += Math.hypot(pts[i].x-pts[i-1].x, pts[i].y-pts[i-1].y);
+  const nb = Math.round(Math.max(40, Math.min(400, len/20)));
+  const j = await fcJSON(`${API3}profile.json?sr=2056&nb_points=${nb}&geom=${encodeURIComponent(JSON.stringify({type:"LineString", coordinates:line.map(p=>[Math.round(p[0]*10)/10, Math.round(p[1]*10)/10])}))}`);
+  const raw = (Array.isArray(j)?j:[]).map(p=>{ const a = p.alts||{}, h = parseFloat(a.COMB!=null?a.COMB:a.DTM25!=null?a.DTM25:a.DTM2); return {d:+p.dist, h: h>0 ? h : null}; }).filter(p=>Number.isFinite(p.d));
+  if(raw.length<2 || raw.filter(p=>p.h!=null).length < raw.length*.6) throw new Error("outside the height model");
+  for(let i=0;i<raw.length;i++){ if(raw[i].h!=null) continue; let a=i-1; while(a>=0 && raw[a].h==null) a--; let b=i+1; while(b<raw.length && raw[b].h==null) b++;
+    raw[i].h = a<0 ? raw[b].h : b>=raw.length ? raw[a].h : raw[a].h + (raw[b].h-raw[a].h)*(raw[i].d-raw[a].d)/((raw[b].d-raw[a].d)||1); }
+  return raw;
+}
+async function plCompute(){
+  const seq = ++plan.seq, P = plan.pts.filter(p=>p.lat!=null);
+  plan.res = null; plan.err = "";
+  if(P.length<2){ plan.busy = false; planDraw(); planBar(); return; }
+  plan.busy = true; planDraw(); planBar();
+  try{
+    const L95 = P.map(p=>toLV95(p.lat, p.lon)), xs = L95.map(p=>p[0]), ys = L95.map(p=>p[1]);
+    const ext = Math.max(Math.max(...xs)-Math.min(...xs), Math.max(...ys)-Math.min(...ys));
+    if(ext>15000) throw new Error(t("pl.far"));
+    const pad = Math.max(500, ext*.3), bb = [Math.min(...xs)-pad, Math.min(...ys)-pad, Math.max(...xs)+pad, Math.max(...ys)+pad];
+    let pts = [], src = "ch", netErr = null, g = null;
+    try{ const lines = await plNet(bb); if(!lines.length) throw new Error(t("pl.nonet")); g = plGraph(lines); }
+    catch(e){ netErr = e; }
+    if(seq!==plan.seq) return;
+    for(let i=1;i<L95.length;i++){
+      let leg;
+      if(g) leg = plLeg(g, L95[i-1], L95[i]);
+      else { if(src!=="none") src = "osm";
+        try{ leg = await plBrouter([P[i-1].lat,P[i-1].lon], [P[i].lat,P[i].lon]); }
+        catch(e){ src = "none"; leg = [{x:L95[i-1][0], y:L95[i-1][1], cat:0}, {x:L95[i][0], y:L95[i][1], cat:0}]; } }
+      pts = pts.concat(pts.length ? leg.slice(1) : leg);
+    }
+    const by = {0:0,1:0,2:0,3:0,4:0}; let d = 0;
+    for(let i=1;i<pts.length;i++){ const s = Math.hypot(pts[i].x-pts[i-1].x, pts[i].y-pts[i-1].y); d += s; by[pts[i].cat] += s; }
+    const res = {pts, ll:pts.map(p=>fromLV95(p.x, p.y)), d, by, src, netErr: netErr ? String(netErr.message||netErr) : "", prof:null, profErr:""};
+    plan.res = res; plan.busy = false; planDraw(); planBar();
+    try{ res.prof = await plProfile(pts); }catch(e){ res.profErr = String(e.message||e); }
+    if(seq!==plan.seq) return;
+    if(res.prof){ let up = 0, down = 0; res.prof.forEach((p,i)=>{ if(i){ const dh = p.h-res.prof[i-1].h; if(dh>0) up += dh; else down -= dh; } });
+      const L = res.prof[res.prof.length-1].d;
+      Object.assign(res, {up, down, min:Math.min(...res.prof.map(p=>p.h)), max:Math.max(...res.prof.map(p=>p.h)),
+        tm:hikeMin(res.prof), back:hikeMin(res.prof.slice().reverse().map(p=>({d:L-p.d, h:p.h})))}); }
+    else res.tm = hikeMin([{d:0,h:0},{d:res.d,h:0}]);
+    planBar();
+  }catch(e){ if(seq!==plan.seq) return; plan.busy = false; plan.err = String(e.message||e); planDraw(); planBar(); }
+}
+// ---- the planner on the map
+function planStarts(s){                            // the crag's car parks, then «my position» and «a point on the map»
+  const ks = []; (s.ap||[]).forEach(a=>{ if(PK[a.pk] && ks.indexOf(a.pk)<0) ks.push(a.pk); }); if(s.pk && PK[s.pk] && ks.indexOf(s.pk)<0) ks.push(s.pk);
+  return ks.map(k=>({v:"pk:"+k, label:t("pl.from.pk", pkName(k))})).concat([{v:"me", label:t("pl.from.me")}, {v:"map", label:t("pl.from.map")}]);
+}
+function planSetStart(v){
+  plan.start = v; plan.pick = null;
+  const st = plan.pts[0];
+  if(v.indexOf("pk:")===0){ const p = PK[v.slice(3)]; Object.assign(st, {lat:p.lat, lon:p.lon, label:pkName(v.slice(3))}); plCompute(); }
+  else if(v==="me"){
+    const use = m => { Object.assign(st, {lat:m.lat, lon:m.lon, label:t("loc.you")}); plCompute(); };
+    if(me) use(me);
+    else if(navigator.geolocation) navigator.geolocation.getCurrentPosition(p=>{ if(plan.start==="me") use({lat:p.coords.latitude, lon:p.coords.longitude}); },
+      ()=>{ toast(t("pl.nome"), null, false, 6000); planSetStart("map"); }, {enableHighAccuracy:true, timeout:15000, maximumAge:30000});
+    else planSetStart("map");
+  }
+  else { plan.pick = "start"; toast(t("pl.tap.start"), null, false, 5000); planBar(); }
+}
+function planOpen(id){
+  const s = byId[id]; if(!s || !s.coord || !map) return;
+  if(!$("detail").hidden) closeDetail();
+  if(isPhone() && view!=="map") setView("map");
+  if(s.reg!==prefs.region) setRegion(s.reg);
+  deselect();
+  if(!plan.grp) plan.grp = L.layerGroup().addTo(map);
+  Object.assign(plan, {on:true, s, res:null, err:"", pick:null, min:false});
+  const first = planStarts(s)[0];
+  plan.pts = [{kind:"start", lat:null, lon:null}, {kind:"end", lat:s.coord.lat, lon:s.coord.lon, label:s.name}];
+  $("planbar").hidden = false; $("map").classList.add("planning");
+  chOverlays();
+  planSetStart(first.v);
+  setTimeout(()=>{ map.invalidateSize(); const P = plan.pts.filter(p=>p.lat!=null).map(p=>[p.lat,p.lon]);
+    if(P.length) map.fitBounds(P, {padding:[60,60], paddingBottomRight:[60, isPhone()?Math.round(innerHeight*.42):60], maxZoom:16, animate:!calm()}); }, isPhone()?90:0);
+}
+function planClose(){
+  if(!plan.on) return;
+  plan.on = false; plan.seq++; plan.pick = null;
+  if(plan.grp) plan.grp.clearLayers();
+  $("planbar").hidden = true; $("planbar").innerHTML = ""; $("map").classList.remove("planning");
+  chOverlays();
+}
+function planMarker(p, i){
+  const n = plan.pts.length, cls = p.kind==="start" ? "a" : p.kind==="end" ? "z" : "v";
+  const m = L.marker([p.lat, p.lon], {draggable:true, zIndexOffset:800, icon:L.divIcon({className:"", iconSize:[24,24], iconAnchor:[12,12], html:`<span class="plm ${cls}">${cls==="a"?"A":cls==="z"?"Z":i}</span>`})});
+  m.on("dragend", ()=>{ const ll = m.getLatLng(); Object.assign(p, {lat:ll.lat, lon:ll.lng}); if(p.kind==="start"){ plan.start = "map"; p.label = t("pl.point"); } plCompute(); });
+  if(p.kind==="via") m.on("click", e=>{ L.DomEvent.stopPropagation(e); plan.pts.splice(i,1); plCompute(); });
+  m.bindTooltip(p.kind==="via" ? t("pl.via.t") : esc(p.label||""), {direction:"top", offset:[0,-12]});
+  return m;
+}
+function planDraw(){
+  if(!plan.grp) return; plan.grp.clearLayers(); if(!plan.on) return;
+  const r = plan.res;
+  if(r){ let run = null;
+    const flush = () => { if(!run || run.ll.length<2) return; const c = run.cat===0 ? cssv("--ink") : PL_COL[run.cat];
+      L.polyline(run.ll, {color:"#fff", weight:8, opacity:.85, interactive:false, lineCap:"round", lineJoin:"round"}).addTo(plan.grp);
+      L.polyline(run.ll, {color:c, weight:run.cat===0?3:5, opacity:1, dashArray:run.cat===0?"2 8":null, interactive:false, lineCap:"round", lineJoin:"round",
+        attribution: r.src==="ch" ? CH_ATTR : ROUTE_ATTR}).addTo(plan.grp); };
+    r.pts.forEach((p,i)=>{ if(!i) return; if(!run || run.cat!==p.cat){ flush(); run = {cat:p.cat, ll:[r.ll[i-1]]}; } run.ll.push(r.ll[i]); });
+    flush(); }
+  plan.pts.forEach((p,i)=>{ if(p.lat!=null) planMarker(p, i).addTo(plan.grp); });
+}
+function plFmtMin(m){ const v = Math.max(5, Math.round(m/5)*5), h = Math.floor(v/60), mm = v%60; return h ? `${h} h${mm?" "+String(mm).padStart(2,"0"):""}` : t("min", mm); }
+function plProfileSVG(r){
+  const P = r.prof, W = 300, H = 64, L = P[P.length-1].d || 1, lo = r.min, hi = Math.max(r.max, lo+20);
+  const pt = p => `${(p.d/L*W).toFixed(1)},${(H-4-(p.h-lo)/(hi-lo)*(H-14)).toFixed(1)}`;
+  return `<div class="plprof"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="${esc(t("pl.prof"))}">
+    <polygon points="0,${H} ${P.map(pt).join(" ")} ${W},${H}" class="pa"/><polyline points="${P.map(pt).join(" ")}" class="pl"/></svg>
+    <span class="hi num">${fmtInt(Math.round(hi))} m</span><span class="lo num">${fmtInt(Math.round(lo))} m</span></div>`;
+}
+function planBar(){
+  const b = $("planbar"); if(!b || !plan.on) return;
+  const s = plan.s, r = plan.res;
+  let body = "";
+  if(plan.pick) body = `<div class="notice info">${esc(t(plan.pick==="via"?"pl.tap.via":"pl.tap.start"))}</div>`;
+  else if(plan.busy) body = `<div class="hint">${esc(t("pl.busy"))}</div>`;
+  else if(plan.err) body = `<div class="notice warn">${esc(t("pl.fail", plan.err))}</div>`;
+  else if(r){
+    const cats = [1,2,3,4,0].filter(k=>r.by[k]>=5);
+    body = `<div class="plsum"><b class="num">${fmtDist(r.d)}</b>${r.up!=null?`<span class="num">↑ ${fmtInt(Math.round(r.up))} m</span><span class="num">↓ ${fmtInt(Math.round(r.down))} m</span>`:""}
+        ${r.tm!=null?`<b class="num">≈ ${esc(plFmtMin(r.tm))}</b>${r.back!=null?`<span class="hint num">${esc(t("pl.back", plFmtMin(r.back)))}</span>`:""}`:""}</div>
+      <div class="plbar" aria-hidden="true">${cats.map(k=>`<i style="flex:${r.by[k].toFixed(0)};background:${k===0?"var(--ink2)":PL_COL[k]}"></i>`).join("")}</div>
+      <div class="plleg">${cats.map(k=>`<span><i class="c${k}" style="--c:${k===0?"var(--ink)":PL_COL[k]}"></i>${esc(t("pl.cat."+k))} <b class="num">${fmtDist(r.by[k])}</b></span>`).join("")}</div>
+      ${r.prof ? plProfileSVG(r) : ""}
+      ${r.src!=="ch" ? `<div class="notice warn">${esc(t(r.src==="osm"?"pl.osm":"pl.none", r.netErr))}</div>` : ""}
+      ${r.by[0]>=30 ? `<div class="hint">${esc(t("pl.off.hint"))}</div>` : ""}
+      ${r.by[3]>=5 ? `<div class="hint">${esc(t("pl.alpine"))}</div>` : ""}
+      <div class="hint">${esc(t(r.prof?"pl.time":"pl.time.flat"))}${r.profErr?" ("+esc(r.profErr)+")":""}</div>`;
+  }
+  b.innerHTML = `<div class="plhead"><span class="ttl">${ic("walk")}<span>${esc(t("pl.h", s.name))}</span></span>
+      <button class="btn small" type="button" data-plmin aria-label="${esc(t(plan.min?"pl.max":"pl.min"))}">${plan.min?"▴":"▾"}</button>
+      <button class="btn small" type="button" data-plx aria-label="${esc(t("close"))}">✕</button></div>
+    <div class="plbody"${plan.min?" hidden":""}>
+      <div class="row"><label class="hint" for="plStart">${esc(t("pl.start"))}</label><select id="plStart">${planStarts(s).map(o=>`<option value="${esc(o.v)}"${o.v===plan.start?" selected":""}>${esc(o.label)}</option>`).join("")}</select></div>
+      ${body}
+      <div class="row"><button class="btn small" type="button" data-plvia>${ic("plus")}${esc(t("pl.via"))}</button>
+        ${plan.pts.length>2?`<button class="btn small" type="button" data-plclear>${esc(t("pl.clear"))}</button>`:""}
+        <span style="flex:1"></span>
+        ${r?`<button class="btn small" type="button" data-plgpx>${ic("dl")}GPX</button>`:""}
+        <button class="btn small" type="button" data-plcrag>${esc(t("pl.crag"))}</button></div>
+      <div class="hint">${esc(t("pl.src"))} ${CH_ATTR}</div>
+    </div>`;
+  if(plan.min && r) b.querySelector(".plhead .ttl span").textContent = `${s.name} · ${fmtDist(r.d)}${r.tm!=null?" · ≈ "+plFmtMin(r.tm):""}`;
+}
+function planGpx(){
+  const r = plan.res, s = plan.s; if(!r) return;
+  const x = v => esc(String(v));
+  const gpx = `<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="Kletteratlas" xmlns="http://www.topografix.com/GPX/1/1">\n<trk><name>${x(t("pl.gpx.name", s.name))}</name><type>hiking</type><trkseg>\n`
+    + r.ll.map(p=>`<trkpt lat="${p[0].toFixed(6)}" lon="${p[1].toFixed(6)}"/>`).join("\n") + `\n</trkseg></trk>\n</gpx>\n`;
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([gpx], {type:"application/gpx+xml"})); a.download = `zustieg-${s.id}.gpx`;
+  document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+}
+function planViaAt(ll){                            // a via point goes into the leg where it adds the least way
+  const P = plan.pts; let best = 1, bd = Infinity;
+  for(let i=1;i<P.length;i++){ const a = P[i-1], b = P[i]; if(a.lat==null) continue;
+    const d = hav(a.lat,a.lon,ll.lat,ll.lng) + hav(ll.lat,ll.lng,b.lat,b.lon) - hav(a.lat,a.lon,b.lat,b.lon); if(d<bd){ bd = d; best = i; } }
+  P.splice(best, 0, {kind:"via", lat:ll.lat, lon:ll.lng});
+}
+$("planbar").addEventListener("click", e=>{
+  if(e.target.closest("[data-plx]")){ const s = plan.s; planClose(); if(s) selectOnMap(s.id, {fit:true}); return; }
+  if(e.target.closest("[data-plmin]")){ plan.min = !plan.min; planBar(); return; }
+  if(e.target.closest("[data-plvia]")){ plan.pick = plan.pick==="via" ? null : "via"; planBar(); return; }
+  if(e.target.closest("[data-plclear]")){ plan.pts = plan.pts.filter(p=>p.kind!=="via"); plCompute(); return; }
+  if(e.target.closest("[data-plgpx]")){ planGpx(); return; }
+  if(e.target.closest("[data-plcrag]")){ const s = plan.s; planClose(); openDetail(s.id); return; }
+});
+$("planbar").addEventListener("change", e=>{ if(e.target.id==="plStart") planSetStart(e.target.value); });
+function planMapClick(e){
+  if(!plan.on || !plan.pick) return;
+  if(plan.pick==="start"){ Object.assign(plan.pts[0], {lat:e.latlng.lat, lon:e.latlng.lng, label:t("pl.point")}); plan.start = "map"; }
+  else planViaAt(e.latlng);
+  plan.pick = null; plCompute();
 }
 
 // ---- my position (GPS, or set by hand where the browser refuses location)
@@ -3564,7 +4198,7 @@ const gradeVar = gi => gi==null ? "--unk" : BAND_VAR[bandOf(gi)];
 const CLS_VAR = {easy:"--b1", mid:"--b2", hard:"--b3", unk:"--unk"};
 const secHead = (icon, col, html) => `<h3 class="sh" style="--c:var(${col})"><span class="si">${ic(icon)}</span><span>${html}</span></h3>`;
 // the sections of the crag page, in page order, for the jump bar under the page head
-const JUMP = [["apsec","walk","--park","j.ap"],["toposec","image","--violet","j.topo"],["routesec","routes","--hot","j.routes"],["wxsec","rain","--rainc","j.wx"],["cragLog","book","--ok","j.log"],["moresec","info","--ink2","j.more"]];
+const JUMP = [["apsec","walk","--park","j.ap"],["toposec","image","--violet","j.topo"],["routesec","routes","--hot","j.routes"],["wxsec","rain","--rainc","j.wx"],["fcsec","sun","--sun","j.fc"],["cragLog","book","--ok","j.log"],["moresec","info","--ink2","j.more"]];
 function jumpHTML(s){
   return `<nav class="jump" id="jump" aria-label="${esc(t("j.label"))}">${JUMP.map(j=>`<button type="button" data-jump="${j[0]}" aria-current="false" style="--c:var(${j[2]})">${ic(j[1])}${esc(t(j[3]))}${j[0]==="routesec"&&s.routes.length?` <span class="num">${s.routes.length}</span>`:""}</button>`).join("")}</nav>`;
 }
@@ -3643,7 +4277,8 @@ function approachHTML(s){
       <dt>${esc(t("ap.parkText"))}</dt><dd>${s.park?esc(LT(s,"park")):esc(t("ap.none"))}</dd>
       <dt>${esc(t("ap.walkText"))}</dt><dd>${s.walk?esc(LT(s,"walk")):esc(t("ap.none"))}</dd>
     </dl>`;
-  if(s.coord || s.pk) h += `<div class="row"><button class="btn" type="button" id="showmap">${ic("map")}${esc(t("ap.showMap"))}</button></div>`;
+  if(s.coord || s.pk) h += `<div class="row"><button class="btn" type="button" id="showmap">${ic("map")}${esc(t("ap.showMap"))}</button>${isCHcrag(s) && s.coord && map ? `<button class="btn" type="button" id="plan">${ic("walk")}${esc(t("ap.plan"))}</button>` : ""}</div>`;
+  if(isCHcrag(s) && s.coord && map) h += `<div class="hint">${esc(t("ap.plan.hint"))}</div>`;
   if(aps.length) h += `<div class="hint">${esc(t("ap.calc.hint"))}</div>`;
   return h + `</section>`;
 }
@@ -3723,6 +4358,7 @@ function renderDetail(s){
   <section class="sec" id="toposec">${secHead("image","--violet",esc(t("d.topo")))}${galleryHTML(s)}${linksHTML(s)}</section>
   ${routesHTML(s)}
   ${wxHTML(s)}
+  ${fcHTML(s)}
   ${cragLogHTML(s)}
   <details class="more" id="moresec"><summary>${esc(t("d.more"))}</summary>
     <section><h3>${esc(t("d.climb"))}</h3><dl class="kv">
@@ -3767,7 +4403,7 @@ function openDetail(id, o){
   if(!o.keepTarget) targetRoute=null;
   const was = layers.some(l=>l.name==="detail");
   if(!s.coord || !map){ if(map) deselect(); selId=id; document.querySelectorAll(".card.sel").forEach(c=>c.classList.remove("sel")); const cd=document.querySelector(`.card[data-id="${CSS.escape(id)}"]`); if(cd) cd.classList.add("sel"); }
-  renderDetail(s); $("detail").scrollTop=0; wxLoad();
+  renderDetail(s); $("detail").scrollTop=0; wxLoad(); fcFor(s);
   const tg = $("detail").querySelector("li.target"); if(tg) tg.scrollIntoView({block:"center"});
   if(was){ try{ history.replaceState(history.state,"","#"+id); }catch(e){} }
   else if(o.push===false) layers.push({name:"detail",close:hideDetail});
@@ -3789,6 +4425,9 @@ $("detail").addEventListener("click",e=>{
   const rv=e.target.closest("[data-rv]"); if(rv && s){ routeView=rv.dataset.rv; rerenderRoutes(s); return; }
   if(e.target.closest("#showmap") && s){ showOnMap(s.id); return; }
   if(e.target.closest("#wxLoad")){ wxLoad(true); return; }
+  if(e.target.closest("#fcLoad") && s){ fcFor(s, true); fcChanged(s); return; }
+  const fd=e.target.closest("[data-fcday]"); if(fd && s){ fc.open[s.id] = fc.open[s.id]===fd.dataset.fcday ? null : fd.dataset.fcday; fcChanged(s); return; }
+  if(e.target.closest("#plan") && s){ planOpen(s.id); return; }
   if(e.target.closest("#wxRadar") && s){ if(prefs.radar==="off") setRadar("rv", true); if(initMap.baseMenu) initMap.baseMenu(); showOnMap(s.id); return; }
   const inf=e.target.closest("[data-info]"); if(inf){ e.preventDefault(); openInfo(inf.dataset.info); }
 });
