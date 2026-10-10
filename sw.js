@@ -1,11 +1,13 @@
 /* Kletteratlas – service worker. Lets the installed app start without a connection and keeps map tiles that were viewed.
+   The cache "finale-atlas-packs" holds the loaded mappacks (the regions); only the app writes to it.
    The cache "finale-atlas-user" belongs to the favourites store and is never touched here.
    The cache names keep the former working name "finale-atlas": renaming them would orphan what is already stored on people's devices. */
 const BUILD = "dev";                            // stamped by the deploy workflow
 const SHELL = "finale-atlas-shell-" + BUILD;     // the app files; replaced with every build
 const TILES = "finale-atlas-tiles-v1";           // map tiles that were looked at (limited number)
 const FONTS = "finale-atlas-fonts-v1";
-const KEEP = [SHELL, TILES, FONTS, "finale-atlas-user"];
+const PACKS = "finale-atlas-packs";              // the loaded mappacks (regions); the app fills and empties it
+const KEEP = [SHELL, TILES, FONTS, PACKS, "finale-atlas-user"];
 const CORE = ["./", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./icon-maskable-192.png", "./icon-maskable-512.png",
   "./apple-touch-icon.png", "./favicon-32.png", "./favicon.svg"];
 const TILE_HOSTS = /(^|\.)tile\.opentopomap\.org$|(^|\.)tile\.openstreetmap\.org$|^server\.arcgisonline\.com$|^wmts\.geo\.admin\.ch$/;     // swisstopo: Swiss maps and trails
@@ -75,6 +77,7 @@ self.addEventListener("fetch", e => {
   if (url.origin === self.location.origin) {
     if (url.pathname.indexOf(new URL("./", self.location).pathname) !== 0) return;      // outside the app's folder
     if (/\/version\.json$/.test(url.pathname)) return;                                  // the update check must reach the server
+    if (/\/pack[\w.-]*\.json$/.test(url.pathname)) return;                              // mappacks: the app keeps them itself, in PACKS
     const isPage = req.mode === "navigate" || /\/(index\.html)?$/.test(url.pathname);
     e.respondWith(isPage ? page(e) : asset(req));
   } else if (TILE_HOSTS.test(url.hostname)) e.respondWith(tile(req));

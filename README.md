@@ -7,7 +7,7 @@ Karte und Liste der Sportklettergebiete rund um Finale Ligure, in Oltrefinale (V
 
 **Zur App: <https://enteee.github.io/Chl-dderi/>**
 
-407 Gebiete, rund 8100 Routen, 69 Parkplätze. Oben in der App wechselst du zwischen den Regionen **Finale**, **Oltrefinale** und **Oberwallis**; alle Filter gelten jeweils innerhalb der gewählten Region.
+407 Gebiete, rund 8100 Routen, 69 Parkplätze – verteilt auf drei **Mappacks**: **Finale**, **Oltrefinale** und **Oberwallis**. Jede Region ist eine eigene Datei, die du in der App lädst und wieder entlädst (das **+** neben der Regionenleiste oder *Mehr → Regionen*). Oben wechselst du zwischen den geladenen Regionen; alle Filter gelten jeweils innerhalb der gewählten Region. Frisch installiert enthält die App nur eine Kostprobe mit sechs Gebieten aus Finale.
 
 Hervorgegangen aus dem «Finale Single-Pitch Atlas», der ersten Version dieses Repositorys.
 
@@ -33,6 +33,21 @@ Die App startet danach auch ohne Netz. Kartenkacheln, die du einmal angeschaut h
 - **Logbuch:** Bei jeder Route auf ⊕ tippen und Datum, Stil (Onsight, Flash, Rotpunkt, Toprope, Versuch) und eigene Sterne eintragen. Die Seite *Logbuch* zeigt Zahlen, die schwersten Routen und alle Einträge und exportiert sie als CSV-Datei. Über den Filter *Mein Logbuch* findest du Gebiete mit Routen, die noch offen sind.
 - **Wissenswertes** (unter *Mehr*): Grad-Umrechner (Französisch, UIAA, USA, Grossbritannien, Australien, Sachsen, Skandinavien), Rekorde aus den Daten, Fakten zu Finale und ein kleines Italienisch-Glossar.
 
+## Mappacks: Regionen laden und entladen
+
+Die Gebietsdaten stecken nicht mehr in der App, sondern in **Mappacks**: eine JSON-Datei pro Region. Die App selbst bringt nur eine Kostprobe mit – sechs Gebiete aus Finale –, damit nach der Installation sofort etwas zu sehen ist; beim ersten Start fragt sie nach einem Mappack.
+
+- **Laden:** auf das **+** neben der Regionenleiste tippen (oder *Mehr → Regionen*). Dort stehen die drei fertigen Regionen zum Antippen; daneben lässt sich jede andere Adresse eingeben oder eine Datei vom Gerät wählen. Die Kostprobe verschwindet, sobald das erste eigene Pack geladen ist, und kommt zurück, wenn das letzte entladen wird.
+- **Offline:** Ein geladenes Pack liegt im Cache-Speicher des Browsers (`finale-atlas-packs`) und ist auch ohne Netz da. *Neu holen* lädt dieselbe Adresse noch einmal, wenn es neue Daten gibt.
+- **Entladen:** gibt den Platz wieder frei. **Favoriten und Logbuch bleiben** – sie hängen an Gebiets- und Routenschlüsseln und tauchen wieder auf, sobald das Pack zurück ist. Auf der Favoritenseite steht, wie viele Einträge gerade zu einer nicht geladenen Region gehören.
+- **Adressen der fertigen Packs:** <https://enteee.github.io/Chl-dderi/pack.finale.json>, `pack.oltre.json`, `pack.ow.json` (rund 630, 345 und 220 kB). Eine fremde Adresse muss CORS erlauben; die App prüft jedes Pack, bevor sie es übernimmt, und sagt im Klartext, was ihr fehlt.
+
+### Ein eigenes Mappack
+
+Das Format steht in [`mappack.schema.json`](mappack.schema.json) (JSON Schema 2020-12): `id` (wird zum Regionenschlüssel), `name` in Deutsch und Englisch, `version`, die Gebiete in `sectors`, dazu `areas` (Zonen), `parks` (Parkplätze), optional `picSrc`, `labels`, `outline` (GeoJSON), `stats` und die Schalter `ch` (Schweiz: swisstopo, MeteoSchweiz, Zustiegsplaner), `mapbg`, `rockMode` und `guideKey`. Unbekannte Felder darf ein Pack mitbringen – eine ältere App übergeht sie.
+
+`tools/make-packs.sh` baut die Packs und prüft sie: Zählstände, eindeutige Gebiets-IDs, auflösbare Parkplatz- und Zonenverweise, und dass die Kostprobe ein Ausschnitt von `pack.finale.json` ist. Mit `--check` schreibt es nichts. Nötig sind nur `jq` und `perl`. Die gleiche Prüfung plus Schema-Validierung läuft bei jedem Push in [`packs.yml`](.github/workflows/packs.yml).
+
 ## Favoriten und Logbuch sichern
 
 Favoriten und Logbuch werden dreifach auf dem Gerät gespeichert und nach jedem Speichern zurückgelesen. Auf den Seiten *Favoriten* und *Logbuch* steht, ob das Speichern geklappt hat.
@@ -53,12 +68,12 @@ Der Name unter einem Icon, das schon auf dem Homescreen liegt, ändert sich auf 
 
 ## Veröffentlichung (GitHub Pages)
 
-Jeder Push auf `main` startet den Workflow [`.github/workflows/pages.yml`](.github/workflows/pages.yml). Er veröffentlicht alle Web-Dateien aus dem Hauptordner (`*.html`, `*.js`, `*.webmanifest`, `*.png`, `*.svg`, `*.ico`) unter <https://enteee.github.io/Chl-dderi/>. Das Status-Badge oben zeigt, ob der letzte Lauf geklappt hat; manuell starten über **Actions → Deploy to GitHub Pages → Run workflow**.
+Jeder Push auf `main` startet den Workflow [`.github/workflows/pages.yml`](.github/workflows/pages.yml). Er veröffentlicht alle Web-Dateien aus dem Hauptordner (`*.html`, `*.js`, `*.json` – also auch die Mappacks –, `*.webmanifest`, `*.png`, `*.svg`, `*.ico`) unter <https://enteee.github.io/Chl-dderi/>. Das Status-Badge oben zeigt, ob der letzte Lauf geklappt hat; manuell starten über **Actions → Deploy to GitHub Pages → Run workflow**.
 
 - Einmalig nötig: **Settings → Pages → Build and deployment → Source = *GitHub Actions***.
 - GitHub Pages gibt es für **private** Repositories nur mit einem bezahlten GitHub-Plan (z. B. Pro). Mit dem Gratis-Plan schaltet GitHub Pages ab, sobald das Repository privat wird, und der Workflow scheitert mit «Get Pages site failed». Die veröffentlichte Seite selbst ist in jedem Fall öffentlich.
 - Die App-Dateien liegen absichtlich alle auf einer Ebene, ohne Unterordner. Neue Dateien dieser Typen werden automatisch mitveröffentlicht.
-- Lokal testen: im Ordner `python3 -m http.server` starten und <http://localhost:8000/> öffnen. Der Service Worker läuft nur über `http(s)://`, nicht beim direkten Öffnen der Datei.
+- Lokal testen: `tools/serve.pl` starten (oder `python3 -m http.server`) und <http://localhost:8000/> öffnen. Der Service Worker, der Cache-Speicher für die Mappacks und das Laden eines Packs von einer Adresse laufen nur über `http(s)://`, nicht beim direkten Öffnen der Datei.
 
 ### Eigene Kopie
 
@@ -70,11 +85,17 @@ Jeder Push auf `main` startet den Workflow [`.github/workflows/pages.yml`](.gith
 
 | Datei | Zweck |
 |---|---|
-| `index.html` | die ganze App samt Daten |
+| `index.html` | die ganze App samt Kostprobe (sechs Gebiete aus Finale) |
+| `pack.finale.json`, `pack.oltre.json`, `pack.ow.json` | die drei Regionen als Mappacks |
+| `pack.showcase.json` | die Kostprobe, wie sie in `index.html` steckt |
+| `mappack.schema.json` | das Format eines Mappacks (JSON Schema) |
+| `tools/make-packs.sh` | baut und prüft die Mappacks und die Kostprobe |
+| `tools/serve.pl` | kleiner lokaler Server zum Ausprobieren |
 | `sw.js` | macht die App offline-fähig |
 | `manifest.webmanifest` | Name, Farben und Icons für die Installation |
 | `icon-*.png`, `apple-touch-icon.png`, `favicon*` | App-Icon in allen nötigen Grössen |
 | `.github/workflows/pages.yml` | veröffentlicht die App bei jedem Push auf `main` |
+| `.github/workflows/packs.yml` | prüft die Mappacks gegen das Schema |
 
 ## Daten und Grenzen
 

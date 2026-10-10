@@ -1,0 +1,33 @@
+name: Check mappacks
+
+# Every mappack that is published must match mappack.schema.json, and the packs must still agree with
+# the app: tools/make-packs.sh --check does the second part (counts, car park and area references).
+
+on:
+  push:
+    paths: ["pack.*.json", "mappack.schema.json", "tools/make-packs.sh", ".github/workflows/packs.yml"]
+  pull_request:
+    paths: ["pack.*.json", "mappack.schema.json", "tools/make-packs.sh", ".github/workflows/packs.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Validate against the schema
+        run: |
+          shopt -s nullglob
+          packs=(pack.*.json)
+          if [ ${#packs[@]} -eq 0 ]; then echo "::error::no pack.*.json found"; exit 1; fi
+          printf 'packs: %s\n' "${packs[*]}"
+          npx --yes ajv-cli@5 validate --spec=draft2020 --strict=false \
+            -s mappack.schema.json $(printf -- '-d %s ' "${packs[@]}")
+      - name: Internal consistency
+        run: tools/make-packs.sh --check

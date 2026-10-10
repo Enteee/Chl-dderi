@@ -28,10 +28,10 @@ jobs:
       - name: Prepare site
         run: |
           # The app is a flat folder: publish every web file at the repository root
-          # (index.html, sw.js, manifest, icons, favicons), nothing else.
+          # (index.html, sw.js, manifest, icons, favicons, the mappacks and their schema), nothing else.
           mkdir _site
           shopt -s nullglob
-          cp ./*.html ./*.js ./*.webmanifest ./*.png ./*.svg ./*.ico _site/
+          cp ./*.html ./*.js ./*.json ./*.webmanifest ./*.png ./*.svg ./*.ico _site/
           touch _site/.nojekyll
       - name: Stamp version
         run: |
