@@ -8,7 +8,7 @@ const FONTS = "finale-atlas-fonts-v1";
 const KEEP = [SHELL, TILES, FONTS, "finale-atlas-user"];
 const CORE = ["./", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./icon-maskable-192.png", "./icon-maskable-512.png",
   "./apple-touch-icon.png", "./favicon-32.png", "./favicon.svg"];
-const TILE_HOSTS = /(^|\.)tile\.opentopomap\.org$|(^|\.)tile\.openstreetmap\.org$|^server\.arcgisonline\.com$/;
+const TILE_HOSTS = /(^|\.)tile\.opentopomap\.org$|(^|\.)tile\.openstreetmap\.org$|^server\.arcgisonline\.com$|^wmts\.geo\.admin\.ch$/;     // swisstopo: Swiss maps and trails
 const FONT_HOSTS = /^fonts\.(googleapis|gstatic)\.com$/;
 const TILE_MAX = 900;
 
