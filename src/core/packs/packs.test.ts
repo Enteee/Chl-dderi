@@ -129,3 +129,65 @@ describe("mounting the real mappacks", () => {
         expect(JSON.stringify(packs.showcase!.sectors[0]!.routes[0])).toBe(before);
     });
 });
+
+describe("mounting several packs together", () => {
+    it("namespaces car park keys, so two packs may both have a «cornei»", () => {
+        // Two packs that each call a car park "shared".
+        const a = {
+            ...packs.showcase,
+            id: "aaa",
+            parks: { shared: { name: "Park A", lat: 44.1, lon: 8.3 } },
+            sectors: [{ ...packs.showcase!.sectors[0]!, id: "a1", pk: "shared", ap: [] }],
+        } as unknown as Mappack;
+        const b = {
+            ...packs.showcase,
+            id: "bbb",
+            parks: { shared: { name: "Park B", lat: 46.3, lon: 8.0 } },
+            sectors: [{ ...packs.showcase!.sectors[0]!, id: "b1", pk: "shared", ap: [] }],
+        } as unknown as Mappack;
+
+        const mountedBoth = mountPacks([a, b]);
+        expect(mountedBoth.parks["aaa/shared"]?.name).toBe("Park A");
+        expect(mountedBoth.parks["bbb/shared"]?.name).toBe("Park B");
+        // And each crag points at its own.
+        expect(mountedBoth.byId.a1?.pk).toBe("aaa/shared");
+        expect(mountedBoth.byId.b1?.pk).toBe("bbb/shared");
+        expect(mountedBoth.parks[mountedBoth.byId.a1!.pk!]?.name).toBe("Park A");
+        expect(mountedBoth.parks[mountedBoth.byId.b1!.pk!]?.name).toBe("Park B");
+    });
+
+    it("offsets picture indices, because the picSrc lists are joined", () => {
+        const withPics = {
+            ...packs.finale,
+            id: "first",
+        } as unknown as Mappack;
+        const second = {
+            ...packs.finale,
+            id: "second",
+        } as unknown as Mappack;
+        const both = mountPacks([withPics, second]);
+        const own = packs.finale!.picSrc!.length;
+        expect(both.picSrc).toHaveLength(own * 2);
+        expect(both.regions[0]?.picOffset).toBe(0);
+        expect(both.regions[1]?.picOffset).toBe(own);
+
+        // Every picture of every crag must land inside the joined list.
+        for (const crag of both.crags) {
+            for (const pic of crag.pics) {
+                expect(pic[3]).toBeGreaterThanOrEqual(0);
+                expect(pic[3]).toBeLessThan(both.picSrc.length);
+            }
+        }
+    });
+
+    it("leaves the park keys of a single pack resolvable too", () => {
+        const one = mountPacks([packs.ow!]);
+        for (const crag of one.crags) {
+            for (const key of [crag.pk, crag.pkOff, ...crag.ap.map((a) => a.pk)]) {
+                if (key == null) continue;
+                expect(one.parks[key], `${crag.id} -> ${key}`).toBeDefined();
+                expect(key.startsWith("ow/")).toBe(true);
+            }
+        }
+    });
+});

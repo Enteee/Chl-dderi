@@ -205,7 +205,9 @@ export const toCrag = (sector: StoredSector, packId: string): Crag => {
     };
 };
 
-export const toRegion = (pack: Mappack): Region => ({
+export const toRegion = (pack: Mappack, picOffset = 0): Region => ({
+    /** Where this pack's pictures start in the joined picSrc list of the mounted set. */
+    picOffset,
     key: pack.id,
     name: pack.name,
     fullName: pack.fullName ?? null,
@@ -229,29 +231,75 @@ export const toRegion = (pack: Mappack): Region => ({
     n: pack.sectors.length,
 });
 
+/** A car park key, made unique across packs: `<packId>/<key>`. */
+export const parkKey = (packId: string, key: string): string => `${packId}/${key}`;
+
 /**
- * Mount a set of packs. Later packs do not overwrite earlier ones: a crag id may appear in only one
- * pack (tools/make-packs.sh --check enforces that for the packs in maps/), and if two loaded packs
- * ever did collide the first one wins, as it did before.
+ * Mount a set of packs.
+ *
+ * Two things have to be renumbered while pouring several packs into one set, both of them carried
+ * over from the old `packMount()`:
+ *
+ * - **Car park keys are namespaced** with the pack's id, because two packs may each have a car park
+ *   called «cornei». Every reference a crag makes (`pk`, `pkOff`, `ap[].pk`) is rewritten to match.
+ * - **Picture indices are offset**, because `pic[3]` points into the pack's own `picSrc` list and
+ *   those lists are concatenated.
+ *
+ * A crag id may appear in only one pack -- tools/make-packs.sh --check enforces that for the packs
+ * in maps/ -- and if two loaded packs ever did collide, the first one keeps the id.
  */
 export const mountPacks = (packs: readonly Mappack[]): MountedData => {
     const crags: Crag[] = [];
     const regions: Region[] = [];
     const parks: Record<string, Park> = {};
     const byId: Record<string, Crag> = {};
+    const picSrc: string[] = [];
 
     for (const pack of packs) {
-        regions.push(toRegion(pack));
+        const picOffset = picSrc.length;
+        const own = pack.picSrc ?? [];
+        picSrc.push(...own);
+
+        const renamed: Record<string, string> = {};
         for (const [key, park] of Object.entries(pack.parks ?? {})) {
-            if (!(key in parks)) parks[key] = park;
+            const unique = parkKey(pack.id, key);
+            renamed[key] = unique;
+            parks[unique] = park;
         }
+
+        regions.push(toRegion(pack, picOffset));
+
         for (const sector of pack.sectors) {
             if (sector.id in byId) continue;
-            const crag = toCrag(sector, pack.id);
+            const pointed: StoredSector = {
+                ...sector,
+                pk: sector.pk ? (renamed[sector.pk] ?? sector.pk) : sector.pk,
+                pkOff: sector.pkOff ? (renamed[sector.pkOff] ?? sector.pkOff) : sector.pkOff,
+                ap: sector.ap?.map((a) => ({ ...a, pk: renamed[a.pk] ?? a.pk })) ?? sector.ap,
+                pics:
+                    own.length && sector.pics
+                        ? sector.pics.map(
+                              (p) =>
+                                  [
+                                      p[0],
+                                      p[1],
+                                      p[2],
+                                      (p[3] || 0) + picOffset,
+                                      p[4],
+                                      p[5],
+                                      p[6],
+                                      p[7],
+                                      p[8],
+                                      p[9],
+                                  ] as typeof p,
+                          )
+                        : sector.pics,
+            };
+            const crag = toCrag(pointed, pack.id);
             byId[crag.id] = crag;
             crags.push(crag);
         }
     }
 
-    return { crags, regions, parks, byId };
+    return { crags, regions, parks, byId, picSrc };
 };

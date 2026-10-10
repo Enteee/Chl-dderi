@@ -190,6 +190,8 @@ export interface Region {
     readonly parks: Readonly<Record<string, Park>>;
     /** Number of crags. */
     readonly n: number;
+    /** Where this pack's pictures start in the joined picSrc list of the mounted set. */
+    readonly picOffset: number;
 }
 
 /** Everything the mounted packs add up to. */
@@ -199,4 +201,6 @@ export interface MountedData {
     /** Car parks of every region, keyed as the crags refer to them. */
     readonly parks: Readonly<Record<string, Park>>;
     readonly byId: Readonly<Record<string, Crag>>;
+    /** The picSrc lists of every mounted pack, joined; pic[3] indexes into this. */
+    readonly picSrc: readonly string[];
 }

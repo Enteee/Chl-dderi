@@ -1,0 +1,80 @@
+/*
+ * What MUI cannot express: the safe-area insets of the iPhone home-screen app, and the few Leaflet
+ * overrides that make its panes follow the theme. Everything else is in src/theme.ts.
+ */
+
+:root {
+    --sat: env(safe-area-inset-top, 0px);
+    --sab: env(safe-area-inset-bottom, 0px);
+    --sal: env(safe-area-inset-left, 0px);
+    --sar: env(safe-area-inset-right, 0px);
+}
+
+/* Leaflet draws its own chrome; give it the theme's surfaces rather than its default white. */
+.leaflet-container {
+    background: var(--mui-palette-surface-panel);
+    font-family: inherit;
+}
+
+.leaflet-bar,
+.leaflet-control-layers,
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+    background: var(--mui-palette-background-paper);
+    color: var(--mui-palette-text-primary);
+    border-color: var(--mui-palette-divider);
+    box-shadow: var(--mui-shadows-3);
+}
+
+.leaflet-bar a,
+.leaflet-bar a:hover {
+    background: var(--mui-palette-background-paper);
+    color: var(--mui-palette-text-primary);
+    border-bottom-color: var(--mui-palette-divider);
+}
+
+.leaflet-container .leaflet-control-attribution {
+    background: color-mix(in srgb, var(--mui-palette-background-paper) 82%, transparent);
+    color: var(--mui-palette-text-secondary);
+}
+
+.leaflet-container .leaflet-control-attribution a {
+    color: var(--mui-palette-primary-main);
+}
+
+/* A crag marker: a filled dot whose colour says where the crag sits on the grade scale. */
+.kat-marker {
+    border-radius: 50%;
+    border: 2px solid var(--mui-palette-background-paper);
+    box-shadow: 0 1px 3px rgb(0 0 0 / 40%);
+    box-sizing: border-box;
+}
+
+.kat-marker-selected {
+    outline: 3px solid var(--mui-palette-primary-main);
+    outline-offset: 2px;
+}
+
+/* The cluster bubbles, themed instead of Leaflet's green/yellow/red. */
+.marker-cluster-small,
+.marker-cluster-medium,
+.marker-cluster-large {
+    background: color-mix(in srgb, var(--mui-palette-primary-main) 25%, transparent);
+}
+
+.marker-cluster-small div,
+.marker-cluster-medium div,
+.marker-cluster-large div {
+    background: var(--mui-palette-primary-main);
+    color: var(--mui-palette-primary-contrastText);
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 700;
+}
+
+/* Keep long crag and route names from pushing a row wider than the screen. */
+.kat-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}

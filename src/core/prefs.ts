@@ -22,13 +22,19 @@ export interface PackSource {
     readonly name?: string;
 }
 
+/** What is remembered about an installed pack. Never its data -- that is in the Cache Storage. */
 export interface InstalledPack {
     readonly id: string;
     readonly name?: { en: string; de: string };
     readonly version?: string;
+    readonly partial?: boolean;
+    readonly crags?: number;
+    readonly routes?: number;
     readonly bytes?: number;
+    /** When it was installed. */
     readonly at?: number;
-    readonly src?: PackSource;
+    /** Where it came from, so that «fetch again» knows what to ask for. Null for neither. */
+    readonly src?: PackSource | null;
 }
 
 export interface Prefs {

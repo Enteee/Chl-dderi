@@ -117,6 +117,8 @@ export default defineConfig({
             "@app": path.resolve(repoRoot, "./src/app"),
             "@domain": path.resolve(repoRoot, "./src/types"),
             "@i18n": path.resolve(repoRoot, "./src/i18n"),
+            "@maps": path.resolve(repoRoot, "./maps"),
+            "@data": path.resolve(repoRoot, "./src/data"),
         },
     },
     server: { host: "127.0.0.1", port: 5173 },

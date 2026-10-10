@@ -6,8 +6,11 @@
  *
  * - placeholders are `{0}`, `{1}`… so the interpolation markers are `{` and `}`, not `{{` and `}}`;
  * - keys contain dots (`pk.format`, `j.label`), so key and namespace separators are off;
- * - a plural is one key holding `singular|plural`, which `plural()` below picks from. i18next's own
- *   plural suffixes are not used -- the two languages involved both need only the two forms.
+ * - a plural is one key holding `singular|plural`, which `pickPlural()` below picks from. i18next's
+ *   own plural suffixes are not used -- the two languages involved both need only the two forms.
+ *
+ * The resources are bundled rather than fetched, so i18next initialises synchronously and the first
+ * render already has its texts.
  */
 
 import i18next, { type i18n as I18n } from "i18next";

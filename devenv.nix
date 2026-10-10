@@ -38,6 +38,8 @@ let
     "^src/i18n/dataTranslations\\.ts$"
     # Grade scales: "sax" (Saxon), "fin" (Finnish), "aus" (Australian).
     "^src/data/conv\\.json$"
+    # The page description, in German, the same text as in manifest.webmanifest.
+    "^src/index\\.html$"
   ];
 in
 {
