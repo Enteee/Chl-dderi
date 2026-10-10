@@ -3193,11 +3193,11 @@ function initMap(){
     chsat:{ch:true, layer:()=>L.tileLayer(WMTS("ch.swisstopo.swissimage","jpeg"),{maxNativeZoom:19,maxZoom:18,attribution:CH_ATTR})},
     topo:{layer:()=>L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",{subdomains:"abc",maxNativeZoom:17,maxZoom:18,attribution:OSMC+', SRTM · © <a href="https://opentopomap.org" target="_blank" rel="noopener">OpenTopoMap</a> (CC-BY-SA)'})},
     street:{layer:()=>L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxNativeZoom:19,maxZoom:18,attribution:OSMC})},
-    sat:{layer:()=>L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxNativeZoom:18,maxZoom:18,attribution:'© Esri, Maxar, Earthstar Geographics'})},
-    outline:{layer:null}
+    sat:{noCH:true, layer:()=>L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxNativeZoom:18,maxZoom:18,attribution:'© Esri, Maxar, Earthstar Geographics'})},
+    outline:{noCH:true, layer:null}
   };
   const note=$("mapnote"); let cur=null, auto=true, timer=null, curKey=null;
-  const order = () => regCH() ? ["ch","topo","street","sat"] : ["topo","street","sat"];
+  const order = () => regCH() ? ["ch","chsat","topo","street"] : ["topo","street","sat"];
   note.addEventListener("click",()=>{ note.hidden=true; });
   const BND = 'Boundaries: ISTAT (openpolis)';
   let outlineOn = true;
@@ -3236,7 +3236,7 @@ function initMap(){
     timer = setTimeout(fail, auto?6000:15000);
   };
   function renderBaseMenu(){
-    $("basemenu").innerHTML = Object.keys(BASES).filter(k=>!BASES[k].ch || regCH()).map(k=>`<button type="button" role="menuitemradio" aria-checked="${k===curKey}" data-base="${k}">${k===curKey?ic("check"):`<span style="width:1.15em"></span>`}${esc(t("base."+k))}</button>`).join("")
+    $("basemenu").innerHTML = Object.keys(BASES).filter(k=>regCH() ? !BASES[k].noCH : !BASES[k].ch).map(k=>`<button type="button" role="menuitemradio" aria-checked="${k===curKey}" data-base="${k}">${k===curKey?ic("check"):`<span style="width:1.15em"></span>`}${esc(t("base."+k))}</button>`).join("")
       + `<label><input type="checkbox" id="allParks" ${prefs.allParks?"checked":""}> ${esc(t("map.allparks"))}</label>`
       + `<label style="border-top:0"><input type="checkbox" id="allPaths" ${prefs.allPaths?"checked":""}> ${esc(t("map.allpaths"))}</label>`
       + (regCH() ? `<div class="mhead">${esc(t("ch.head"))}</div>`
@@ -3260,7 +3260,7 @@ function initMap(){
   initMap.relabel = ()=>{ renderBaseMenu(); $("btnBase").title=t("map.base"); renderLegend(); locState(); radarBar(); };
   // the base map follows the region: swisstopo in Switzerland, OpenTopoMap elsewhere; each region keeps its own choice
   initMap.regionBase = ()=>{ const def = regCH() ? "ch" : "topo", pick = regCH() ? prefs.baseCH : prefs.base;
-    const want = BASES[pick] && (!BASES[pick].ch || regCH()) ? pick : def;
+    const want = BASES[pick] && (regCH() ? !BASES[pick].noCH : !BASES[pick].ch) ? pick : def;     // in Switzerland no satellite and no outline only: the swisstopo maps cover it
     auto = want===def; setBase(want); chOverlays(); wxAttr(); };
   map.createPane("chov"); map.getPane("chov").style.zIndex=250;
   initMap.regionBase();
